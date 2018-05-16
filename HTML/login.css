@@ -1,0 +1,51 @@
+html{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background-color: #000;
+  color: white;
+}
+
+body{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+#loginWrapper{
+  width: 26%;
+  position: relative;
+  left: 37%;
+}
+
+#loginHeader{
+  margin: 0;
+  padding: 10px 0 0 0;
+  text-align: center;
+}
+
+.FormInput{
+  border-radius: 10px;
+}
+.FormInput{
+  border-radius: 5px;
+}
+
+.LoginForm{
+  width: 100%;
+  height: 30px;
+  margin: 5px 0 0 0;
+  padding: 0;
+  font-size: 17px;
+}
+
+#loginForm{
+  margin: 20px 0 0 0;
+}
+
+.FormButton:hover{
+  
+}
