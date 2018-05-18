@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Home
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-card (click)=goToShop()>
+      <img src="assets/imgs/hirsch.jpg"/>
+      <div class="card-title">Shop</div>
+      <div class="card-subtitle">8 Listings</div>
+    </ion-card>
+
+    <ion-card (click)=goToInfo()>
+      <img src="assets/imgs/keyboard.jpg"/>
+      <div class="card-title">Information</div>
+      <div class="card-subtitle"></div>
+    </ion-card>
+
+    <ion-card (click)=goToContact()>
+      <img src="assets/imgs/contact.jpg"/>
+      <div class="card-title">Kontakt</div>
+      <div class="card-subtitle"></div>
+    </ion-card>
+</ion-content>

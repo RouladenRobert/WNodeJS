@@ -1,0 +1,42 @@
+import { Component } from '@angular/core';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { RequestProvider } from '../../providers/request/request';
+import { Product } from '../../interfaces/interfaces';
+
+/**
+ * Generated class for the DescriptionPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+
+@IonicPage()
+@Component({
+  selector: 'page-description',
+  templateUrl: 'description.html',
+})
+export class DescriptionPage {
+
+  private currProd: Product;
+  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv: RequestProvider) {
+  }
+
+  ionViewDidLoad() {
+    console.log('ionViewDidLoad DescriptionPage');
+    this.showDescription();
+  }
+
+  //get productID which is delivered by the push coming from ShopPage
+  //send DB-request to fetch all description data
+  private showDescription(){
+    var prID = this.navParams.get('prID');
+    //DB-request to fetch description data
+    this.reqProv.getDescription(prID).subscribe((data: Product) => {
+    this.currProd = data;
+        console.log(this.currProd);
+  }, error => {
+    console.log(error);
+  });
+  }
+
+}
