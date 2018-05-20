@@ -1,5 +1,6 @@
+const ctrl = require("./requestController");
+
 module.exports = function(app){
-  const ctrl = require("./requestController");
 
   /* Routes all requests*/
 
