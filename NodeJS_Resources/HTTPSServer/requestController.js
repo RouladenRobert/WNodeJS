@@ -1,3 +1,5 @@
+const db = require("../Database/database.js");
+
 module.exports = {
 
     //show home
@@ -11,6 +13,13 @@ module.exports = {
     showProducts : function(req, res){
       var productList = [{name : "Wildschwein", price : 10.99, stock : 3, weight : 200, prID: 0},
                           {name : "Hirsch", price : 15.99, stock : 7, weight : 250, prID: 1}];
+      console.log("Bis hier her");
+      //var productList =[];
+      /*db.Product.findAll({attributes : ["name", "description", "amount", "price", "weight", "preOrderable"]}).then(res =>{
+        console.log(res);
+        res.send(res);
+        res.end();
+      });*/
 
       res.send(productList);
       res.end();

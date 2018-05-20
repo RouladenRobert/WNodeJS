@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { HomePage }from '../home/home';
 import { RegisterPage } from '../register/register';
-
+import {User} from '../../interfaces/interfaces';
+import {RequestProvider} from '../../providers/request/request';
 
 /**
  * Generated class for the LoginPage page.
@@ -19,7 +20,7 @@ import { RegisterPage } from '../register/register';
 export class LoginPage {
   private username : string;
   private password : string;
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv: RequestProvider) {
   }
 
   ionViewDidLoad() {
@@ -33,6 +34,7 @@ export class LoginPage {
       return;
     }
     //request senden und Ergebnis prüfen, bei Erfolgsmeldung weiterleiten auf HomePage
+    //this.reqProv.sendUserData(userObj).subscribe(...);
     this.navCtrl.push(HomePage);
   }
 

@@ -1,0 +1,8 @@
+{
+	"username": "meating",
+    "password": "meating",
+    "database": "meating_test",
+    "host": "localhost",
+	"port": 3306,
+    "dialect": "mysql"
+}

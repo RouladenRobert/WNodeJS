@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {User} from '../../interfaces/interfaces';
+import {RequestProvider} from '../../providers/request/request';
 
 /**
  * Generated class for the RegisterPage page.
@@ -15,11 +17,16 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class RegisterPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv: RequestProvider) {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad RegisterPage');
+  }
+
+  private registerUser(){
+    //build User-Object here
+    //this.reqProv.sendUserData(userObj).subscribe(...);
   }
 
 }
