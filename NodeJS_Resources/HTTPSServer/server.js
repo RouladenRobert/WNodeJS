@@ -28,3 +28,4 @@ const server = https.createServer({
 }, app);
 
 server.listen(3000);
+console.log("Server startet at port 3000. \n");

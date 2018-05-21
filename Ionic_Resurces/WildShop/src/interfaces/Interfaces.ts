@@ -7,4 +7,17 @@ export interface Product{
   weight: number;
   prID : number;
   description?:string;
+
+}
+
+export interface User{
+  userName : string;
+  userID : number;
+
+}
+
+export interface Session{
+  sessionID : string;
+  sessionStart : string; //Zeitpunkt, zu dem Session gestartet wurde -> läuft irgendwann aus
+
 }
