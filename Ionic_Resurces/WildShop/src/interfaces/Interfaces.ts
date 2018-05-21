@@ -7,5 +7,4 @@ export interface Product{
   weight: number;
   prID : number;
   description?:string;
-  
 }
