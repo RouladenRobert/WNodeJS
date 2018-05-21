@@ -45,6 +45,6 @@ export class ShopPage {
   //executed if item is clicked
   //pushes to DescriptionPage and has the productID as an argument
   private goToDescription(product: Product){
-    this.navCtrl.push(DescriptionPage, {prID: product.prID});
-  }
+      this.navCtrl.push(DescriptionPage, {prID: product.pid});
+    }
 }

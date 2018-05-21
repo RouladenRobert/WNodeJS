@@ -5,6 +5,9 @@ const OrderProduct = seq.define('Oder_Product', {
   amount : {
     type : Sequelize.INTEGER,
     allowNull : false
+  },
+  comment : {
+    type : Sequelize.STRING
   }
 });
 

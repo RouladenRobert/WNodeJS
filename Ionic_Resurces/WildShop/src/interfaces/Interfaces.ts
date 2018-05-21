@@ -5,7 +5,7 @@ export interface Product{
   price: number;
   stock: number;
   weight: number;
-  prID : number;
+  pid : number;
   description?:string;
 
 }
@@ -19,5 +19,12 @@ export interface User{
 export interface Session{
   sessionID : string;
   sessionStart : string; //Zeitpunkt, zu dem Session gestartet wurde -> läuft irgendwann aus
-  
+
+}
+
+export interface Order{
+  userID : number,
+  prodID : Array<number>,
+  amount : number,
+  comment? : string
 }
