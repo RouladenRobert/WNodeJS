@@ -14,14 +14,14 @@
 
 
 <ion-content padding>
-  <ion-card>
+ <ion-card>
     <ion-row>
       <ion-col>
-      <button ion-button block small_button id="buy">Jetzt kaufen</button>
+      <button ion-button block small_button id="buy" (click)="goToOrder()">Jetzt kaufen</button>
       <img src="assets/imgs/hirsch.jpg"/>
-      <div class="card-title">Test</div>
-      <div class="card-subtitle">10,99€</div>
+      <div class="card-title" *ngIf="currProd">{{currProd.name}}</div>
+      <div class="card-subtitle" *ngIf="currProd">{{currProd.price}}</div>
     </ion-col>
   </ion-row>
-    </ion-card>
+</ion-card>
 </ion-content>

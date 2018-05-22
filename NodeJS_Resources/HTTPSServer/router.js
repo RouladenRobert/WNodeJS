@@ -15,4 +15,7 @@ module.exports = function(app){
 
   app.route("/login")
       .post(ctrl.login);
+
+  app.route("/register")
+      .post(ctrl.register);
 }
