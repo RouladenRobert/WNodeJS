@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Order } from '../../interfaces/interfaces';
+import { Product } from '../../interfaces/interfaces';
 import { RequestProvider } from '../../providers/request/request';
 
 /**

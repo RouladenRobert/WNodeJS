@@ -12,4 +12,10 @@ module.exports = function(app){
 
   app.route("/product")
       .post(ctrl.showDescription);
+
+  app.route("/login")
+      .post(ctrl.login);
+
+  app.route("/register")
+      .post(ctrl.register);
 }
