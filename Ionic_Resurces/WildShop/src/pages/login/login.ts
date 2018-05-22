@@ -18,8 +18,8 @@ import {RequestProvider} from '../../providers/request/request';
   templateUrl: 'login.html',
 })
 export class LoginPage {
-  private username : string;
-  private password : string;
+  private username : string = "";
+  private password : string = "";
   constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv: RequestProvider) {
   }
 
@@ -29,10 +29,6 @@ export class LoginPage {
 
   private login(){
     console.log(this.username);
-    if((this.username == null || this.username == '')||(this.password ==  null || this.password == '')){
-      alert("Bitte Daten eingeben!");
-      return;
-    }
     //request senden und Ergebnis prüfen, bei Erfolgsmeldung weiterleiten auf HomePage
     //this.reqProv.sendUserData(userObj).subscribe(...);
     this.navCtrl.push(HomePage);
@@ -40,6 +36,15 @@ export class LoginPage {
 
   private register(){
     this.navCtrl.push(RegisterPage);
+  }
+
+  private hideButton(){
+    console.log(this.username, this.password);
+    if (this.username == "" || this.password == ""){
+      document.getElementById("loginButton").disabled = true;
+    }else{
+      document.getElementById("loginButton").disabled = false;
+    }
   }
 
 }

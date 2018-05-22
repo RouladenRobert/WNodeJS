@@ -17,14 +17,14 @@
   <ion-list inset>
 
     <ion-item>
-      <ion-input type="text" [(ngModel)]="username" name="username" placeholder="Nutzername"></ion-input>
+      <ion-input (input)="hideButton()" type="text" [(ngModel)]="username" name="username" placeholder="Nutzername"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-input type="password" [(ngModel)]="password" name="password" placeholder="Passwort"></ion-input>
+      <ion-input (input)="hideButton()" type="password" [(ngModel)]="password" name="password" placeholder="Passwort"></ion-input>
     </ion-item>
 
-    <button ion-button full (click)=login()>Anmelden!</button>
+    <button id="loginButton" ion-button full (click)=login() disabled>Anmelden!</button>
     <button ion-button full (click)=register()>Registrieren</button>
 
   </ion-list>
