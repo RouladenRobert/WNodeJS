@@ -54,17 +54,21 @@ module.exports = {
     },
 
     login : function(req, res){
-      var userInfo = req.body.user;
+      var mail = req.body.email;
+      var pass = req.body.pass
       var passwordHash = '';
       var session = {};
 
       /*
       * DB-request. Fetches uid, createdAt (as salt for sha256)= and password-hash
+      * Hashen funktioniert nicht
       */
-      db.User.findOne({attributes: ['createdAt', 'pword', 'uid'], where : {email : userInfo.email}}).then(result => {
-            passwordHash = crypto.createHmac('sha256', result.);
-            if(result.pword === passwordHash){
-                session =  sessionHandler.generateSession(result.uid);
+      db.User.findOne({attributes: ['createdAt', 'pword', 'uid'], where : {email : mail}}).then(result => {
+            //passwordHash = crypto.createHmac('sha256', pass);
+            // pass muss mit passworthash ausgetaucht werden
+            if(result.pword === pass){
+              //session muss generiert werden, wenn Funktion funktioniert
+                //session =  sessionHandler.generateSession(result.uid);
                 res.status(200);
             }
             else{
@@ -85,15 +89,19 @@ module.exports = {
     register : function(req, res){
       var userInfo = req.body.user;
       var timestamp = new Date();
-      var passwordHash = crypto.createHmac('sha256', userInfo.password);
+      //Hash funktioniert nicht!?...
+      var passwordHash = crypto.createHmac('sha256', userInfo.pass);
+      console.log(userInfo, timestamp, passwordHash);
       var session = {};
       /*
       * INSERT new user into user-table
+      * userInfo.pass muss mit hash getauscht werden (wenn der funktioniert)
+      *sessionhandler muss auskommentiert werden, wenn die Funktion funktioniert
       */
-      db.User.create({sname : userInfo.sname, name : userInfo.name, userInfo.email, pword : passwordHash,
+      db.User.create({sname : userInfo.surname, name : userInfo.name, email: userInfo.email, pword : userInfo.pass,
                       timestamp : timestamp, createdAt : timestamp, updatedAt : timestamp
                       }).then(result => {
-                  session = sessionHandler.generateSession(result.uid);
+                  //session = sessionHandler.generateSessionObject(result.dataValues.uid);
                   res.status(200);
                   res.send(session);
                   res.end();
@@ -104,24 +112,6 @@ module.exports = {
             res.end();
           });
 
-    },
-
-    login : function(req, res){
-      consol.log("Login-Request");
-      var email = req.body.email;
-      var password = req.body.pass;
-      db.User.findAll({
-        where: {email: email}
-      }).then( result =>{
-        console.log(result);
-      }).catch(err =>{
-        res.status(500);
-        sendInfoResponse(res, 500, "Getting Userdata from database failed.")
-      });
-
-
     }
-
-
 
 }

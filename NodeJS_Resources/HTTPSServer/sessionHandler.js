@@ -7,7 +7,7 @@ var sessionObj = {}
 
 module.exports = {
 
-    sessionObj : sessionObj;
+    //sessionObj : sessionObj;
 
   generateSessionObject : function(userID){
     var sessionID = crypto.randomBytes(sconsts.SESSION_ID_LENGTH).toString('base64');
@@ -30,7 +30,7 @@ module.exports = {
   },
 
   invalidateSession : function(sessionID){
-    console.log("[SESSION] Session will be invalidated"):
+    console.log("[SESSION] Session will be invalidated");
     sessionObj.delete(sessionID);
   },
 

@@ -55,4 +55,9 @@ export class RequestProvider {
     });
   }
 
+  public register(user: any){
+    return this.http.post(this.consts.url + "register", {
+      user: user
+    });
+  }
 }

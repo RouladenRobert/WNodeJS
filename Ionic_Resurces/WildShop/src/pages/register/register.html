@@ -17,26 +17,26 @@
   <ion-list inset>
 
     <ion-item>
-      <ion-input type="text" placeholder="Email-Adresse"></ion-input>
+      <ion-input (input)="hideButton()" type="text" placeholder="Email-Adresse" [(ngModel)]="email"></ion-input>
     </ion-item>
 
   <ion-item>
-    <ion-input type="text" placeholder="Vorname"></ion-input>
+    <ion-input (input)="hideButton()" type="text" placeholder="Vorname" [(ngModel)]="surname"></ion-input>
   </ion-item>
 
   <ion-item>
-    <ion-input type="text" placeholder="Nachname"></ion-input>
+    <ion-input (input)="hideButton()" type="text" placeholder="Nachname" [(ngModel)]="name"></ion-input>
   </ion-item>
 
   <ion-item>
-    <ion-input type="password" placeholder="Passwort"></ion-input>
+    <ion-input (input)="hideButton()" class="pass" type="password" placeholder="Passwort" [(ngModel)]="password"></ion-input>
   </ion-item>
 
   <ion-item>
-    <ion-input type="password" placeholder="Passwort wiederholen"></ion-input>
+    <ion-input (input)="hideButton()" class="pass" type="password" placeholder="Passwort wiederholen" [(ngModel)]="repassword"></ion-input>
   </ion-item>
 
-  <button ion-button full (click)=register()>Registrieren!</button>
+  <button id="registerButton" ion-button full (click)="register()" disabled>Registrieren!</button>
   <button ion-button full (click)=back()>Zurück</button>
 
 </ion-list>

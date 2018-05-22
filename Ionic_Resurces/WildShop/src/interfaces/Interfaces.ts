@@ -20,14 +20,11 @@ export interface Session{
   sessionID : string;
   sessionStart : string; //Zeitpunkt, zu dem Session gestartet wurde -> läuft irgendwann aus
 
-<<<<<<< HEAD
-=======
 }
 
 export interface Order{
   userID : number,
-  prodID : Array<number>,
+  prodID : number,
   amount : number,
   comment? : string
->>>>>>> master
 }

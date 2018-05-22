@@ -18,7 +18,7 @@ const privateKey = fs.readFileSync(path.join(__dirname, 'privateKey.pem'), 'utf8
 app.use(cors());
 app.use(bodyParser());
 
-app.route('/*').all(authorize);
+app.route('/shop').all(authorize);
 router(app);
 
 /*app.get('/', (req, res) => {

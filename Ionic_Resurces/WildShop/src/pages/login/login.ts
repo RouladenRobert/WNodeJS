@@ -44,7 +44,6 @@ export class LoginPage {
   }
 
   private hideButton(){
-    console.log(document.getElementById("loginButton"));
     if (this.email == "" || this.password == ""){
       (<HTMLInputElement> document.getElementById("loginButton")).disabled = true;
     }else{
