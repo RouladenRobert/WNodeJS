@@ -44,4 +44,15 @@ export class RequestProvider {
     });
   }
 
+  //execute https-request for login
+  //email: String {Email-address from login-form/login.ts}
+  //pass: String {Password from login-form/login.ts}
+  //no return
+  public login(email: string, pass: string){
+    return this.http.post(this.consts.url + "login", {
+      email: email,
+      pass: pass
+    });
+  }
+
 }

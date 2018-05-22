@@ -1,4 +1,6 @@
 const db = require("../Database/database.js");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
 module.exports = {
 
@@ -32,8 +34,22 @@ module.exports = {
 
       res.send(productList[0]);
       res.end();
+    },
+
+    login : function(req, res){
+      consol.log("Login-Request");
+      var email = req.body.email;
+      var password = req.body.pass;
+      db.User.findAll({
+        where: {email: email}
+      }).then( result =>{
+        console.log(result);
+      }).catch(err =>{
+        res.status(500);
+        sendInfoResponse(res, 500, "Getting Userdata from database failed.")
+      });
     }
 
-    
+
 
 }

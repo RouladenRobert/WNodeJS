@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Register</ion-title>
+    <ion-title>Registrierung</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -17,26 +17,27 @@
   <ion-list inset>
 
     <ion-item>
-      <ion-label>E-Mail Adresse</ion-label>
-      <ion-input type="text"></ion-input>
+      <ion-input type="text" placeholder="Email-Adresse"></ion-input>
     </ion-item>
 
   <ion-item>
-    <ion-label>Nutzername</ion-label>
-    <ion-input type="text"></ion-input>
+    <ion-input type="text" placeholder="Vorname"></ion-input>
   </ion-item>
 
   <ion-item>
-    <ion-label>Passwort</ion-label>
-    <ion-input type="password"></ion-input>
+    <ion-input type="text" placeholder="Nachname"></ion-input>
   </ion-item>
 
   <ion-item>
-    <ion-label>Passwort wiederholen</ion-label>
-    <ion-input type="password"></ion-input>
+    <ion-input type="password" placeholder="Passwort"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-input type="password" placeholder="Passwort wiederholen"></ion-input>
   </ion-item>
 
   <button ion-button full (click)=register()>Registrieren!</button>
+  <button ion-button full (click)=back()>Zurück</button>
 
 </ion-list>
 
