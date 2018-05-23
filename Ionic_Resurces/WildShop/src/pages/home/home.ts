@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
 import { ContactPage } from '../contact/contact';
 import { ShopPage } from '../shop/shop';
 import { InformationPage } from '../information/information';
@@ -10,12 +10,14 @@ import { InformationPage } from '../information/information';
 })
 export class HomePage {
 
-  constructor(public navCtrl: NavController) {
+  private session : string;
+  constructor(public navCtrl: NavController, private navParams: NavParams) {
 
   }
 
   private goToShop(){
-    this.navCtrl.push(ShopPage);
+    this.session = this.navParams.get('session');
+    this.navCtrl.push(ShopPage, {session : this.session});
   }
 
   private goToInfo(){

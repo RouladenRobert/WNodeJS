@@ -8,7 +8,7 @@ module.exports = function(app){
       .get(ctrl.showHome);
 
   app.route("/shop")
-      .get(ctrl.showProducts);
+      .post(ctrl.showProducts);
 
   app.route("/product")
       .post(ctrl.showDescription);

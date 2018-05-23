@@ -57,22 +57,21 @@ module.exports = {
     login : function(req, res){
       var mail = req.body.email;
       var pass = req.body.pass
-      var session = {};
       /*
       * DB-request. Fetches uid, createdAt (as salt for sha256)= and password-hash
       * Hashen funktioniert nicht
       */
       db.User.findOne({attributes: ['createdAt', 'pword', 'uid'], where : {email : mail}}).then( result => {
-        console.log(result);
+        //console.log(result);
         if(bcrypt.compareSync(pass, result.dataValues.pword)){
+            console.log("[LOGIN] Authorized");
+            var sessionID = sessionHandler.generateSessionObject(result.dataValues.uid);
             res.status(200);
-            console.log("Authorized");
           }else{
             res.status(401);
           }
-        res.send(session);
+        res.send({session : sessionID});
         res.end();
-        return session;
       }).catch(err =>{
         res.status(500);
         console.log("[LOGIN] Error in Login");
@@ -87,7 +86,6 @@ module.exports = {
       var timestamp = new Date();
       bcrypt.hash(userInfo.pass, salt).then(function(hash){
         console.log(userInfo, timestamp, hash);
-        var session = {};
         /*
         * INSERT new user into user-table
         *sessionhandler muss auskommentiert werden, wenn die Funktion funktioniert

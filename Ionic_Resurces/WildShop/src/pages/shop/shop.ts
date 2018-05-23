@@ -21,11 +21,13 @@ import {DescriptionPage} from '../description/description'
 export class ShopPage {
 
   private productList: Array<Product>;
+  private session : string;
   constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient, private reqProv: RequestProvider) {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ShopPage');
+    this.session = this.navParams.get('session');
     this.getProducts();
   }
 
@@ -34,7 +36,8 @@ export class ShopPage {
     //https.request(..);
     //productList.add(reqResult);
     //show the list (do it in the HTML-file)
-    this.reqProv.getProducts().subscribe((data: Array<Product>) => {
+    console.log(this.session);
+    this.reqProv.getProducts(this.session).subscribe((data: Array<Product>) => {
     this.productList = data;
     console.log(this.productList);
   }, error =>{
@@ -45,6 +48,6 @@ export class ShopPage {
   //executed if item is clicked
   //pushes to DescriptionPage and has the productID as an argument
   private goToDescription(product: Product){
-      this.navCtrl.push(DescriptionPage, {prID: product.pid});
+      this.navCtrl.push(DescriptionPage, {prID: product.pid, session : this.session});
     }
 }

@@ -22,16 +22,17 @@ export class RequestProvider {
 
   //execute https-request to fetch all products
   //returns an array of Product-objects
-  public getProducts() : Observable<Array<Product>>{
-    return this.http.get<Array<Product>>(this.consts.url+"shop");
+  public getProducts(session: string) : Observable<Array<Product>>{
+    return this.http.post<Array<Product>>(this.consts.url+"shop", {session : session});
   }
 
   // execute https-request to fetch the product Description
   // prID: product ID
   // return: Porduct-Object
-  public getDescription(prID: number) : Observable<Product>{
+  public getDescription(prID: number, session: string) : Observable<Product>{
     return this.http.post<Product>(this.consts.url+"product", {
-      prodID : prID
+      prodID : prID,
+      session : session
     });
   }
 

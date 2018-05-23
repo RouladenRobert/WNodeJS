@@ -19,6 +19,7 @@ app.use(cors());
 app.use(bodyParser());
 
 app.route('/shop').all(authorize);
+app.route('/product').all(authorize);
 router(app);
 
 /*app.get('/', (req, res) => {
@@ -40,8 +41,9 @@ console.log("[SESSION] Timer active");
 function authorize(req, res, next){
   var sessionID = req.body.session || req.query.session;
   req.session = {};
-  req.session.sessionId = sessionID;
+  req.session.sessionID = sessionID;
 
+  console.log("[SESSION] SessionID: "+sessionID);
   if(sessionID){
     const sessionData = session.getSession(sessionID);
     if(!sessionData || !sessionData.userID){
@@ -58,7 +60,7 @@ function authorize(req, res, next){
   }
 
   function responseUnauthorized(req, res){
-    session.invalidate(req.session.sessionId);
+    session.invalidateSession(req.session.sessionId);
     res.status(401);
     res.send("Unauthorized!");
   }

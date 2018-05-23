@@ -30,8 +30,9 @@ export class DescriptionPage {
   //send DB-request to fetch all description data
  private showDescription(){
     var prID = this.navParams.get('prID');
+    var sessionID = this.navParams.get('session');
     //DB-request to fetch description data
-    this.reqProv.getDescription(prID).subscribe((data: Product) => {
+    this.reqProv.getDescription(prID, sessionID).subscribe((data: Product) => {
       this.currProd = data[0];
   }, error => {
     console.log(error);

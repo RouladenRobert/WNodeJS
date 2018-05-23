@@ -1,15 +1,16 @@
-const sha256 = require("crypto");
+const crypto = require("crypto");
 const db = require("../Database/database.js");
 const sconsts = require("./sessionConstants.js");
 const hashmap = require('hashmap');
 
-var sessionObj = {}
+var sessionObj = new hashmap.HashMap()
 
 module.exports = {
 
     //sessionObj : sessionObj;
 
   generateSessionObject : function(userID){
+    console.log("[SESSION] Creating Session object....")
     var sessionID = crypto.randomBytes(sconsts.SESSION_ID_LENGTH).toString('base64');
     sessionID = sessionID.split("+").join("-");
     var session = {}
@@ -17,7 +18,6 @@ module.exports = {
     session.begin = new Date();
     session.updatedAt = new Date();
     sessionObj.set(sessionID, session);
-
     return sessionID;
   },
 
