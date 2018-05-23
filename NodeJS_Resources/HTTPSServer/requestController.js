@@ -1,6 +1,7 @@
 const db = require("../Database/database.js");
 const sessionHandler = require("./sessionHandler.js");
-const crypto = require('crypto');
+const bcrypt = require("bcrypt");
+const salt = 10;
 
 module.exports = {
 
@@ -56,27 +57,22 @@ module.exports = {
     login : function(req, res){
       var mail = req.body.email;
       var pass = req.body.pass
-      var passwordHash = '';
       var session = {};
-
       /*
       * DB-request. Fetches uid, createdAt (as salt for sha256)= and password-hash
       * Hashen funktioniert nicht
       */
-      db.User.findOne({attributes: ['createdAt', 'pword', 'uid'], where : {email : mail}}).then(result => {
-            //passwordHash = crypto.createHmac('sha256', pass);
-            // pass muss mit passworthash ausgetaucht werden
-            if(result.pword === pass){
-              //session muss generiert werden, wenn Funktion funktioniert
-                //session =  sessionHandler.generateSession(result.uid);
-                res.status(200);
-            }
-            else{
-              res.status(401);
-            }
-            res.send(session);
-            res.end();
-            return session;
+      db.User.findOne({attributes: ['createdAt', 'pword', 'uid'], where : {email : mail}}).then( result => {
+        console.log(result);
+        if(bcrypt.compareSync(pass, result.dataValues.pword)){
+            res.status(200);
+            console.log("Authorized");
+          }else{
+            res.status(401);
+          }
+        res.send(session);
+        res.end();
+        return session;
       }).catch(err =>{
         res.status(500);
         console.log("[LOGIN] Error in Login");
@@ -89,28 +85,28 @@ module.exports = {
     register : function(req, res){
       var userInfo = req.body.user;
       var timestamp = new Date();
-      //Hash funktioniert nicht!?...
-      var passwordHash = crypto.createHmac('sha256', userInfo.pass);
-      console.log(userInfo, timestamp, passwordHash);
-      var session = {};
-      /*
-      * INSERT new user into user-table
-      * userInfo.pass muss mit hash getauscht werden (wenn der funktioniert)
-      *sessionhandler muss auskommentiert werden, wenn die Funktion funktioniert
-      */
-      db.User.create({sname : userInfo.surname, name : userInfo.name, email: userInfo.email, pword : userInfo.pass,
-                      timestamp : timestamp, createdAt : timestamp, updatedAt : timestamp
-                      }).then(result => {
-                  //session = sessionHandler.generateSessionObject(result.dataValues.uid);
-                  res.status(200);
-                  res.send(session);
-                  res.end();
-          }).catch(err => {
-            res.status(500);
-            console.log("[REGISTER] Error in register");
-            res.send(err);
-            res.end();
-          });
+      bcrypt.hash(userInfo.pass, salt).then(function(hash){
+        console.log(userInfo, timestamp, hash);
+        var session = {};
+        /*
+        * INSERT new user into user-table
+        *sessionhandler muss auskommentiert werden, wenn die Funktion funktioniert
+        */
+        db.User.create({sname : userInfo.surname, name : userInfo.name, email: userInfo.email, pword : hash,
+                        timestamp : timestamp, createdAt : timestamp, updatedAt : timestamp
+                        }).then(result => {
+                    //session = sessionHandler.generateSessionObject(result.dataValues.uid);
+                    res.status(200);
+                    res.send(session);
+                    res.end();
+            }).catch(err => {
+              res.status(500);
+              console.log("[REGISTER] Error in register");
+              res.send(err);
+              res.end();
+            });
+      });
+
 
     }
 

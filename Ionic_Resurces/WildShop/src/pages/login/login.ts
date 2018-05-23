@@ -30,11 +30,7 @@ export class LoginPage {
   private login(){
     console.log(this.email);
     this.reqProv.login(this.email, this.password).subscribe(res =>{
-      if(res != null){
         this.navCtrl.push(HomePage);
-      }else{
-        console.log("res.status not 200");
-      }
     });
 
   }
