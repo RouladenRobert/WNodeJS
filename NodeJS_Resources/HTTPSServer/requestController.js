@@ -41,16 +41,26 @@ module.exports = {
 
     // insert new order to the order-table
     addOrder : function(req, res){
-      var orderInfo = req.body.order;
+      var productArr = req.session.productArr;
+      var userID = req.session.userID;
 
       //update amount in product-table
       //insert new entry into order_product
       var date = new Date();
-      db.Orders.create({orderDate : new Date(), delivery_time : date.setDate(date.getDate() + 1), createdAt : new Date(), updatedAt : new Date(), UserUid : orderInfo.userID}).then(order => {
-        db.OrderProduct.create({amount : orderInfo.amount, comment : orderInfo.comment, createdAt : new Date(), updatedAt : new Date(),
-                                }).then(order_product => {
+      db.Order.create({orderDate : new Date(), delivery_time : date.setDate(date.getDate() + 1), createdAt : new Date(), updatedAt : new Date(), UserUid : userID}).then(order => {
+        for(let entry of productArr){
+          db.OrderProduct.create({amount : entry.amount, createdAt : new Date(), updatedAt : new Date(), OrderOid : order.dataValues.oid, ProductPid : entry.pid}).then(order_product => {
 
+          }).catch(err =>{
+            console.log(err);
+            res.status(500);
           })
+        }
+        res.status(200);
+        res.end();
+      }).catch(err => {
+        console.log(err);
+        res.status(500);
       });
     },
 
@@ -65,12 +75,12 @@ module.exports = {
         //console.log(result);
         if(bcrypt.compareSync(pass, result.dataValues.pword)){
             console.log("[LOGIN] Authorized");
-            var sessionID = sessionHandler.generateSessionObject(result.dataValues.uid);
+            var session = sessionHandler.generateSessionObject(result.dataValues.uid);
             res.status(200);
           }else{
             res.status(401);
           }
-        res.send({session : sessionID});
+        res.send({session : session});
         res.end();
       }).catch(err =>{
         res.status(500);

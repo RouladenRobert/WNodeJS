@@ -17,8 +17,9 @@ module.exports = {
     session.userID = userID;
     session.begin = new Date();
     session.updatedAt = new Date();
+    session.sessionID = sessionID;
     sessionObj.set(sessionID, session);
-    return sessionID;
+    return session;
   },
 
   getSession : function(sessionID){

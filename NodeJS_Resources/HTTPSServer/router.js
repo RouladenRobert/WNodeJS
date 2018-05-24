@@ -13,6 +13,9 @@ module.exports = function(app){
   app.route("/product")
       .post(ctrl.showDescription);
 
+  app.route("/order")
+      .post(ctrl.addOrder);
+
   app.route("/login")
       .post(ctrl.login);
 

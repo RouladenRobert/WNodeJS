@@ -61,4 +61,11 @@ export class RequestProvider {
       user: user
     });
   }
+
+  public sendOrder(session : {}){
+    return this.http.post(this.consts.url + "order", {
+      proudcts : session.productArr,
+      session : session
+    });
+  }
 }

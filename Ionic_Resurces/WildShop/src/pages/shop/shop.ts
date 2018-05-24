@@ -45,6 +45,17 @@ export class ShopPage {
   });
   }
 
+  private sendOrder(){
+    this.reqProv.sendOrder(this.session).subscribe((res) => {
+      console.log("[ORDER] Bestellung erfolgreich");
+      this.session.productArr = null;
+      console.log(this.session);
+    }, error => {
+      console.log("[ORDER] Something went wrong");
+      console.log(error);
+    });
+  }
+
   //executed if item is clicked
   //pushes to DescriptionPage and has the productID as an argument
   private goToDescription(product: Product){

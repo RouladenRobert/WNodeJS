@@ -14,7 +14,7 @@
 
 
 <ion-content padding>
-  <form (ngSubmit)="order()">
+  <form (ngSubmit)="addOrder()">
     <ion-item>
       <ion-label>Menge</ion-label>
       <ion-input type="number" [(ngModel)]="orderObj.amount" name="amount"></ion-input>
@@ -23,6 +23,6 @@
       <ion-label>Bemerkung</ion-label>
       <ion-textarea [(ngModel)]="orderObj.comment" name="comment"></ion-textarea>
     </ion-item>
-    <button ion-button type="submit" block>Jetzt bestellen</button>
+    <button ion-button block type="submit">Zum Warenkorb hinzufügen</button>
   </form>
 </ion-content>
