@@ -4,7 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Product } from '../../interfaces/interfaces';
 import {RequestProvider} from '../../providers/request/request';
-import {DescriptionPage} from '../description/description'
+import {DescriptionPage} from '../description/description';
+import {ConfirmationPage} from '../confirmation/confirmation';
 
 /**
  * Generated class for the ShopPage page.
@@ -39,21 +40,9 @@ export class ShopPage {
     console.log(this.session);
     this.reqProv.getProducts(this.session).subscribe((data: Array<Product>) => {
     this.productList = data;
-    console.log(this.productList);
   }, error =>{
     console.log(error);
   });
-  }
-
-  private sendOrder(){
-    this.reqProv.sendOrder(this.session).subscribe((res) => {
-      console.log("[ORDER] Bestellung erfolgreich");
-      this.session.productArr = null;
-      console.log(this.session);
-    }, error => {
-      console.log("[ORDER] Something went wrong");
-      console.log(error);
-    });
   }
 
   //executed if item is clicked
@@ -61,4 +50,10 @@ export class ShopPage {
   private goToDescription(product: Product){
       this.navCtrl.push(DescriptionPage, {prID: product.pid, session : this.session});
     }
+
+  // executed if 'Bestellen' is pressed
+  // pushes ConfirmationPage
+  private goToConfirmation(){
+      this.navCtrl.push(ConfirmationPage, {session : this.session})
+  }
 }

@@ -21,6 +21,7 @@ app.use(bodyParser());
 app.route('/shop').all(authorize);
 app.route('/product').all(authorize);
 app.route('/order').all(authorize);
+app.route('/logout').all(authorize);
 router(app);
 
 /*app.get('/', (req, res) => {

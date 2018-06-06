@@ -1,5 +1,6 @@
 const ctrl = require("./requestController");
 
+
 module.exports = function(app){
 
   /* Routes all requests*/
@@ -21,4 +22,7 @@ module.exports = function(app){
 
   app.route("/register")
       .post(ctrl.register);
+
+  app.route("/logout")
+      .post(ctrl.logout);
 }

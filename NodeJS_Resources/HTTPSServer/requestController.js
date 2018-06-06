@@ -1,6 +1,7 @@
 const db = require("../Database/database.js");
 const sessionHandler = require("./sessionHandler.js");
 const bcrypt = require("bcrypt");
+const session = require("./sessionHandler.js");
 const salt = 10;
 
 module.exports = {
@@ -43,6 +44,7 @@ module.exports = {
     addOrder : function(req, res){
       var productArr = req.session.productArr;
       var userID = req.session.userID;
+      console.log(productArr);
 
       //update amount in product-table
       //insert new entry into order_product
@@ -110,12 +112,21 @@ module.exports = {
             }).catch(err => {
               res.status(500);
               console.log("[REGISTER] Error in register");
+              console.log(err)
               res.send(err);
               res.end();
             });
       });
 
 
+    },
+
+    logout : function(req, res){
+      session.invalidateSession(req.body.session.sessionID);
+
+      res.status(200)
+      res.send("logged out");
+      res.end();
     }
 
 }

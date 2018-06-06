@@ -68,4 +68,10 @@ export class RequestProvider {
       session : session
     });
   }
+
+  public logout(session : {}){
+    return this.http.post(this.consts.url+"logout", {
+      session : session
+    });
+  }
 }

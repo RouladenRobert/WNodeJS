@@ -1,5 +1,5 @@
 <!--
-  Generated template for the ShopPage page.
+  Generated template for the ConfirmationPage page.
 
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
@@ -7,15 +7,15 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Shop</ion-title>
+    <ion-title>Confirmation</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-  <ion-list no-lines id="prList">
-  <button ion-item *ngFor="let item of productList" (click)="goToDescription(item)">
+  <ion-list no-lines id="confList">
+  <button ion-item *ngFor="let item of productList">
     <h2>
     {{ item.name}}
     </h2>
@@ -26,7 +26,6 @@
       {{item.stock}}
     </p>
   </button>
-  <button ion-button (click)="goToConfirmation()">Jetzt bestellen!</button>
+  <button ion-button (click)="sendOrder()">Jetzt bestellen!</button>
 </ion-list>
-
 </ion-content>
