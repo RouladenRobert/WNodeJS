@@ -112,7 +112,7 @@ module.exports = {
             }).catch(err => {
               res.status(500);
               console.log("[REGISTER] Error in register");
-              console.log(err)
+              console.log(err);
               res.send(err);
               res.end();
             });
