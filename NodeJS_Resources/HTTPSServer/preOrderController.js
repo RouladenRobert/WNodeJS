@@ -10,10 +10,12 @@ module.exports = {
         userID = req.session.userID;
         console.log("insert Preorder");
 
+        date = new Date();
         for(let entry of productArr){
-          db.PreOrder.create({preorderDate : new Date(), createdAt : new Date(), updatedAt : new Date(), UserUid : userID}).then(order => {
-              db.Product.update({amount : entry.currAmount - entry.amount}, {fields : ['amount']}).then(() => {
-
+          db.PreOrder.create({preorderDate : date, createdAt : date, updatedAt : date, UserUid : userID}).then(order => {
+            var diff = entry.currAmount - entry.amount;
+              db.Product.update({amount : diff}, {fields : ['amount'], where : {pid : entry.pid}}).then(() => {
+                  return;
               }).catch(err => {
                   res.status(500);
                   console.log("[PRODUCT] Failed to update amount");

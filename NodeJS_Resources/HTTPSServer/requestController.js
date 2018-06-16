@@ -50,41 +50,44 @@ module.exports = {
       /*
       * TODO: Funktion folgendermaßen umschreiben, sollte am besten aufgespalten werden mit ein paar Hilfsfunktionen:
 
-              Eventuell mit await auf Ausführung der Funktion warten?
-              Zähler mitführen, der immer in db.Product.findOne hochzählt?  -> sollte die beste Lösung sein
-              Ansonsten muss eine ganz andere Lösung her...drecks asynchrone Pimmelausführung
+              NaN-Fehler beheben
 
       */
-      console.log(productArr.length);
       var orderArr = [];
       var preOrderArr = [];
-
-      for(var i=0; i<productArr.length; i++){
-        db.Product.findOne({attributes : ['amount'], where : {pid : productArr[i].pid}}).then(product => {
+      var i = 0;
+      for(let prod of productArr){
+        i += 1;
+        db.Product.findOne({attributes : ['amount'], where : {pid : prod.pid}}).then(product => {
           console.log("------------------------");
-          console.log(i);
+          //console.log(product.dataValues.amount);
           console.log("------------------------");
             var currAmount = product.dataValues.amount;
+            console.log(prod)
             if(currAmount === 0){
-              preOrderArr.push(productArr[i]);
+              preOrderArr.push(prod);
+              console.log("Bis hier 1");
             }
-            else if(currAmount >= productArr[i].amount){
-              orderArr.push(productArr[i]);
+            else if(currAmount >= prod.amount){
+              orderArr.push(prod);
+              console.log("Bis hier 2");
             }
-            else if(currAmount !== 0 && currAmount < productArr[i].amount){
-              tempOrderObj = productArr[i];
+            else if(currAmount !== 0 && currAmount < prod.amount){
+              tempOrderObj = prod;
               tempOrderObj.amount = currAmount;
-              tempPreOrderObj = productArr[i];
-              tempPreOrderObj.amount = productArr[i].amount - currAmount;
+              tempPreOrderObj = prod;
+              tempPreOrderObj.amount = prod.amount - currAmount;
 
               orderArr.push(tempOrderObj);
               preOrderArr.push(tempPreOrderObj);
+              console.log("Bis hier 3");
+            }
 
-              if(i === productArr.length){
+            if(i === productArr.length){
                 orderController.insertOrder(req, res, orderArr);
                 preOrderController.insertPreOrder(req, res, preOrderArr);
+                i = 0;
               }
-            }
 
         }).catch(err =>{
           console.log("[PRODUCT] Failed to get amount");
@@ -94,6 +97,7 @@ module.exports = {
         });
       }
 
+    },
 /*
 
       //update amount in product-table
@@ -154,7 +158,6 @@ module.exports = {
         console.log(err);
         res.status(500);
       });*/
-    },
 
     login : function(req, res){
       var mail = req.body.email;
