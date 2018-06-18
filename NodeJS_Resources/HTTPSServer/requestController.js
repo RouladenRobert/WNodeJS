@@ -67,11 +67,9 @@ module.exports = {
             console.log(prod)
             if(currAmount === 0){
               preOrderArr.push(prod);
-              console.log("Bis hier 1");
             }
             else if(currAmount >= prod.amount){
               orderArr.push(prod);
-              console.log("Bis hier 2");
             }
             else if(currAmount !== 0 && currAmount < prod.amount){
               tempOrderObj = prod;
@@ -81,7 +79,6 @@ module.exports = {
 
               orderArr.push(tempOrderObj);
               preOrderArr.push(tempPreOrderObj);
-              console.log("Bis hier 3");
             }
 
             if(i === productArr.length){

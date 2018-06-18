@@ -3,6 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { ContactPage } from '../contact/contact';
 import { ShopPage } from '../shop/shop';
 import { InformationPage } from '../information/information';
+import { RequestProvider} from '../../providers/request/request';
 
 @Component({
   selector: 'page-home',
@@ -11,12 +12,16 @@ import { InformationPage } from '../information/information';
 export class HomePage {
 
   private session : string;
-  constructor(public navCtrl: NavController, private navParams: NavParams) {
+  constructor(public navCtrl: NavController, private navParams: NavParams, private reqProv : RequestProvider) {
+
+  }
+
+  private ionViewDidLoad(){
+    this.session = this.navParams.get('session');
 
   }
 
   private goToShop(){
-    this.session = this.navParams.get('session');
     this.navCtrl.push(ShopPage, {session : this.session});
   }
 
@@ -26,5 +31,14 @@ export class HomePage {
 
   private goToContact(){
     this.navCtrl.push(ContactPage);
+  }
+
+  private logout(){
+    console.log(this.session);
+    this.reqProv.logout(this.session).subscribe((data) => {
+      console.log(data);
+    }, err =>{
+      console.log(err);
+    });
   }
 }
