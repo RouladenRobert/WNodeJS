@@ -9,7 +9,8 @@ module.exports = {
         for(let entry of productArr){
           db.Order.create({orderDate : date, createdAt : date, updatedAt : date, delivery_time : date.setDate(date.getDate() + 1), UserUid : userID}).then(order => {
             var diff = entry.currAmount - entry.amount;
-              db.Product.update({amount : diff}, {fields : ['amount'], where : {pid : entry.pid}}).then((order) => {
+              db.Product.update({amount : diff}, {fields : ['amount'], where : {pid : entry.pid}}).then((prod) => {
+                console.log("[ORDER]: order is "+order);
                 db.OrderProduct.create({amount : entry.amount, createdAt : date, updatedAt : new Date(), OrderOid : order.dataValues.oid, ProductPid : entry.pid}).then(() =>{
                     return;
                 }).catch(err => {

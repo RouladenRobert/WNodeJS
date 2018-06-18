@@ -63,6 +63,7 @@ module.exports = {
           //console.log(product.dataValues.amount);
           console.log("------------------------");
             var currAmount = product.dataValues.amount;
+            prod.currAmount = currAmount;
             console.log(prod)
             if(currAmount === 0){
               preOrderArr.push(prod);
