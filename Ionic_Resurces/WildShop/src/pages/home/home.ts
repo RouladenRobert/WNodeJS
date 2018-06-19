@@ -4,6 +4,7 @@ import { ContactPage } from '../contact/contact';
 import { ShopPage } from '../shop/shop';
 import { InformationPage } from '../information/information';
 import { RequestProvider} from '../../providers/request/request';
+import { LogoutPage } from '../logout/logout';
 
 @Component({
   selector: 'page-home',
@@ -40,5 +41,6 @@ export class HomePage {
     }, err =>{
       console.log(err);
     });
+    this.navCtrl.push(LogoutPage);
   }
 }
