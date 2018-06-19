@@ -48,16 +48,10 @@ module.exports = {
       console.log(productArr);
 
       /*
-      * TODO: Funktion folgendermaßen umschreiben, sollte am besten aufgespalten werden mit ein paar Hilfsfunktionen:
-
-              NaN-Fehler beheben
-
+      * check for every entry in productArr if it could be inserted into the order-table, the preorder-table or if it has to be divieded into two objects and
+      * has to be inserted into both tables
       */
-      var orderArr = [];
-      var preOrderArr = [];
-      var i = 0;
       for(let prod of productArr){
-        i += 1;
         db.Product.findOne({attributes : ['amount'], where : {pid : prod.pid}}).then(product => {
           console.log("------------------------");
           //console.log(product.dataValues.amount);
@@ -65,27 +59,25 @@ module.exports = {
             var currAmount = product.dataValues.amount;
             prod.currAmount = currAmount;
             console.log(prod)
+
+            // all in preoder?
             if(currAmount === 0){
-              preOrderArr.push(prod);
+              preOrderController.insertPreOrder(req, res, prod);
             }
+            // all in order?
             else if(currAmount >= prod.amount){
-              orderArr.push(prod);
+              orderController.insertOrder(req, res, prod);
             }
+            // divide product 
             else if(currAmount !== 0 && currAmount < prod.amount){
               tempOrderObj = prod;
               tempOrderObj.amount = currAmount;
               tempPreOrderObj = prod;
               tempPreOrderObj.amount = prod.amount - currAmount;
 
-              orderArr.push(tempOrderObj);
-              preOrderArr.push(tempPreOrderObj);
+              orderController.insertOrder(req, res, tempOrderObj);
+              preOrderController.insertPreOrder(req, res, tempPreOrderObj);
             }
-
-            if(i === productArr.length){
-                orderController.insertOrder(req, res, orderArr);
-                preOrderController.insertPreOrder(req, res, preOrderArr);
-                i = 0;
-              }
 
         }).catch(err =>{
           console.log("[PRODUCT] Failed to get amount");
@@ -96,66 +88,7 @@ module.exports = {
       }
 
     },
-/*
 
-      //update amount in product-table
-      //insert new entry into order_product
-      var date = new Date();
-      // create new entry in Order-table
-      db.Order.create({orderDate : new Date(), delivery_time : date.setDate(date.getDate() + 1), createdAt : new Date(), updatedAt : new Date(), UserUid : userID}).then(order => {
-
-        //for every entry in the ordered products find the product and get the amount
-        for(let entry of productArr){
-          db.Product.findOne({attributes : ['amount'], where : {pid : entry.pid}}).then(product => {
-            var rest = product.amount - entry.amount;
-            // check if rest is bigger than 0 -> everythin can be inserted into OrderProduct-table
-            if(rest >= 0){
-              db.OrderProduct.create({amount : entry.amount, createdAt : new Date(), updatedAt : new Date(), OrderOid : order.dataValues.oid, ProductPid : entry.pid}).then(order_product => {
-
-              }).catch(err =>{
-                console.log(err);
-                res.status(500);
-              });
-          }
-              // if rest is lower than 0 -> check if product amount is 0 -> everythin can be inserted into PreOrder-table
-              else if(rest < 0){
-                if(product.amount === 0){
-                  db.PreOrder.create({preorderDate : new Date(), updatedAt : new Date(), createdAt : new Date(), UserUid : userID}).then(result => {
-                    res.status(200);
-                    res.end();
-                  }).catch(err => {
-                    console.log(err);
-                    res.status(500);
-                  });
-               }
-              // if product amount is bigger than 0 -> calculate the difference and insert x in OderProduct and amount - x in PreOrder-table
-                else{
-                  var preOrderAmount = entry.amount - product.amount;
-                  db.OrderProduct.create({amount : product.amount, createdAt : new Date(), updatedAt : new Date(), OrderOid : order.dataValues.oid, ProductPid : entry.pid}).then(order_product => {
-                    db.PreOrder.create({/*amount : preOrderAmountpreorderDate : new Date(), updatedAt : new Date(), createdAt : new Date(), UserUid : userID}).then(preOrder => {
-                        res.status(200);
-                        res.end();
-                      }).catch(err => {
-                        res.status(500);
-                        res.end();
-                      });
-                    res.status(200);
-                    res.end();
-                  }).catch(err =>{
-                    console.log(err);
-                    res.status(500);
-                  });
-                }
-              }
-
-          })
-        }
-        res.status(200);
-        res.end();
-      }).catch(err => {
-        console.log(err);
-        res.status(500);
-      });*/
 
     login : function(req, res){
       var mail = req.body.email;
