@@ -5,6 +5,7 @@ import { ShopPage } from '../shop/shop';
 import { InformationPage } from '../information/information';
 import { RequestProvider} from '../../providers/request/request';
 import { LogoutPage } from '../logout/logout';
+import { Session } from '../../interfaces/interfaces';
 
 @Component({
   selector: 'page-home',
@@ -12,7 +13,7 @@ import { LogoutPage } from '../logout/logout';
 })
 export class HomePage {
 
-  private session : string;
+  private session : Session;
   constructor(public navCtrl: NavController, private navParams: NavParams, private reqProv : RequestProvider) {
 
   }

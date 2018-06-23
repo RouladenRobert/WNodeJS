@@ -68,7 +68,7 @@ module.exports = {
             else if(currAmount >= prod.amount){
               orderController.insertOrder(req, res, prod);
             }
-            // divide product 
+            // divide product
             else if(currAmount !== 0 && currAmount < prod.amount){
               tempOrderObj = prod;
               tempOrderObj.amount = currAmount;

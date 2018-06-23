@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { HomePage }from '../home/home';
 import { RegisterPage } from '../register/register';
 import {User} from '../../interfaces/interfaces';
+import {Session} from '../../interfaces/interfaces';
 import {RequestProvider} from '../../providers/request/request';
 
 /**
@@ -29,9 +30,9 @@ export class LoginPage {
 
   private login(){
     console.log(this.email);
-    this.reqProv.login(this.email, this.password).subscribe(res =>{
-        console.log(res.session);
-        this.navCtrl.push(HomePage, {session : res.session});
+    this.reqProv.login(this.email, this.password).subscribe((session : Session) =>{
+        console.log(session);
+        this.navCtrl.push(HomePage, {session : session});
     });
 
   }

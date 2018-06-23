@@ -7,6 +7,7 @@ export interface Product{
   weight: number;
   pid : number;
   description?:string;
+  amount? : number;
 
 }
 
@@ -17,13 +18,15 @@ export interface User{
 }
 
 export interface Session{
-  sessionID : string;
-  sessionStart : string; //Zeitpunkt, zu dem Session gestartet wurde -> läuft irgendwann aus
-
+  sessionID : string,
+  begin : string, //Zeitpunkt, zu dem Session gestartet wurde -> läuft irgendwann aus
+  updatedAt : string, // Zeitpunkt des letzten Zugriffs auf Server
+  userID : string,
+  productArr? : Array<Product>
 }
 
 export interface Order{
-  userID : number,
+  userID? : number,
   prodID : number,
   amount : number,
   comment? : string

@@ -47,12 +47,10 @@ export class RegisterPage {
     var elements = document.getElementsByClassName("pass");
     if (this.email != "" && this.surname != "" && this.name != "" && this.password != ""){
       if(this.password != this.repassword){
-        elements[0].style.backgroundColor = this.red;
-        elements[1].style.backgroundColor = this.red;
+        (<HTMLElement> document.querySelector('.pass')).style.backgroundColor = this.red;
         (<HTMLInputElement> document.getElementById("registerButton")).disabled = true;
       }else{
-        elements[0].style.backgroundColor = this.green;
-        elements[1].style.backgroundColor = this.green;
+        (<HTMLElement> document.querySelector('.pass')).style.backgroundColor = this.green;
         (<HTMLInputElement> document.getElementById("registerButton")).disabled = false;
       }
     }

@@ -22,14 +22,14 @@ export class RequestProvider {
 
   //execute https-request to fetch all products
   //returns an array of Product-objects
-  public getProducts(session: string) : Observable<Array<Product>>{
+  public getProducts(session: Session) : Observable<Array<Product>>{
     return this.http.post<Array<Product>>(this.consts.url+"shop", {session : session});
   }
 
   // execute https-request to fetch the product Description
   // prID: product ID
   // return: Porduct-Object
-  public getDescription(prID: number, session: string) : Observable<Product>{
+  public getDescription(prID: number, session: Session) : Observable<Product>{
     return this.http.post<Product>(this.consts.url+"product", {
       prodID : prID,
       session : session
@@ -62,14 +62,14 @@ export class RequestProvider {
     });
   }
 
-  public sendOrder(session : {}){
+  public sendOrder(session : Session){
     return this.http.post(this.consts.url + "order", {
       proudcts : session.productArr,
       session : session
     });
   }
 
-  public logout(session : {}){
+  public logout(session : Session){
     return this.http.post(this.consts.url+"logout", {
       session : session
     });

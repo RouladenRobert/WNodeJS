@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Product } from '../../interfaces/interfaces';
+import { Session } from '../../interfaces/interfaces';
 import {RequestProvider} from '../../providers/request/request';
 import {DescriptionPage} from '../description/description';
 import {ConfirmationPage} from '../confirmation/confirmation';
@@ -22,7 +23,7 @@ import {ConfirmationPage} from '../confirmation/confirmation';
 export class ShopPage {
 
   private productList: Array<Product>;
-  private session : string;
+  private session : Session;
   constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient, private reqProv: RequestProvider) {
   }
 

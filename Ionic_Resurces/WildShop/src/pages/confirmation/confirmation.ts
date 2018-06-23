@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { RequestProvider } from '../../providers/request/request';
 import { ShopPage } from '../shop/shop';
+import { Session } from '../../interfaces/interfaces';
 
 /**
  * Generated class for the ConfirmationPage page.
@@ -20,7 +21,7 @@ export class ConfirmationPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv : RequestProvider) {
   }
 
-  session = {}
+  session : Session;
   productList = [];
   ionViewDidLoad() {
     console.log('ionViewDidLoad ConfirmationPage');
