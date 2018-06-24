@@ -14,12 +14,17 @@ module.exports = {
         console.log("insert Preorder");
 
         date = new Date();
-          db.PreOrder.create({preorderDate : date, createdAt : date, updatedAt : date, UserUid : userID}).then(order => {
+          db.PreOrder.create({createdAt : date, updatedAt : date, UserUid : userID}).then(order => {
             var diff = product.currAmount - product.amount;
-              db.Product.update({amount : diff}, {fields : ['amount'], where : {pid : product.pid}}).then(() => {
-                res.status(200);
-                res.end();
-                return 1;
+              db.Product.update({amount : diff}, {fields : ['amount'], where : {pid : product.pid}}).then((product) => {
+                db.PreorderProduct.insert({amount : product.amount, createdAt : date, updatedAt : new Date(), PreOrderPoid : order.dataValues.poid, ProductPid : product.pid}).then(()=>{
+                  res.status(200);
+                  res.end();
+                  return 1;
+                }).catch(err =>{
+                  res.status(500);
+                  console.log("[PREORDER] Failed inserting PreorderProduct: \n"+err);
+                })
               }).catch(err => {
                   res.status(500);
                   console.log("[PRODUCT] Failed to update amount");

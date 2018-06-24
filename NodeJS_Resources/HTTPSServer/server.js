@@ -41,10 +41,11 @@ setInterval(session.cleanSessions, sessionConsts.SESSION_TIMEOUT_CHECK_INTERVALL
 console.log("[SESSION] Timer active");
 
 function authorize(req, res, next){
+  console.log(req.body);
   var sessionID = req.body.session.sessionID || req.query.session;
   req.session = req.body.session;
   req.session.sessionID = sessionID;
-
+  console.log(req.body);
   console.log("[SESSION] SessionID: "+sessionID);
   if(sessionID){
     const sessionData = session.getSession(sessionID);

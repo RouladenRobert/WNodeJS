@@ -23,13 +23,11 @@ import {ConfirmationPage} from '../confirmation/confirmation';
 export class ShopPage {
 
   private productList: Array<Product>;
-  private session : Session;
   constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient, private reqProv: RequestProvider) {
   }
-
+  private session = this.navParams.get('session');
   ionViewDidLoad() {
     console.log('ionViewDidLoad ShopPage');
-    this.session = this.navParams.get('session');
     this.getProducts();
   }
 
@@ -38,7 +36,8 @@ export class ShopPage {
     //https.request(..);
     //productList.add(reqResult);
     //show the list (do it in the HTML-file)
-    console.log(this.session);
+    console.log("Shop");
+    console.log(this.session.sessionID);
     this.reqProv.getProducts(this.session).subscribe((data: Array<Product>) => {
     this.productList = data;
   }, error =>{

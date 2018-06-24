@@ -1,11 +1,11 @@
 Sequelize = require("sequelize");
 const seq = require("./dbconnection.js");
 
-const OrderProduct = seq.define('Order_Product', {
+const PreorderProduct = seq.define('Preorder_Product', {
   amount : {
     type : Sequelize.INTEGER,
     allowNull : false
   }
 });
 
-module.exports = OrderProduct;
+module.exports = PreorderProduct;

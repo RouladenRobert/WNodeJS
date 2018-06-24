@@ -10,7 +10,7 @@ module.exports = {
         console.log("Insert order");
         userID = req.session.userID;
         date = new Date();
-          db.Order.create({orderDate : date, createdAt : date, updatedAt : date, delivery_time : date.setDate(date.getDate() + 1), UserUid : userID}).then(order => {
+          db.Order.create({createdAt : date, updatedAt : date, delivery_time : date.setDate(date.getDate() + 1), UserUid : userID}).then(order => {
             var diff = product.currAmount - product.amount;
               db.Product.update({amount : diff}, {fields : ['amount'], where : {pid : product.pid}}).then((prod) => {
                 console.log("[ORDER]: order is "+order);

@@ -13,13 +13,13 @@ import { Session } from '../../interfaces/interfaces';
 })
 export class HomePage {
 
-  private session : Session;
   constructor(public navCtrl: NavController, private navParams: NavParams, private reqProv : RequestProvider) {
 
   }
-
+  private session = this.navParams.get('session');
+  console.log('Home');
+  console.log(this.session.sessionID);
   private ionViewDidLoad(){
-    this.session = this.navParams.get('session');
 
   }
 

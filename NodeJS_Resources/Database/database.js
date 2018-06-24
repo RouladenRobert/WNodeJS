@@ -4,6 +4,7 @@ const Order = require("./order.js");
 const PreOrder = require("./preorder.js");
 const Product = require("./products.js");
 const OrderProduct = require("./order_product.js");
+const PreorderProduct = require('./preorder_product.js');
 //const ShoppingCart = require("./shopping_cart.js");
 //const ShoppingCartProduct = require("./shopping_car_product.js");
 
@@ -23,6 +24,10 @@ PreOrder.belongsTo(User);
 */
 Order.belongsToMany(Product, {through : OrderProduct});
 
+/*
+  n:m PREORDERS and PRODUCTS
+*/
+PreOrder.belongsToMany(Product, {through : PreorderProduct});
 
 // init db:
 function init(){
@@ -56,7 +61,9 @@ function execInit(initObj){
     Product.sync(initObj).then(() =>{
       Order.sync(initObj).then(() =>{
         PreOrder.sync(initObj).then(() =>{
-          OrderProduct.sync(initObj);
+          OrderProduct.sync(initObj).then(() => {
+            PreorderProduct.sync(initObj);
+          });
         });
       });
     });
@@ -71,5 +78,6 @@ module.exports = {
   Product : Product,
   Order : Order,
   PreOrder : PreOrder,
-  OrderProduct : OrderProduct
+  OrderProduct : OrderProduct,
+  PreorderProduct : PreorderProduct
 }

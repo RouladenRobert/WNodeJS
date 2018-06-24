@@ -25,7 +25,8 @@ export class DescriptionPage {
 
   ionViewDidLoad(){
         this.showDescription();
-        console.log(this.session);
+        console.log("Description");
+        console.log(this.session.sessionID);
   }
 
   //get productID which is delivered by the push coming from ShopPage

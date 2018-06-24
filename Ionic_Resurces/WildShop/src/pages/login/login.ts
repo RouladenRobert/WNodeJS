@@ -31,7 +31,7 @@ export class LoginPage {
   private login(){
     console.log(this.email);
     this.reqProv.login(this.email, this.password).subscribe((session : Session) =>{
-        console.log(session);
+      console.log('Login');
         this.navCtrl.push(HomePage, {session : session});
     });
 

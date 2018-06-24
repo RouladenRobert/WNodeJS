@@ -106,7 +106,7 @@ module.exports = {
           }else{
             res.status(401);
           }
-        res.send({session : session});
+        res.send(session);
         res.end();
       }).catch(err =>{
         res.status(500);

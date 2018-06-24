@@ -21,11 +21,10 @@ export class ConfirmationPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv : RequestProvider) {
   }
 
-  session : Session;
+  session = this.navParams.get('session');
   productList = [];
   ionViewDidLoad() {
     console.log('ionViewDidLoad ConfirmationPage');
-    this.session = this.navParams.get('session');
     this.productList = this.session.productArr;
     console.log(this.productList);
   }
