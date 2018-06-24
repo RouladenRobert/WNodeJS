@@ -17,8 +17,6 @@ export class HomePage {
 
   }
   private session = this.navParams.get('session');
-  console.log('Home');
-  console.log(this.session.sessionID);
   private ionViewDidLoad(){
 
   }
