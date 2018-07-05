@@ -5,6 +5,7 @@ import { RegisterPage } from '../register/register';
 import {User} from '../../interfaces/interfaces';
 import {Session} from '../../interfaces/interfaces';
 import {RequestProvider} from '../../providers/request/request';
+import {AlertController} from 'ionic-angular';
 
 /**
  * Generated class for the LoginPage page.
@@ -21,7 +22,7 @@ import {RequestProvider} from '../../providers/request/request';
 export class LoginPage {
   private email : string = "";
   private password : string = "";
-  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv: RequestProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv: RequestProvider, private alertCtl : AlertController) {
   }
 
   ionViewDidLoad() {
@@ -33,6 +34,23 @@ export class LoginPage {
     this.reqProv.login(this.email, this.password).subscribe((session : Session) =>{
       console.log('Login');
         this.navCtrl.push(HomePage, {session : session});
+    }, error => {
+      if(error.error.ErrorCode != 1){
+        let alert = this.alertCtl.create({
+          title : 'Sorry, out of service! Try it again later!',
+          buttons : ['OK']
+        });
+        alert.present();
+      }
+      else{
+          if(error.error.ErrorCode == 1){
+            let alert = this.alertCtl.create({
+              title : 'Falsche Eingabedaten!',
+              buttons : ['OK']
+            });
+          }
+          alert.present();
+        }
     });
 
   }

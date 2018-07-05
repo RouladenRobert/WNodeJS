@@ -7,6 +7,7 @@ import { Session } from '../../interfaces/interfaces';
 import {RequestProvider} from '../../providers/request/request';
 import {DescriptionPage} from '../description/description';
 import {ConfirmationPage} from '../confirmation/confirmation';
+import {AlertController} from 'ionic-angular';
 
 /**
  * Generated class for the ShopPage page.
@@ -23,7 +24,7 @@ import {ConfirmationPage} from '../confirmation/confirmation';
 export class ShopPage {
 
   private productList: Array<Product>;
-  constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient, private reqProv: RequestProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient, private reqProv: RequestProvider, private alertCtl : AlertController) {
   }
   private session = this.navParams.get('session');
   ionViewDidLoad() {
@@ -41,7 +42,11 @@ export class ShopPage {
     this.reqProv.getProducts(this.session).subscribe((data: Array<Product>) => {
     this.productList = data;
   }, error =>{
-    console.log(error);
+    let alert = this.alertCtl.create({
+      title : "Something went wrong while loading the offers. Please try it again.",
+      buttons : ['OK']
+    });
+    alert.present();
   });
   }
 

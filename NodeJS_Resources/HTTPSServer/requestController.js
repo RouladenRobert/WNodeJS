@@ -111,7 +111,8 @@ module.exports = {
       }).catch(err =>{
         res.status(500);
         console.log("[LOGIN] Error in Login");
-        res.send(err);
+        var errorObj = {HTTPCode : 500, ErrorCode : 1, msg : "Wrong Login data"};
+        res.send(errorObj);
         res.end();
       });
 
