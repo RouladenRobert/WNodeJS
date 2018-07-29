@@ -48,8 +48,8 @@ export class LoginPage {
               title : 'Falsche Eingabedaten!',
               buttons : ['OK']
             });
+            alert.present();
           }
-          alert.present();
         }
     });
 

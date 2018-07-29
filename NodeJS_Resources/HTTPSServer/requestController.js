@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const session = require("./sessionHandler.js");
 const orderController = require("./orderController.js");
 const preOrderController = require("./preOrderController.js");
+const mc = require("./mailController.js");
 const salt = 10;
 
 module.exports = {
@@ -53,12 +54,8 @@ module.exports = {
       */
       for(let prod of productArr){
         db.Product.findOne({attributes : ['amount'], where : {pid : prod.pid}}).then(product => {
-          console.log("------------------------");
-          //console.log(product.dataValues.amount);
-          console.log("------------------------");
             var currAmount = product.dataValues.amount;
             prod.currAmount = currAmount;
-            console.log(prod)
 
             // all in preoder?
             if(currAmount === 0){
@@ -86,6 +83,8 @@ module.exports = {
           res.end();
         });
       }
+
+      //mc.sendMail(re.session.userId, productArr.length);
 
     },
 

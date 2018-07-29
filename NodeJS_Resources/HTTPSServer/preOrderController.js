@@ -1,4 +1,5 @@
 const db = require("../Database/database.js");
+const mc = require("./mailController.js");
 
 module.exports = {
 
@@ -20,6 +21,7 @@ module.exports = {
                 db.PreorderProduct.insert({amount : product.amount, createdAt : date, updatedAt : new Date(), PreOrderPoid : order.dataValues.poid, ProductPid : product.pid}).then(()=>{
                   res.status(200);
                   res.end();
+                  //mc.registerProductForMail(req.session.userId, product.name, product.amount);
                   return 1;
                 }).catch(err =>{
                   res.status(500);
