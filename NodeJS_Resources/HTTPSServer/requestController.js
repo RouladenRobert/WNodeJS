@@ -57,6 +57,8 @@ module.exports = {
             var currAmount = product.dataValues.amount;
             prod.currAmount = currAmount;
 
+            console.log("[THEN]");
+
             // all in preoder?
             if(currAmount === 0){
               preOrderController.insertPreOrder(req, res, prod);
@@ -83,8 +85,8 @@ module.exports = {
           res.end();
         });
       }
-
-      //mc.sendMail(re.session.userId, productArr.length);
+      console.log("[AFTER FOR]");
+      mc.sendMail(req.session.userId, productArr.length);
 
     },
 

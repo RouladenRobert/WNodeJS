@@ -12,26 +12,22 @@ module.exports = {
 */
       insertPreOrder : function(req, res, product){
         userID = req.session.userID;
-        console.log("insert Preorder");
-
+        console.log("[INSERT]");
+        console.log(product);
+        var amount = product.amount;
+        var name = product.name;
         date = new Date();
           db.PreOrder.create({createdAt : date, updatedAt : date, UserUid : userID}).then(order => {
-            var diff = product.currAmount - product.amount;
-              db.Product.update({amount : diff}, {fields : ['amount'], where : {pid : product.pid}}).then((product) => {
-                db.PreorderProduct.insert({amount : product.amount, createdAt : date, updatedAt : new Date(), PreOrderPoid : order.dataValues.poid, ProductPid : product.pid}).then(()=>{
+                db.PreorderProduct.create({amount : product.amount, createdAt : date, updatedAt : new Date(), PreOrderPoid : order.dataValues.poid, ProductPid : product.pid}).then(()=>{
                   res.status(200);
                   res.end();
-                  //mc.registerProductForMail(req.session.userId, product.name, product.amount);
+                  console.log("[PREORDER] Register prouduct now");
+                  mc.registerProductForMail(req.session.userId, name, amount);
                   return 1;
                 }).catch(err =>{
                   res.status(500);
                   console.log("[PREORDER] Failed inserting PreorderProduct: \n"+err);
                 })
-              }).catch(err => {
-                  res.status(500);
-                  console.log("[PRODUCT] Failed to update amount");
-                  console.log(err);
-              });
           }).catch(err => {
             res.status(500);
             console.log("[PREORDER] Error while inserting item");

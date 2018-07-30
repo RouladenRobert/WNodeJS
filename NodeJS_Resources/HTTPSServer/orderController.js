@@ -8,8 +8,11 @@ module.exports = {
     * update product-table (amount)
     */
       insertOrder : function(req, res, product){
-        console.log("Insert order");
         userID = req.session.userID;
+        console.log("[INSERT]");
+        console.log(product);
+        var amount = product.amount;
+        var name = product.name;
         date = new Date();
           db.Order.create({createdAt : date, updatedAt : date, delivery_time : date.setDate(date.getDate() + 1), UserUid : userID}).then(order => {
             var diff = product.currAmount - product.amount;
@@ -18,7 +21,8 @@ module.exports = {
                 db.OrderProduct.create({amount : product.amount, createdAt : date, updatedAt : new Date(), OrderOid : order.dataValues.oid, ProductPid : product.pid}).then(() =>{
                   res.status(200);
                   res.end();
-                  //mc.registerProductForMail(req.session.userId, prod.name, prod.amount);
+                  console.log("[ORDER] Register product now");
+                  mc.registerProductForMail(req.session.userId, name, amount);
                   return 1;
                 }).catch(err => {
                     res.status(500);
