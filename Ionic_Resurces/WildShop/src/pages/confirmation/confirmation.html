@@ -15,7 +15,7 @@
 
 <ion-content padding>
   <ion-list no-lines id="confList">
-  <button ion-item *ngFor="let item of productList">
+  <button ion-item *ngFor="let item of productList; let i=index">
     <h2>
     {{ item.name}}
     </h2>
@@ -25,6 +25,7 @@
     <p>
       {{item.stock}}
     </p>
+    <button id="remove" ion-button icon-only item-end round clear (click)="removeFromCart(i)"><ion-icon name="remove"></ion-icon></button>
   </button>
   <button ion-button (click)="sendOrder()">Jetzt bestellen!</button>
 </ion-list>

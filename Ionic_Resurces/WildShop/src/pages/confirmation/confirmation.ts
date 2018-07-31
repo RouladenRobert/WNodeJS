@@ -47,4 +47,10 @@ export class ConfirmationPage {
     });
   }
 
+  private removeFromCart(index : number){
+    //remove element from product-array
+    this.productList.splice(index, 1);
+    this.session.productArr.splice(index, 1);
+  }
+
 }
