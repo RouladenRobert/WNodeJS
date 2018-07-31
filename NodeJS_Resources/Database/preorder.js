@@ -6,7 +6,6 @@ const PreOrder = seq.define('PreOrders', {
     type : Sequelize.STRING,
     allowNull : false,
     primaryKey : true,
-    unique : true
   },
   comment : {
     type : Sequelize.STRING
