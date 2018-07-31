@@ -1,17 +1,12 @@
 const hashmap = require('hashmap');
 const mailer = require('nodemailer');
 const db = require("../Database/database.js");
+const consts = require('./orderConstants.js');
 
 var orderTable = new hashmap.HashMap();
 var msg = undefined;
 var orderedProds = {names : [], amounts : []};
-const trans = mailer.createTransport({
-  service : 'gmail',
-  auth : {
-    user : 'jonas.seng1@gmail.com',
-    pass : 'louisundrene'
-  }
-});
+const trans = mailer.createTransport(consts.ORDER_MAIL_TRANSPORT);
 
 function sendOrderConfirmation(userID, prods){
     // find entry in user-table with id userID and get the email.
@@ -30,9 +25,9 @@ function sendOrderConfirmation(userID, prods){
       console.log("[MAILER] Nachricht: "+msg);
       //send message
       var mailOpt = {
-        from : 'jonas.seng1@gmail.com',
-        to : 'jonas.seng1@gmail.com',
-        subject : 'Bestellbestätigung',
+        from : consts.ORDER_MAIL_ADDR,
+        to : user.email,
+        subject : consts.ORDER_MAIL_SUBJECT,
         text : msg
       };
 

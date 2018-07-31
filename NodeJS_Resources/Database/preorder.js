@@ -3,10 +3,9 @@ const seq = require("./dbconnection.js");
 
 const PreOrder = seq.define('PreOrders', {
   poid : {
-    type : Sequelize.INTEGER,
+    type : Sequelize.STRING,
     allowNull : false,
     primaryKey : true,
-    autoIncrement : true,
     unique : true
   },
   comment : {

@@ -5,6 +5,8 @@ const session = require("./sessionHandler.js");
 const orderController = require("./orderController.js");
 const preOrderController = require("./preOrderController.js");
 const mc = require("./mailController.js");
+const orderConsts = require("./orderConstants.js");
+const crypto = require("crypto");
 const salt = 10;
 
 module.exports = {
@@ -48,6 +50,8 @@ module.exports = {
       var productArr = req.session.productArr;
       console.log(productArr);
 
+      var orderID = crypto.randomBytes(orderConsts.ORDER_ID_LENGTH).toString('base64');
+      orderID = '#'+orderID;
       /*
       * check for every entry in productArr if it could be inserted into the order-table, the preorder-table or if it has to be divieded into two objects and
       * has to be inserted into both tables
@@ -61,11 +65,11 @@ module.exports = {
 
             // all in preoder?
             if(currAmount === 0){
-              preOrderController.insertPreOrder(req, res, prod);
+              preOrderController.insertPreOrder(req, res, prod, orderID);
             }
             // all in order?
             else if(currAmount >= prod.amount){
-              orderController.insertOrder(req, res, prod);
+              orderController.insertOrder(req, res, prod, orderID);
             }
             // divide product
             else if(currAmount !== 0 && currAmount < prod.amount){
@@ -74,8 +78,8 @@ module.exports = {
               tempPreOrderObj = prod;
               tempPreOrderObj.amount = prod.amount - currAmount;
 
-              orderController.insertOrder(req, res, tempOrderObj);
-              preOrderController.insertPreOrder(req, res, tempPreOrderObj);
+              orderController.insertOrder(req, res, tempOrderObj, orderID);
+              preOrderController.insertPreOrder(req, res, tempPreOrderObj, orderID);
             }
 
         }).catch(err =>{
