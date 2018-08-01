@@ -47,10 +47,18 @@ export class ConfirmationPage {
     });
   }
 
-  private removeFromCart(index : number){
+  private removeFromCart(prod : Product){
     //remove element from product-array
-    this.productList.splice(index, 1);
-    this.session.productArr.splice(index, 1);
+    var index = this.productList.indexOf(prod);
+    var len = this.productList.length;
+    var newArr = [];
+    for(let i=0; i<len; i++){
+      if(i != index){
+          newArr.push(this.productList[i]);
+      }
+    }
+    this.productList = newArr;
+    this.session.productArr = newArr;
   }
 
 }
