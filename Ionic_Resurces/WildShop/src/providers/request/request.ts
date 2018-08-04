@@ -7,6 +7,7 @@ import {Product} from '../../interfaces/interfaces';
 import {User} from '../../interfaces/interfaces';
 import {Session} from '../../interfaces/interfaces';
 import {Constants} from '../../constants/constants';
+import {LoginPage} from '../../pages/login/login';
 
 /*
   Generated class for the RequestProvider provider.
@@ -75,5 +76,9 @@ export class RequestProvider {
 
   public logout(session : Session){
     return this.http.post(this.consts.url+"logout", {session : session});
+  }
+
+  public logoutWithoutSession(navCtrl){
+    navCtrl.push(LoginPage);
   }
 }

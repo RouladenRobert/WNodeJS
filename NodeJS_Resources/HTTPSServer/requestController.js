@@ -135,7 +135,7 @@ module.exports = {
         db.User.create({sname : userInfo.surname, name : userInfo.name, email: userInfo.email, pword : hash,
                         timestamp : timestamp, createdAt : timestamp, updatedAt : timestamp
                         }).then(result => {
-                    //session = sessionHandler.generateSessionObject(result.dataValues.uid);
+                    session = sessionHandler.generateSessionObject(result.dataValues.uid);
                     res.status(200);
                     res.send(session);
                     res.end();

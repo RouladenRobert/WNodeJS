@@ -38,6 +38,10 @@ export class HomePage {
     this.reqProv.logout(this.session).subscribe((data) => {
       console.log(data);
     }, err =>{
+      if(err.status === 401){
+        this.reqProv.logoutWithoutSession(this.navCtrl);
+        return;
+      }
       console.log(err);
     });
     this.navCtrl.push(LogoutPage);

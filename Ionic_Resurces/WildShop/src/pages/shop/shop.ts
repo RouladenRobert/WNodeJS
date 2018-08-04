@@ -8,6 +8,7 @@ import {RequestProvider} from '../../providers/request/request';
 import {DescriptionPage} from '../description/description';
 import {ConfirmationPage} from '../confirmation/confirmation';
 import {AlertController} from 'ionic-angular';
+import {LogoutPage} from '../logout/logout';
 
 /**
  * Generated class for the ShopPage page.
@@ -42,11 +43,21 @@ export class ShopPage {
     this.reqProv.getProducts(this.session).subscribe((data: Array<Product>) => {
     this.productList = data;
   }, error =>{
-    let alert = this.alertCtl.create({
-      title : "Something went wrong while loading the offers. Please try it again.",
-      buttons : ['OK']
-    });
-    alert.present();
+    if(error.status === 401){
+      let alert = this.alertCtl.create({
+        title : "Session expired. Pleas log in again.",
+        buttons : ['OK']
+      });
+      alert.present();
+      this.reqProv.logoutWithoutSession(this.navCtrl);
+    }
+    else{
+      let alert = this.alertCtl.create({
+        title : "Something went wrong while loading the offers. Please try it again.",
+        buttons : ['OK']
+      });
+      alert.present();
+    }
   });
   }
 
@@ -60,5 +71,19 @@ export class ShopPage {
   // pushes ConfirmationPage
   private goToConfirmation(){
       this.navCtrl.push(ConfirmationPage, {session : this.session})
+  }
+
+  private logout(){
+    console.log(this.session);
+    this.reqProv.logout(this.session).subscribe((data) => {
+      console.log(data);
+    }, err =>{
+      if(err.status === 401){
+        this.reqProv.logoutWithoutSession(this.navCtrl);
+        return;
+      }
+      console.log(err);
+    });
+    this.navCtrl.push(LogoutPage);
   }
 }

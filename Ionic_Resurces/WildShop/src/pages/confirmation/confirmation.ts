@@ -37,13 +37,21 @@ export class ConfirmationPage {
       console.log(this.session);
       this.navCtrl.push(ShopPage, {session : this.session});
     }, error => {
-      let alert = this.alertCtl.create({
-        title : "Something went wrong while sending the order. Pleas try it again later. If it does not work then pleas contact us.",
-        buttons : ['OK']
-      });
-      alert.present();
-      console.log("[ORDER] Something went wrong");
-      console.log(error);
+      if(error.status === 401){
+        let alert = this.alertCtl.create({
+          title : "Session expired. Pleas log in again.",
+          buttons : ['OK']
+        });
+        alert.present();
+        this.reqProv.logoutWithoutSession(this.navCtrl);
+      }
+      else{
+        let alert = this.alertCtl.create({
+          title : "Something went wrong while sending the order. Please try it again later.",
+          buttons : ['OK']
+        });
+        alert.present();
+      }
     });
   }
 

@@ -3,7 +3,8 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import {User} from '../../interfaces/interfaces';
 import {RequestProvider} from '../../providers/request/request';
 import {LoginPage} from '../login/login';
-
+import {Session} from '../../interfaces/interfaces';
+import {HomePage} from '../home/home';
 /**
  * Generated class for the RegisterPage page.
  *
@@ -34,7 +35,8 @@ export class RegisterPage {
 
   private register(){
     console.log("Register: ", this.surname, this.name);
-    this.reqProv.register({ email: this.email, surname: this.surname, name: this.name, pass: this.password }).subscribe( res =>{
+    this.reqProv.register({ email: this.email, surname: this.surname, name: this.name, pass: this.password }).subscribe( (res : Session) =>{
+      this.navCtrl.push(HomePage, {session : res});
       console.log(res);
     });
   }

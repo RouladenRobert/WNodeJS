@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { RequestProvider } from '../../providers/request/request';
 import { Product } from '../../interfaces/interfaces';
 import { OrderPage } from '../order/order';
+import {AlertController} from 'ionic-angular';
 
 /**
  * Generated class for the DescriptionPage page.
@@ -20,7 +21,7 @@ export class DescriptionPage {
 
   private currProd: Product;
   private session = this.navParams.get('session');
-  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv: RequestProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv: RequestProvider, private alertCtl : AlertController) {
   }
 
   ionViewDidLoad(){
@@ -37,7 +38,21 @@ export class DescriptionPage {
     this.reqProv.getDescription(prID, this.session).subscribe((data: Product) => {
       this.currProd = data[0];
   }, error => {
-    console.log(error);
+    if(error.status === 401){
+      let alert = this.alertCtl.create({
+        title : "Session expired. Pleas log in again.",
+        buttons : ['OK']
+      });
+      alert.present();
+      this.reqProv.logoutWithoutSession(this.navCtrl);
+    }
+    else{
+      let alert = this.alertCtl.create({
+        title : "Something went wrong while loading the description. Please try it again.",
+        buttons : ['OK']
+      });
+      alert.present();
+    }
   });
 }
 
