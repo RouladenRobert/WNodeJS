@@ -4,6 +4,7 @@ import { RequestProvider } from '../../providers/request/request';
 import { ShopPage } from '../shop/shop';
 import { Session } from '../../interfaces/interfaces';
 import {AlertController} from 'ionic-angular';
+import {Product} from '../../interfaces/interfaces';
 
 /**
  * Generated class for the ConfirmationPage page.
@@ -44,6 +45,13 @@ export class ConfirmationPage {
         });
         alert.present();
         this.reqProv.logoutWithoutSession(this.navCtrl);
+      }
+      else if(error.status === 403){
+        let alert = this.alertCtl.create({
+          title : "Your user isn't activated yet. Please click the link in your confirmation-mail.",
+          buttons : ['OK']
+        });
+        alert.present();
       }
       else{
         let alert = this.alertCtl.create({

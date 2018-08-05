@@ -22,12 +22,8 @@ app.route('/shop').all(authorize);
 app.route('/product').all(authorize);
 app.route('/order').all(authorize);
 app.route('/logout').all(authorize);
+app.route('/auth');
 router(app);
-
-/*app.get('/', (req, res) => {
-  res.send("Test mit HTTPS!");
-  res.end();
-});*/
 
 const server = https.createServer({
   cert: certificate,

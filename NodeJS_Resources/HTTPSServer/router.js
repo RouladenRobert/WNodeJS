@@ -25,4 +25,7 @@ module.exports = function(app){
 
   app.route("/logout")
       .post(ctrl.logout);
+
+  app.route("/auth")
+      .get(ctrl.confirm);
 }

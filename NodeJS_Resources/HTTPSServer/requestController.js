@@ -50,46 +50,63 @@ module.exports = {
       var productArr = req.session.productArr;
       console.log(productArr);
 
+      /*
+       * find user that sended the order-request. If the user is has confirmed the registration -> do nothing and continue.
+       * If the user hasn't confirmed the mail -> open alert and do not allow the order
+      */
+      db.User.findOne({attributes : ['authorized'], where : {uid : req.session.userId}}).then(user => {
+        if(user.dataValues.authorized === false){
+          res.status(403);
+          res.end();
+          return;
+        }
+        else if(user.dataValues.authorized === true){
+          /*
+          * check for every entry in productArr if it could be inserted into the order-table, the preorder-table or if it has to be divieded into two objects and
+          * has to be inserted into both tables
+          */
+          for(let prod of productArr){
+            db.Product.findOne({attributes : ['amount'], where : {pid : prod.pid}}).then(product => {
+                var currAmount = product.dataValues.amount;
+                prod.currAmount = currAmount;
+
+                console.log("[THEN]");
+
+                // all in preoder?
+                if(currAmount === 0){
+                  preOrderController.insertPreOrder(req, res, prod, orderID);
+                }
+                // all in order?
+                else if(currAmount >= prod.amount){
+                  orderController.insertOrder(req, res, prod, orderID);
+                }
+                // divide product
+                else if(currAmount !== 0 && currAmount < prod.amount){
+                  tempOrderObj = prod;
+                  tempOrderObj.amount = currAmount;
+                  tempPreOrderObj = prod;
+                  tempPreOrderObj.amount = prod.amount - currAmount;
+
+                  orderController.insertOrder(req, res, tempOrderObj, orderID);
+                  preOrderController.insertPreOrder(req, res, tempPreOrderObj, orderID);
+                }
+
+            }).catch(err =>{
+              console.log("[PRODUCT] Failed to get amount");
+              console.log(err);
+              res.status(500);
+              res.end();
+            });
+          }
+        }
+      }).catch(err => {
+        res.status(500);
+        console.log("[ORDER] Failed to check if user is authenticated.");
+        console.log(err);
+      });
+
       var orderID = crypto.randomBytes(orderConsts.ORDER_ID_LENGTH).toString('base64');
       orderID = '#'+orderID;
-      /*
-      * check for every entry in productArr if it could be inserted into the order-table, the preorder-table or if it has to be divieded into two objects and
-      * has to be inserted into both tables
-      */
-      for(let prod of productArr){
-        db.Product.findOne({attributes : ['amount'], where : {pid : prod.pid}}).then(product => {
-            var currAmount = product.dataValues.amount;
-            prod.currAmount = currAmount;
-
-            console.log("[THEN]");
-
-            // all in preoder?
-            if(currAmount === 0){
-              preOrderController.insertPreOrder(req, res, prod, orderID);
-            }
-            // all in order?
-            else if(currAmount >= prod.amount){
-              orderController.insertOrder(req, res, prod, orderID);
-            }
-            // divide product
-            else if(currAmount !== 0 && currAmount < prod.amount){
-              tempOrderObj = prod;
-              tempOrderObj.amount = currAmount;
-              tempPreOrderObj = prod;
-              tempPreOrderObj.amount = prod.amount - currAmount;
-
-              orderController.insertOrder(req, res, tempOrderObj, orderID);
-              preOrderController.insertPreOrder(req, res, tempPreOrderObj, orderID);
-            }
-
-        }).catch(err =>{
-          console.log("[PRODUCT] Failed to get amount");
-          console.log(err);
-          res.status(500);
-          res.end();
-        });
-      }
-      console.log("[AFTER FOR]");
       mc.sendMail(req.session.userId, productArr.length);
 
     },
@@ -132,20 +149,33 @@ module.exports = {
         * INSERT new user into user-table
         *sessionhandler muss auskommentiert werden, wenn die Funktion funktioniert
         */
-        db.User.create({sname : userInfo.surname, name : userInfo.name, email: userInfo.email, pword : hash,
-                        timestamp : timestamp, createdAt : timestamp, updatedAt : timestamp
-                        }).then(result => {
-                    session = sessionHandler.generateSessionObject(result.dataValues.uid);
-                    res.status(200);
-                    res.send(session);
-                    res.end();
-            }).catch(err => {
-              res.status(500);
-              console.log("[REGISTER] Error in register");
-              console.log(err);
-              res.send(err);
-              res.end();
-            });
+        db.User.findOne({attributes : ['email', 'uid'], where : {email : userInfo.email}}).then(user => {
+          if(user === null){
+            db.User.create({sname : userInfo.surname, name : userInfo.name, email: userInfo.email, pword : hash,
+                            timestamp : timestamp, createdAt : timestamp, updatedAt : timestamp, authorized : false
+                            }).then(result => {
+                        var session = sessionHandler.generateSessionObject(result.dataValues.uid);
+                        res.status(200);
+                        res.send(session);
+                        res.end();
+                        mc.sendRegConfirmation(result.dataValues.uid);
+                }).catch(err => {
+                  res.status(500);
+                  console.log("[REGISTER] Error in register");
+                  console.log(err);
+                  res.send(err);
+                  res.end();
+                });
+          }
+          else{
+            res.status(403);
+            res.send({reason : 'User already exists'});
+            res.end();
+          }
+        }).catch(err => {
+          console.log(err);
+          res.status(500);
+        });
       });
 
 
@@ -157,6 +187,17 @@ module.exports = {
       res.status(200)
       res.send("logged out");
       res.end();
+    },
+
+    confirm : function(req, res){
+      db.User.update({authorized : true}, {where : {uid : req.query.id}}).then(user => {
+        console.log("[CONFIRMATION] Updated user");
+        res.status(200);
+      }).catch(err => {
+        console.log("[CONFIRMATION] Failed updating the user");
+        console.log(err);
+        res.status(500);
+      });
     }
 
 }

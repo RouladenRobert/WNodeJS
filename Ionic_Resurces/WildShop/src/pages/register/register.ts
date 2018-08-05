@@ -5,6 +5,7 @@ import {RequestProvider} from '../../providers/request/request';
 import {LoginPage} from '../login/login';
 import {Session} from '../../interfaces/interfaces';
 import {HomePage} from '../home/home';
+import {AlertController} from 'ionic-angular';
 /**
  * Generated class for the RegisterPage page.
  *
@@ -26,7 +27,7 @@ export class RegisterPage {
   private red = "#ff6868";
   private green = "#4fd15e";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv: RequestProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv: RequestProvider, private alertCtl : AlertController) {
   }
 
   ionViewDidLoad() {
@@ -38,6 +39,21 @@ export class RegisterPage {
     this.reqProv.register({ email: this.email, surname: this.surname, name: this.name, pass: this.password }).subscribe( (res : Session) =>{
       this.navCtrl.push(HomePage, {session : res});
       console.log(res);
+    }, err => {
+      if(err.status === 403){
+        let alert = this.alertCtl.create({
+          title : "User with this email already exists.",
+          buttons : ['OK']
+        });
+        alert.present();
+      }
+      else{
+        let alert = this.alertCtl.create({
+          title : "Sorry, something went wrong. Please try it again later.",
+          buttons : ['OK']
+        });
+        alert.present();
+      }
     });
   }
 

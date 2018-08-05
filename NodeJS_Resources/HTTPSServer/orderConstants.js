@@ -1,3 +1,8 @@
+/*
+* NOTE: !!!!!!!!!!!!!!!!!!!!!!! This file is not used anymore. To add new constants pleas use constants.js !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+*/
+
+
 const ORDER_ID_CONST = 12;
 
 module.exports = {

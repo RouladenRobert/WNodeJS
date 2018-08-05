@@ -26,6 +26,10 @@ const User = seq.define('User', {
     allowNull : false
   },
   timestamp : Sequelize.DATE,
+  authorized : {
+    type : Sequelize.BOOLEAN,
+    allowNull : false
+  }
 });
 
 module.exports = User;

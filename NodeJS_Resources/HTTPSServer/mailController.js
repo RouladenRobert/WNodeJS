@@ -1,12 +1,12 @@
 const hashmap = require('hashmap');
 const mailer = require('nodemailer');
 const db = require("../Database/database.js");
-const consts = require('./orderConstants.js');
+const consts = require('./constants.js');
 
 var orderTable = new hashmap.HashMap();
 var msg = undefined;
 var orderedProds = {names : [], amounts : []};
-const trans = mailer.createTransport(consts.ORDER_MAIL_TRANSPORT);
+const trans = mailer.createTransport(consts.MAIL_TRANSPORT);
 
 function sendOrderConfirmation(userID, prods, orderID){
     // find entry in user-table with id userID and get the email.
@@ -25,7 +25,7 @@ function sendOrderConfirmation(userID, prods, orderID){
       console.log("[MAILER] Nachricht: "+msg);
       //send message
       var mailOpt = {
-        from : consts.ORDER_MAIL_ADDR,
+        from : consts.MAIL_ADDR,
         to : user.email,
         subject : consts.ORDER_MAIL_SUBJECT,
         text : msg
@@ -46,6 +46,36 @@ function sendOrderConfirmation(userID, prods, orderID){
       console.log(err);
       return -1;
     })
+}
+
+function sendRegConfirmation(userID){
+
+  db.User.findOne({attributes : ["email", "sname"], where : {uid : userID}}).then(user => {
+    msg = "Hallo "+user.dataValues.sname+"!\nBitte bestätige mit dem angefügten Link, dass du dich registriert hast.\nVielen Dank!\n\n";
+    var url = consts.REG_MAIL_URL+userID;
+    msg += url;
+
+    var mailOpt = {
+      from : consts.MAIL_ADDR,
+      to : user.email,
+      subject : consts.REG_MAIL_SUBJECT,
+      text : msg
+    };
+
+    trans.sendMail(mailOpt, function(error, info){
+      if(error){
+        console.log(error);
+      }
+      else{
+        msg = undefined;
+        console.log("Mail sent"+info.response);
+      }
+    });
+
+  }).catch(err => {
+    console.log(err);
+    return -1;
+  });
 }
 
 module.exports= {
@@ -77,5 +107,9 @@ module.exports= {
       orderedProds = {names : [], amounts : []};
       return;
     }
+  },
+
+  sendRegConfirmation : function(userID){
+    return sendRegConfirmation(userID);
   }
 }
