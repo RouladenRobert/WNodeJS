@@ -28,4 +28,7 @@ module.exports = function(app){
 
   app.route("/auth")
       .get(ctrl.confirm);
+
+  app.route("/delete")
+      .post(ctrl.deleteUser);
 }

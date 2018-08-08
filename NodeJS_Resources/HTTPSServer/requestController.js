@@ -198,6 +198,24 @@ module.exports = {
         console.log(err);
         res.status(500);
       });
+    },
+
+    deleteUser : function(req, res){
+      db.User.destroy({where : {uid : req.session.userId}}).then(user => {
+        if(user === null){
+          console.log("[DELETE] Couldn't find user");
+          res.status(501);
+          res.send({reason : "User doesn't exist"});
+        }
+        else{
+          console.log("[DELETE] User deleted");
+          session.invalidateSession(req.session.sessionId);
+          res.status(200);
+        }
+      }).catch(err => {
+        console.log("[DELETE] Failure while deleting user");
+        res.status(500);
+      });
     }
 
 }

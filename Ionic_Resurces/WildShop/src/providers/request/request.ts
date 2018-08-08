@@ -81,4 +81,8 @@ export class RequestProvider {
   public logoutWithoutSession(navCtrl){
     navCtrl.push(LoginPage);
   }
+
+  public deleteUser(session : Session){
+    return this.http.post(this.consts.url+"delete", {session : session});
+  }
 }

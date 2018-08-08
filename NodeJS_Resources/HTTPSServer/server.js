@@ -23,6 +23,7 @@ app.route('/product').all(authorize);
 app.route('/order').all(authorize);
 app.route('/logout').all(authorize);
 app.route('/auth');
+app.route('/delete').all(authorize);
 router(app);
 
 const server = https.createServer({
