@@ -1,5 +1,6 @@
 const db = require("../Database/database.js");
 const sessionHandler = require("./sessionHandler.js");
+const constants = require('./constants.js');
 const bcrypt = require("bcrypt");
 const session = require("./sessionHandler.js");
 const orderController = require("./orderController.js");
@@ -7,15 +8,14 @@ const preOrderController = require("./preOrderController.js");
 const mc = require("./mailController.js");
 const orderConsts = require("./orderConstants.js");
 const crypto = require("crypto");
+const logger = require('../Logger/logger.js');
 const salt = 10;
 
 module.exports = {
 
-    //show home
     showHome : function(req, res){
-
-        res.send("Funktioniert");
-        res.end();
+      res.status(200);
+      res.send("OK");
     },
 
     //sends all products back to the client
@@ -24,6 +24,8 @@ module.exports = {
         res.send(result);
         res.end();
       }).catch(err => {
+        var msg = constants.LOGGER_GET_PROD_ERR+" Error while getting products";
+        logger.log(msg);
         res.send({error : "products could not be loaded"});
         res.end();
         console.log("[PRODUCTS] Error in Products "+err);
@@ -39,6 +41,8 @@ module.exports = {
         res.send(result);
         res.end();
       }).catch(err =>{
+        var msg = constants.LOGGER_DESCR_ERR+" Error while requesting the description";
+        logger.log(msg);
         res.send({error : err});
         res.end();
         console.log("[DESCRIPTION] Error in Description "+err);
@@ -56,6 +60,8 @@ module.exports = {
       */
       db.User.findOne({attributes : ['authorized'], where : {uid : req.session.userId}}).then(user => {
         if(user.dataValues.authorized === false){
+          var msg = constants.LOGGER_ORDER_SUCC + " Operation denied, user "+req.session.userId+ " not activated";
+          logger.log(msg);
           res.status(403);
           res.end();
           return;
@@ -94,12 +100,16 @@ module.exports = {
             }).catch(err =>{
               console.log("[PRODUCT] Failed to get amount");
               console.log(err);
+              var msg = constants.LOGGER_ORDER_ERR+" Cannot get amount from databse";
+              logger.log(msg);
               res.status(500);
               res.end();
             });
           }
         }
       }).catch(err => {
+        var msg = constants.LOGGER_ORDER_ERR +" Failed to look up the user-rights";
+        logger.log(msg);
         res.status(500);
         console.log("[ORDER] Failed to check if user is authenticated.");
         console.log(err);
@@ -134,6 +144,8 @@ module.exports = {
         res.status(500);
         console.log("[LOGIN] Error in Login");
         var errorObj = {HTTPCode : 500, ErrorCode : 1, msg : "Wrong Login data"};
+        var msg = constants.LOGGER_LOGIN_ERR + " Error while searching user";
+        logger.log(msg);
         res.send(errorObj);
         res.end();
       });
@@ -160,6 +172,8 @@ module.exports = {
                         res.end();
                         mc.sendRegConfirmation(result.dataValues.uid);
                 }).catch(err => {
+                  var msg = constants.LOGGER_REG_ERR + " Failed inserting user in databse";
+                  logger.log(msg);
                   res.status(500);
                   console.log("[REGISTER] Error in register");
                   console.log(err);
@@ -168,11 +182,15 @@ module.exports = {
                 });
           }
           else{
+            var msg = constants.LOGGER_REG_SUCC + " User already exists";
+            logger.log(msg);
             res.status(403);
             res.send({reason : 'User already exists'});
             res.end();
           }
         }).catch(err => {
+          var msg = constants.LOGGER_REG_ERR + " " +err;
+          logger.log(msg);
           console.log(err);
           res.status(500);
         });
@@ -194,6 +212,8 @@ module.exports = {
         console.log("[CONFIRMATION] Updated user");
         res.status(200);
       }).catch(err => {
+        var msg = constants.LOGGER_CONFIRM_ERR + " Failed updating user";
+        logger.log(msg);
         console.log("[CONFIRMATION] Failed updating the user");
         console.log(err);
         res.status(500);
@@ -203,6 +223,8 @@ module.exports = {
     deleteUser : function(req, res){
       db.User.destroy({where : {uid : req.session.userId}}).then(user => {
         if(user === null){
+          var msg = constants.LOGGER_DEL_USER_SUCC + " User does not exist";
+          logger.log(msg);
           console.log("[DELETE] Couldn't find user");
           res.status(501);
           res.send({reason : "User doesn't exist"});
@@ -213,6 +235,8 @@ module.exports = {
           res.status(200);
         }
       }).catch(err => {
+        var msg = constants.LOGGER_DEL_USER_ERR + " Failed deleting user "+req.session.userId;
+        logger.log(msg);
         console.log("[DELETE] Failure while deleting user");
         res.status(500);
       });

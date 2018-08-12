@@ -1,9 +1,10 @@
 const hashTable = require('hashmap');
 const fs = require('fs');
+const constants = require('../HTTPSServer/constants.js');
 
 class MessageHandler {
   constructor(){
-    this.msgCoutner = 0;
+    this.msgCounter = 0;
     this.msgTable = new hashTable.HashMap();
     try{
       this.logFile = fs.openSync('../HTTPSServer/log.txt', 'r+');
@@ -16,25 +17,53 @@ class MessageHandler {
   }
 
   addMessage(msg){
-    this.msgTable.set(msg, this.msgCoutner);
     var date = new Date().toString();
-    var message = '['+this.msgCoutner+']'+' '+date+' '+msg+'\n';
-    this.msgCoutner += 1;
+    var message = msg + " - "+date+'\n';
     try{
-      fs.writeSync(this.logFile, msg);
+      fs.appendFileSync(constants.LOGFILE_PATH, message);
+      this.msgTable.set(msg, this.msgCounter);
+      this.msgCounter += 1;
     }
     catch(e){
-      console.log("[LOGGER] Couldn't write to file "+this.logFile);
-      console.log(e);
-      return;
+      try{
+        var message_log_err = 'Error while logging message: '+message+' - '+date+'\n';
+        fs.appendFileSync(constants.LOGFILE_PATH, message_log_err);
+      }
+      catch(ex){
+        console.log("[LOGGER] Couldn't write to file "+this.logFile);
+        console.log(e);
+        return;
+      }
     }
   }
 
   removeMessage(msg){
-    var index = this.msgTable.get(msg);
     //delete message in log-file
+    var messages = fs.readFileSync(this.logFile, 'utf-8').split('\n');
+    var index = this.msgTable.get(msg);
+    var regex = /[.*]$/;
+    var toDelete = [];
+    for(let i=0; i<messages.lenght; i++){
+      if(messages[i].match(regex) !== null){
+        this.msgTable.delete(messages[i]);
+        delete messages[i];
+      }
+    }
 
-    this.msgTable.delete(msg);
+    var toWrite = messages.join(" ")+'\n';
+    try{
+      fs.writeSync(this.logFile, toWrite);
+    }
+    catch(e){
+      try{
+        var msg = constants.LOGGER_LOG_ERR + " Error while logging... - "+date+'\n';
+        fs.appendFileSync(constants.LOGFILE_PATH, msg);
+      }
+      catch(e){
+        console.log(constants.LOGGER_LOG_ERR+" at messageHandler line 61");
+        return;
+      }
+    }
   }
 }
 
