@@ -19,6 +19,7 @@ import { OrderPage } from '../pages/order/order';
 import {Constants} from '../constants/constants';
 import { ConfirmationPage } from '../pages/confirmation/confirmation';
 import { LogoutPage } from '../pages/logout/logout';
+import { NewPasswordPage } from '../pages/new-password/new-password';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { LogoutPage } from '../pages/logout/logout';
     DescriptionPage,
     OrderPage,
     ConfirmationPage,
-    LogoutPage
+    LogoutPage,
+    NewPasswordPage
   ],
   imports: [
     BrowserModule,
@@ -51,7 +53,8 @@ import { LogoutPage } from '../pages/logout/logout';
     DescriptionPage,
     OrderPage,
     ConfirmationPage,
-    LogoutPage
+    LogoutPage,
+    NewPasswordPage
   ],
   providers: [
     StatusBar,

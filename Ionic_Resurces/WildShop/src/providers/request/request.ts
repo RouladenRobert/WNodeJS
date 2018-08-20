@@ -81,4 +81,8 @@ export class RequestProvider {
   public logoutWithoutSession(navCtrl){
     navCtrl.push(LoginPage);
   }
+
+  public setPassword(session? : Session, mail?, pw?){
+    return this.htpp.post(this.consts.url+"setPw", {session : session, mail : mail, password : pw});
+  }
 }

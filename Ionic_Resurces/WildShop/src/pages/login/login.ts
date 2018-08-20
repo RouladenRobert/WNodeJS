@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { HomePage }from '../home/home';
 import { RegisterPage } from '../register/register';
+import { NewPasswordPage } from '../new-password/new-password';
 import {User} from '../../interfaces/interfaces';
 import {Session} from '../../interfaces/interfaces';
 import {RequestProvider} from '../../providers/request/request';
@@ -65,6 +66,10 @@ export class LoginPage {
     }else{
       (<HTMLInputElement> document.getElementById("loginButton")).disabled = false;
     }
+  }
+
+  private forgotPassword(){
+    this.navCtrl.push(NewPasswordPage);
   }
 
 }

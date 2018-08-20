@@ -22,6 +22,8 @@ app.route('/shop').all(authorize);
 app.route('/product').all(authorize);
 app.route('/order').all(authorize);
 app.route('/logout').all(authorize);
+app.route('/checkPw').all(authorize);
+app.route('/setPw').all(authorize);
 app.route('/auth');
 router(app);
 
@@ -54,6 +56,8 @@ function authorize(req, res, next){
     next();
   }
   else{
+    // hier muss geprüft werden, ob das Passwort neu gesetzt werden soll. Wenn ja, auch Zugang ohne Session.
+    // Dazu muss ein session-Objekt gebaut werden, in dem über req.session.userId UserID gespeichert ist.
     responseUnauthorized(req, res);
     return;
   }

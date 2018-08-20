@@ -2,6 +2,7 @@ const hashmap = require('hashmap');
 const mailer = require('nodemailer');
 const db = require("../Database/database.js");
 const consts = require('./constants.js');
+const crypto = require('crypto');
 
 var orderTable = new hashmap.HashMap();
 var msg = undefined;
@@ -78,6 +79,61 @@ function sendRegConfirmation(userID){
   });
 }
 
+function sendGeneratedPassword(pw, email){
+  db.User.findOne({attributes : ["sname"], where : {email : email}}).then(user => {
+    msg = "Hallo "+user.dataValues.sname+"!\nWir haben dein Passwort geändert!\nDas Passwort lautet"+pw+".\n\nBitte ändere das Passwort umgehend!";
+
+    var mailOpt = {
+      from : consts.MAIL_ADDR,
+      to : email,
+      subject : consts.REG_MAIL_SUBJECT,
+      text : msg
+    };
+
+    trans.sendMail(mailOpt, function(error, info){
+      if(error){
+        console.log(error);
+      }
+      else{
+        msg = undefined;
+        console.log("Mail sent"+info.response);
+      }
+    });
+
+  }).catch(err => {
+    console.log(err);
+    return -1;
+  });
+
+  function sendChangedPasswordConfirm(userID){
+    db.User.findOne({attributes : ["email", "sname"], where : {uid : userID}}).then(user => {
+      msg = "Hallo "+user.dataValues.sname+"!\nDu hast dein Passwort geändert.\nFalls du das nicht selbst warst, kontaktiere uns bitte!\n\n";
+
+      var mailOpt = {
+        from : consts.MAIL_ADDR,
+        to : user.email,
+        subject : consts.REG_MAIL_SUBJECT,
+        text : msg
+      };
+
+      trans.sendMail(mailOpt, function(error, info){
+        if(error){
+          console.log(error);
+        }
+        else{
+          msg = undefined;
+          console.log("Mail sent"+info.response);
+        }
+      });
+
+    }).catch(err => {
+      console.log(err);
+      return -1;
+    });
+  }
+
+}
+
 module.exports= {
 
   // this function is called when the requestContoller starts inserting the orders into the DB.
@@ -111,5 +167,13 @@ module.exports= {
 
   sendRegConfirmation : function(userID){
     return sendRegConfirmation(userID);
+  },
+
+  sendGeneratedPassword : function(pw, email){
+    return sendGeneratedPassword(pw, email);
+  },
+
+  sendChangedPasswordConfirm : function(userID){
+    return sendChangedPasswordConfirm(userID);
   }
 }

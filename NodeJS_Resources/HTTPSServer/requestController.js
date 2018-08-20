@@ -200,4 +200,59 @@ module.exports = {
       });
     }
 
+    checkPassword : function(req, res){
+      db.User.findOne({attributes : ['pword'], where : {uid : req.session.userId}}).then(user => {
+        if(bcrypt.compareSync(req.session.password, result.dataValues.pword)){
+            res.status(200);
+          }else{
+            res.status(401);
+          }
+        res.end();
+      }).catch(err => {
+        res.status(500);
+      });
+    },
+
+    setPassword : function(req, res){
+      if(req.session === null ||req.session === undefined){
+        email = req.mail;
+        var newPassword = crypto.randomBytes(15).toString('base64');
+        db.User.update({pword : newPassword}, {where : {email : email}}).then(user => {
+          if(user === null){
+            res.status(401);
+          }
+          else{
+            res.status(200);
+          }
+        }).catch(err => {
+          res.status(500);
+        });
+        mc.sendGeneratedPassword(newPassword, email);
+      }
+      else{
+
+      var userID = req.session.userId;
+      db.User.findOne({atttributes : ['pword'], where : {uid : userID}}).then(user => {
+        if(bcrypt.compareSync(req.session.password, result.dataValues.pword)){
+            db.User.update({pword : req.session.password}, where : {uid : userID}).then(user =>{
+              if(user === null){
+                res.status(401);
+              }else{
+                mc.sendChangedPasswordConfirm(user.dataValues.uid);
+                res.status(200);
+              }
+            }).catch(err => {
+              res.status(500);
+            });
+
+          }else{
+            res.status(401);
+          }
+
+      }).catch(err =>{
+        res.status(500);
+      });
+    }
+  }
+
 }
