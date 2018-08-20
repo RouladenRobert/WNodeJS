@@ -25,6 +25,7 @@ app.route('/logout').all(authorize);
 app.route('/checkPw').all(authorize);
 app.route('/setPw').all(authorize);
 app.route('/auth');
+app.route('/delete').all(authorize);
 router(app);
 
 const server = https.createServer({

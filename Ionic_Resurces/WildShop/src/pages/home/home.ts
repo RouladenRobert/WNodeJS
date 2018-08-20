@@ -5,6 +5,7 @@ import { ShopPage } from '../shop/shop';
 import { InformationPage } from '../information/information';
 import { RequestProvider} from '../../providers/request/request';
 import { LogoutPage } from '../logout/logout';
+import {SettingsPage} from '../settings/settings';
 import { Session } from '../../interfaces/interfaces';
 
 @Component({
@@ -31,6 +32,10 @@ export class HomePage {
 
   private goToContact(){
     this.navCtrl.push(ContactPage);
+  }
+
+  private goToSettings(){
+    this.navCtrl.push(SettingsPage, {session : this.session});
   }
 
   private logout(){
