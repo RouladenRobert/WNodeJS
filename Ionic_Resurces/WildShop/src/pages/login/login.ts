@@ -36,9 +36,9 @@ export class LoginPage {
       console.log('Login');
         this.navCtrl.push(HomePage, {session : session});
     }, error => {
-      if(error.error.ErrorCode != 1){
+      if(error.ErrorCode != 1){
         let alert = this.alertCtl.create({
-          title : 'Sorry, out of service! Try it again later!',
+          title : 'Sorry, wrong password!',
           buttons : ['OK']
         });
         alert.present();
@@ -69,7 +69,7 @@ export class LoginPage {
   }
 
   private forgotPassword(){
-    this.navCtrl.push(NewPasswordPage);
+    this.navCtrl.push(NewPasswordPage, {session : null});
   }
 
 }

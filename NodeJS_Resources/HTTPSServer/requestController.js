@@ -240,7 +240,7 @@ module.exports = {
         console.log("[DELETE] Failure while deleting user");
         res.status(500);
       });
-    }
+    },
 
     checkPassword : function(req, res){
       db.User.findOne({attributes : ['pword'], where : {uid : req.session.userId}}).then(user => {
@@ -259,41 +259,44 @@ module.exports = {
       if(req.session === null ||req.session === undefined){
         email = req.mail;
         var newPassword = crypto.randomBytes(15).toString('base64');
-        db.User.update({pword : newPassword}, {where : {email : email}}).then(user => {
-          if(user === null){
-            res.status(401);
-          }
-          else{
-            res.status(200);
-          }
-        }).catch(err => {
-          res.status(500);
+        bcrypt.hash(newPassword, salt).then(hash => {
+          db.User.update({pword : hash}, {where : {email : email}}).then(user => {
+            if(user === null){
+              res.status(401);
+            }
+            else{
+              var session = sessionHandler.generateSessionObject(user.dataValues.uid);
+              res.send(session);
+              res.status(200);
+            }
+          }).catch(err => {
+            res.status(500);
+          });
+          mc.sendGeneratedPassword(newPassword, email);
         });
-        mc.sendGeneratedPassword(newPassword, email);
       }
       else{
 
-      var userID = req.session.userId;
-      db.User.findOne({atttributes : ['pword'], where : {uid : userID}}).then(user => {
-        if(bcrypt.compareSync(req.session.password, result.dataValues.pword)){
-            db.User.update({pword : req.session.password}, where : {uid : userID}).then(user =>{
-              if(user === null){
-                res.status(401);
-              }else{
-                mc.sendChangedPasswordConfirm(user.dataValues.uid);
-                res.status(200);
-              }
-            }).catch(err => {
-              res.status(500);
-            });
-
-          }else{
-            res.status(401);
-          }
-
-      }).catch(err =>{
-        res.status(500);
-      });
+        var userID = req.session.userId;
+       db.User.findOne({attributes : ['pword'], where : {uid : userID}}).then(user =>{
+          bcrypt.compare(req.session.old_password, user.dataValues.pword).then(cp => {
+            if(cp){
+              bcrypt.hash(req.session.password, salt).then(hash => {
+                db.User.update({pword : hash}, {where : {uid : userID}}).then(user =>{
+                  mc.sendChangedPasswordConfirm(userID);
+                  res.status(200);
+                }).catch(err => {
+                  res.status(500);
+                });
+              });
+            }
+            else{
+              res.status(401);
+            }
+          });
+        }).catch(err => {
+          res.status(500);
+        });
     }
   }
 

@@ -22,7 +22,6 @@ app.route('/shop').all(authorize);
 app.route('/product').all(authorize);
 app.route('/order').all(authorize);
 app.route('/logout').all(authorize);
-app.route('/checkPw').all(authorize);
 app.route('/setPw').all(authorize);
 app.route('/auth');
 app.route('/delete').all(authorize);
@@ -40,7 +39,12 @@ setInterval(session.cleanSessions, sessionConsts.SESSION_TIMEOUT_CHECK_INTERVALL
 console.log("[SESSION] Timer active");
 
 function authorize(req, res, next){
-  console.log(req.body);
+  // falls "Passwort vergessen" geklickt wird, wird ein Objekt mit "mail" verschickt, dann wird ausnahmsweise der Zugriff genehmeigt.
+  if(req.body.mail !== null){
+    req.mail = req.body.mail;
+    next();
+    return;
+  }
   var sessionID = req.body.session.sessionID || req.query.session;
   req.session = req.body.session;
   req.session.sessionID = sessionID;

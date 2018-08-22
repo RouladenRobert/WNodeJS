@@ -20,6 +20,7 @@ module.exports = {
   MAIL_ADDR : 'jonas.seng1@gmail.com',
   ORDER_MAIL_SUBJECT : 'Bestellbestätigung',
   REG_MAIL_SUBJECT : 'Authentifizierung',
+  PW_MAIL_SUBJECT : 'Ihr Passwort wurde geändert!',
   REG_MAIL_URL : 'https://localhost:3000/auth?id=',
   LOGGER_LOG_ERR : '[LOGGER ERR]',
   LOGGER_MAIL_ERR : '[MAIL ERR]',

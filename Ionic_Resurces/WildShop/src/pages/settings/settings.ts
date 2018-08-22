@@ -4,6 +4,7 @@ import {RequestProvider} from '../../providers/request/request';
 import {Session} from '../../interfaces/interfaces';
 import {LogoutPage} from '../logout/logout';
 import {AlertController} from 'ionic-angular';
+import {NewPasswordPage} from '../new-password/new-password';
 
 /**
  * Generated class for the SettingsPage page.
@@ -39,4 +40,7 @@ export class SettingsPage {
     this.navCtrl.push(LogoutPage);
   }
 
+  private changePassword(){
+    this.navCtrl.push(NewPasswordPage, {session : this.session});
+ }
 }

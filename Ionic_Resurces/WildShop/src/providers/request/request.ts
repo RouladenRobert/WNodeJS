@@ -82,8 +82,9 @@ export class RequestProvider {
     navCtrl.push(LoginPage);
   }
 
-  public setPassword(session? : Session, mail?, pw?){
-    return this.htpp.post(this.consts.url+"setPw", {session : session, mail : mail, password : pw});
+  public setPassword(session? : Session, mail?){
+    return this.http.post(this.consts.url+"setPw", {session : session, mail : mail});
+  }
 
   public deleteUser(session : Session){
     return this.http.post(this.consts.url+"delete", {session : session});
