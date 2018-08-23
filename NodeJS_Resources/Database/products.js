@@ -23,7 +23,11 @@ const Products = seq.define('Products', {
     allowNull : false
   },
   weight : Sequelize.INTEGER,
-  preOrderable: Sequelize.ENUM('true', 'false')
+  preOrderable: Sequelize.ENUM('true', 'false'),
+  pic : {
+    type : Sequelize.STRING,
+    allowNull : false
+  }
 });
 
 module.exports = Products;

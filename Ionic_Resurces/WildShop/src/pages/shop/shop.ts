@@ -38,9 +38,18 @@ export class ShopPage {
     //https.request(..);
     //productList.add(reqResult);
     //show the list (do it in the HTML-file)
-    console.log("Shop");
-    console.log(this.session.sessionID);
+    //console.log("Shop");
+    //console.log(this.session.sessionID);
     this.reqProv.getProducts(this.session).subscribe((data: Array<Product>) => {
+    if(!(data instanceof Array)){
+      let alert = this.alertCtl.create({
+        title : "Could not load products. Please log in again.",
+        buttons : ['OK']
+      });
+      alert.present();
+      this.navCtrl.pop();
+    }
+      console.log(data);
     this.productList = data;
   }, error =>{
     if(error.status === 401){

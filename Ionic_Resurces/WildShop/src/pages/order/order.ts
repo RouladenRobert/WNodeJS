@@ -39,6 +39,7 @@ export class OrderPage {
   */
 
   private addOrder(){
+    console.log(this.product);
     if(this.session.productArr){
       this.productArr = this.session.productArr;
     }

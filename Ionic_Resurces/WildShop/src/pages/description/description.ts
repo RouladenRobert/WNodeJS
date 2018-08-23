@@ -34,8 +34,10 @@ export class DescriptionPage {
   //send DB-request to fetch all description data
  private showDescription(){
     var prID = this.navParams.get('prID');
+    console.log(prID);
     //DB-request to fetch description data
     this.reqProv.getDescription(prID, this.session).subscribe((data: Product) => {
+    console.log(data);
       this.currProd = data[0];
   }, error => {
     if(error.status === 401){

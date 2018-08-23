@@ -1,3 +1,4 @@
+const fs = require('fs');
 const db = require("../Database/database.js");
 const sessionHandler = require("./sessionHandler.js");
 const constants = require('./constants.js');
@@ -18,10 +19,16 @@ module.exports = {
       res.send("OK");
     },
 
-    //sends all products back to the client
+    // send all products found to client.
     showProducts : function(req, res){
-      db.Product.findAll({attributes : ["pid", "name", "price", "weight"]}).then(result =>{
-        res.send(result);
+      db.Product.findAll({attributes : ["pid", "name", "price", "weight", "pic"]}).then(result =>{
+        prodArr = [];
+        for(p of result){
+          //p.dataValues.pic = fs.readFileSync(p.dataValues.pic);
+          console.log(p.dataValues.pic);
+          prodArr.push(p);
+        }
+        res.send(prodArr);
         res.end();
       }).catch(err => {
         var msg = constants.LOGGER_GET_PROD_ERR+" Error while getting products";
@@ -238,19 +245,6 @@ module.exports = {
         var msg = constants.LOGGER_DEL_USER_ERR + " Failed deleting user "+req.session.userId;
         logger.log(msg);
         console.log("[DELETE] Failure while deleting user");
-        res.status(500);
-      });
-    },
-
-    checkPassword : function(req, res){
-      db.User.findOne({attributes : ['pword'], where : {uid : req.session.userId}}).then(user => {
-        if(bcrypt.compareSync(req.session.password, result.dataValues.pword)){
-            res.status(200);
-          }else{
-            res.status(401);
-          }
-        res.end();
-      }).catch(err => {
         res.status(500);
       });
     },
