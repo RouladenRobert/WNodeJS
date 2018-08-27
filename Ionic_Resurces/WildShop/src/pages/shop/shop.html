@@ -28,8 +28,9 @@
       {{item.price + "€"}}
     </h3>
     <p style="text-align: center">
-      {{item.stock}}
+      Verfügbar: {{item.amount}}
     </p>
+    <img width="40em" height="40em" [src]="getImage(item)"/>
   </button>
 </ion-list>
 

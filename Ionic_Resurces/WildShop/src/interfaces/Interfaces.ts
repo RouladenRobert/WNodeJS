@@ -8,6 +8,7 @@ export interface Product{
   pid : number;
   description?:string;
   amount? : number;
+  pic? : string;
 }
 
 export interface User{

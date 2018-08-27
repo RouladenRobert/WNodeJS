@@ -21,13 +21,20 @@ module.exports = {
 
     // send all products found to client.
     showProducts : function(req, res){
-      db.Product.findAll({attributes : ["pid", "name", "price", "weight", "pic"]}).then(result =>{
+      db.Product.findAll({attributes : ["pid", "name", "price", "weight", "amount", "pic"]}).then(result =>{
         prodArr = [];
         for(p of result){
-          //p.dataValues.pic = fs.readFileSync(p.dataValues.pic);
-          console.log(p.dataValues.pic);
-          prodArr.push(p);
+          try{
+              p.dataValues.pic = fs.readFileSync(p.dataValues.pic).toString('base64');
+              prodArr.push(p);
+          }
+          catch(e){
+            res.status(501);
+            res.end();
+          }
+          //console.log(p.dataValues.pic);
         }
+        console.log(prodArr);
         res.send(prodArr);
         res.end();
       }).catch(err => {

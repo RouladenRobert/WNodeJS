@@ -70,6 +70,11 @@ export class ShopPage {
   });
   }
 
+  //return image without new HTTPS-Request
+  private getImage(item : Product){
+    return "data:image/jpg;base64,"+item.pic;
+  }
+
   //executed if item is clicked
   //pushes to DescriptionPage and has the productID as an argument
   private goToDescription(product: Product){
