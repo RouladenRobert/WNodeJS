@@ -25,6 +25,7 @@ app.route('/logout').all(authorize);
 app.route('/setPw').all(authorize);
 app.route('/auth');
 app.route('/delete').all(authorize);
+app.route('/regOrder').all(authorize);
 router(app);
 
 const server = https.createServer({
@@ -51,7 +52,7 @@ function authorize(req, res, next){
   req.session.sessionID = sessionID;
   console.log("[SESSION] SessionID: "+sessionID);
   if(sessionID){
-    const sessionData = session.getSession(sessionID);
+    const sessionData = session.getSession(sessionID, req.session);
     if(!sessionData || !sessionData.userID){
       console.log("[SESSION] No session found");
       responseUnauthorized(req, res);

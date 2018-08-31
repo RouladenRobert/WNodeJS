@@ -87,4 +87,8 @@ export class RequestProvider {
   public deleteUser(session : Session){
     return this.http.post(this.consts.url+"delete", {session : session});
   }
+
+  public registerOrder(session : Session){
+    return this.http.post(this.consts.url+"regOrder", {session : session});
+  }
 }

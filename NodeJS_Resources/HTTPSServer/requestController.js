@@ -147,6 +147,10 @@ module.exports = {
       * Hashen funktioniert nicht
       */
       db.User.findOne({attributes: ['createdAt', 'pword', 'uid'], where : {email : mail}}).then( async function(result){
+        if(result === null){
+          res.status(401);
+          res.send({msg : 'User not found!'});
+        }
         //console.log(result);
         // check if password is correct
         if(bcrypt.compareSync(pass, result.dataValues.pword)){
@@ -195,15 +199,13 @@ module.exports = {
             res.send(session);
           }else{
             res.status(401);
+            res.send({msg : 'Wrong Password'});
           }
       }).catch(err =>{
         res.status(500);
         console.log("[LOGIN] Error in Login");
-        var errorObj = {HTTPCode : 500, ErrorCode : 1, msg : "Wrong Login data"};
         var msg = constants.LOGGER_LOGIN_ERR + " Error while searching user";
         logger.log(msg);
-        res.send(errorObj);
-        res.end();
       });
 
     },
@@ -372,6 +374,11 @@ module.exports = {
           res.status(500);
         });
     }
+  },
+
+  registerOrder : function(req, res){
+    res.status(200);
+    res.send('');
   }
 
 }

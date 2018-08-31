@@ -38,7 +38,15 @@ export class OrderPage {
     this.productArr.push({amount : this.orderObj.amount, desc : this.orderObj.comment, pid : this.product.pid, name : this.product.name, price : this.product.price})
     this.session.productArr = this.productArr;
     console.log(this.session);
-    this.navCtrl.pop();
+    this.reqProv.registerOrder(this.session).subscribe(res => {
+          this.navCtrl.pop();
+    }, err =>{
+      let alert = this.alertCtl.create({
+        title : "Error while adding order to shopping cart.",
+        buttons : ['OK']
+      });
+      alert.present();
+    });
   }
 
   private checkInput(){

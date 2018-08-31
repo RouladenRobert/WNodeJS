@@ -3,7 +3,20 @@ const db = require("../Database/database.js");
 const sconsts = require("./sessionConstants.js");
 const hashmap = require('hashmap');
 
-var sessionObj = new hashmap.HashMap()
+var sessionObj = new hashmap.HashMap();
+
+function saveShoppingCart(session){
+      db.ShoppingCart.destroy({where : {UserUid : session.userID}}).then(() => {
+        for(p of session.productArr){
+          db.ShoppingCart.create({UserUid : session.userID, ProductPid : p.pid, amount : p.amount, description : p.description}).then(() => {
+          }).catch(err =>{
+            console.log("[SESSION_HANDLER] Error while creating new Shopping cart");
+          });
+        }
+      }).catch(err => {
+        console.log("[SESSION_HANDLER] Error while deleting current Shopping cart");
+      });
+}
 
 module.exports = {
 
@@ -22,11 +35,11 @@ module.exports = {
     return session;
   },
 
-  getSession : function(sessionID){
+  getSession : function(sessionID, newSession){
     var currSession = sessionObj.get(sessionID);
     if(!currSession) return undefined;
-    currSession.updatedAt = new Date();
-    sessionObj.set(sessionID, currSession);
+    newSession.updatedAt = new Date();
+    sessionObj.set(sessionID, newSession);
     return currSession;
   },
 
@@ -41,7 +54,11 @@ module.exports = {
     var sessionsDel = [];
     sessionObj.forEach(function(value, key){
         if((new Date() - value.updatedAt > sconsts.SESSION_RESET_TIME)){
-          sessionsDel.push(key);
+          console.log("Cleaning...")
+          if(value.productArr !== null || value.prodArr !== undefined){
+              saveShoppingCart(value);
+          }
+              sessionsDel.push(key);
         }
     });
 

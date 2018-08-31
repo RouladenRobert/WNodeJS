@@ -34,4 +34,7 @@ module.exports = function(app){
 
   app.route("/setPw")
       .post(ctrl.setPassword);
+
+  app.route("/regOrder")
+      .post(ctrl.registerOrder);
 }

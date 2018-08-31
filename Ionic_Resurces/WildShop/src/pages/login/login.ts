@@ -31,27 +31,24 @@ export class LoginPage {
   }
 
   private login(){
-    console.log(this.email);
     this.reqProv.login(this.email, this.password).subscribe((session : Session) =>{
       console.log(session);
         this.navCtrl.push(HomePage, {session : session});
     }, error => {
-      if(error.ErrorCode != 1){
+      if(error.status === 500){
         let alert = this.alertCtl.create({
-          title : 'Sorry, wrong password!',
+          title : 'Eroor while logging in...',
           buttons : ['OK']
         });
         alert.present();
+        return;
       }
-      else{
-          if(error.error.ErrorCode == 1){
-            let alert = this.alertCtl.create({
-              title : 'Falsche Eingabedaten!',
-              buttons : ['OK']
-            });
-            alert.present();
-          }
-        }
+      console.log(error);
+        let alert = this.alertCtl.create({
+          title : error.error.msg,
+          buttons : ['OK']
+        });
+        alert.present();
     });
 
   }
