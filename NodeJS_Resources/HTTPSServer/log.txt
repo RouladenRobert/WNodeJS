@@ -18,3 +18,4 @@
 [GET PRODUCT ERROR] Error while getting products - Fri Aug 24 2018 11:25:14 GMT+0200 (Mitteleuropäische Sommerzeit)
 [GET PRODUCT ERROR] Error while getting products - Fri Aug 24 2018 11:26:40 GMT+0200 (Mitteleuropäische Sommerzeit)
 [GET PRODUCT ERROR] Error while getting products - Fri Aug 24 2018 11:28:08 GMT+0200 (Mitteleuropäische Sommerzeit)
+[LOGIN ERR] Error while searching user - Tue Aug 28 2018 18:27:18 GMT+0200 (Mitteleuropäische Sommerzeit)

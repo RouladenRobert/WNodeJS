@@ -40,7 +40,8 @@ console.log("[SESSION] Timer active");
 
 function authorize(req, res, next){
   // falls "Passwort vergessen" geklickt wird, wird ein Objekt mit "mail" verschickt, dann wird ausnahmsweise der Zugriff genehmeigt.
-  if(req.body.mail !== null){
+  if(req.body.mail !== undefined){
+    console.log(req.mail);
     req.mail = req.body.mail;
     next();
     return;
@@ -48,7 +49,6 @@ function authorize(req, res, next){
   var sessionID = req.body.session.sessionID || req.query.session;
   req.session = req.body.session;
   req.session.sessionID = sessionID;
-  console.log(req.body);
   console.log("[SESSION] SessionID: "+sessionID);
   if(sessionID){
     const sessionData = session.getSession(sessionID);
@@ -61,8 +61,6 @@ function authorize(req, res, next){
     next();
   }
   else{
-    // hier muss geprüft werden, ob das Passwort neu gesetzt werden soll. Wenn ja, auch Zugang ohne Session.
-    // Dazu muss ein session-Objekt gebaut werden, in dem über req.session.userId UserID gespeichert ist.
     responseUnauthorized(req, res);
     return;
   }

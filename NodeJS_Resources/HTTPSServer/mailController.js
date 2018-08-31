@@ -81,6 +81,10 @@ function sendRegConfirmation(userID){
 
 function sendGeneratedPassword(pw, email){
   db.User.findOne({attributes : ["sname"], where : {email : email}}).then(user => {
+    if(user === null){
+      return;
+    }
+
     msg = "Hallo "+user.dataValues.sname+"!\nWir haben dein Passwort geändert!\nDas Passwort lautet "+pw+".\n\nBitte ändere das Passwort umgehend!";
 
     var mailOpt = {

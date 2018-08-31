@@ -41,7 +41,6 @@ export class RequestProvider {
     });
   }
 
-  // method-prototype to send user data to server
   // user: User-Object that was created by the Login or Register page
   // return: Observable
   public sendUserData(user : User) : Observable<User>{
@@ -69,7 +68,6 @@ export class RequestProvider {
 
   public sendOrder(session : Session){
     return this.http.post(this.consts.url + "order", {
-      proudcts : session.productArr,
       session : session
     });
   }

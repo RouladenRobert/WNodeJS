@@ -30,14 +30,6 @@ export class OrderPage {
     console.log('ionViewDidLoad OrderPage');
   }
 
-  /*
-    ACHTUNG: Weitere Implementierung erst nach Implementierung der Sessions möglich, da alle Bestellungen zunächst in einem Session-Objekt gespeichert werden.
-              Daher: Erst Sessions implementieren!!!!!
-
-    TODO: Sessions implementieren, um hier fortzufahren
-
-  */
-
   private addOrder(){
     console.log(this.product);
     if(this.session.productArr){

@@ -19,7 +19,9 @@ module.exports = {
       res.send("OK");
     },
 
-    // send all products found to client.
+    /*
+      *send all products found to client.
+    */
     showProducts : function(req, res){
       db.Product.findAll({attributes : ["pid", "name", "price", "weight", "amount", "pic"]}).then(result =>{
         prodArr = [];
@@ -32,9 +34,7 @@ module.exports = {
             res.status(501);
             res.end();
           }
-          //console.log(p.dataValues.pic);
         }
-        console.log(prodArr);
         res.send(prodArr);
         res.end();
       }).catch(err => {
@@ -51,7 +51,6 @@ module.exports = {
       var prID = req.body.prodID;
 
       db.Product.findAll({atrribute : ["pid", "name", "description", "price", "weight"], where : {pid : prID}}).then(result => {
-        console.log(result);
         res.send(result);
         res.end();
       }).catch(err =>{
@@ -66,7 +65,7 @@ module.exports = {
     // insert new order to the order-table
     addOrder : function(req, res){
       var productArr = req.session.productArr;
-      console.log(productArr);
+      var errorMsg = "";
 
       /*
        * find user that sended the order-request. If the user is has confirmed the registration -> do nothing and continue.
@@ -89,9 +88,7 @@ module.exports = {
             db.Product.findOne({attributes : ['amount'], where : {pid : prod.pid}}).then(product => {
                 var currAmount = product.dataValues.amount;
                 prod.currAmount = currAmount;
-
-                console.log("[THEN]");
-
+                console.log(prod);
                 // all in preoder?
                 if(currAmount === 0){
                   preOrderController.insertPreOrder(req, res, prod, orderID);
@@ -110,20 +107,26 @@ module.exports = {
                   orderController.insertOrder(req, res, tempOrderObj, orderID);
                   preOrderController.insertPreOrder(req, res, tempPreOrderObj, orderID);
                 }
+                else{
+                  errorMsg = constants.LOGGER_ORDER_ERR+" Cannot classify product.";
+                  logger.log(errorMsg);
+                  res.status(501);
+                  res.end();
+                }
 
             }).catch(err =>{
               console.log("[PRODUCT] Failed to get amount");
               console.log(err);
-              var msg = constants.LOGGER_ORDER_ERR+" Cannot get amount from databse";
-              logger.log(msg);
+              errorMsg = constants.LOGGER_ORDER_ERR+" Cannot get amount from databse";
+              logger.log(errorMsg);
               res.status(500);
               res.end();
             });
           }
         }
       }).catch(err => {
-        var msg = constants.LOGGER_ORDER_ERR +" Failed to look up the user-rights";
-        logger.log(msg);
+        var errorMsg = constants.LOGGER_ORDER_ERR +" Failed to look up the user-rights";
+        logger.log(errorMsg);
         res.status(500);
         console.log("[ORDER] Failed to check if user is authenticated.");
         console.log(err);
@@ -143,17 +146,56 @@ module.exports = {
       * DB-request. Fetches uid, createdAt (as salt for sha256)= and password-hash
       * Hashen funktioniert nicht
       */
-      db.User.findOne({attributes: ['createdAt', 'pword', 'uid'], where : {email : mail}}).then( result => {
+      db.User.findOne({attributes: ['createdAt', 'pword', 'uid'], where : {email : mail}}).then( async function(result){
         //console.log(result);
+        // check if password is correct
         if(bcrypt.compareSync(pass, result.dataValues.pword)){
             console.log("[LOGIN] Authorized");
+            //create session-ID
             var session = sessionHandler.generateSessionObject(result.dataValues.uid);
+            //create array which is used to store product-object if the user has created an shopping-cart before logout
+
+            var prodArr = [];
+            // try to find the products that were in users shopping-cart
+            // await is needed because the results of this db-requests when the login is successful, the asynchronous execution would not guarantee the result is correct.
+            await db.ShoppingCart.findAll({attributes : ['amount', 'description', 'UserUid', 'ProductPid'], where : {UserUid : result.dataValues.uid}}).then(async function(sc){
+
+              if(sc !== null){
+                for(let p of sc){
+                  prodObj = {};
+                  // database request is neccessary because the price and the name of the product could have be changed since the user's last login.
+                  // await is needed because the results of this db-requests when the login is successful, the asynchronous execution would not guarantee the result is correct.
+                    await db.Product.findOne({attributes : ['name', 'price'], where : {pid : p.dataValues.ProductPid}}).then(product => {
+                      //console.log(product);
+                      if(product !== null){
+                        prodObj.name = product.dataValues.name;
+                        prodObj.price = product.dataValues.price;
+                        prodObj.pid = p.dataValues.ProductPid;
+                        prodObj.desc = p.dataValues.description;
+                        prodObj.amount = p.dataValues.amount;
+                        prodArr.push(prodObj);
+                      }
+                    }).catch(err => {
+                      res.status(501);
+                    });
+                }
+              }
+              else{
+                res.status(200);
+                res.send(session);
+              }
+
+            }).catch(err => {
+              res.status(500);
+            });
+
+            // set session.productArr to the objects found
+            session.productArr = prodArr;
             res.status(200);
+            res.send(session);
           }else{
             res.status(401);
           }
-        res.send(session);
-        res.end();
       }).catch(err =>{
         res.status(500);
         console.log("[LOGIN] Error in Login");
@@ -170,7 +212,6 @@ module.exports = {
       var userInfo = req.body.user;
       var timestamp = new Date();
       bcrypt.hash(userInfo.pass, salt).then(function(hash){
-        console.log(userInfo, timestamp, hash);
         /*
         * INSERT new user into user-table
         *sessionhandler muss auskommentiert werden, wenn die Funktion funktioniert
@@ -216,12 +257,36 @@ module.exports = {
     logout : function(req, res){
       session.invalidateSession(req.body.session.sessionID);
 
-      res.status(200)
-      res.send("logged out");
-      res.end();
+      /*
+        *create a new entry in the shopping-cart-table as far there is an productArr in the session-object.
+      */
+      if(req.body.session.productArr){
+          db.ShoppingCart.destroy({where : {UserUid : req.body.session.userID}}).then(() => {
+            for(p of req.body.session.productArr){
+              db.ShoppingCart.create({UserUid : req.body.session.userID, ProductPid : p.pid, amount : p.amount, description : p.description}).then(() => {
+                res.status(200);
+              }).catch(err =>{
+                  res.status(501);
+              });
+            }
+            res.status(200);
+            res.send("logged out");
+            res.end();
+          }).catch(err => {
+            res.status(501);
+          });
+      }
+      else{
+        res.status(200)
+        res.send("logged out");
+        res.end();
+      }
     },
 
     confirm : function(req, res){
+      /*
+        *Update status of the registered user to authorized -> is now able to buy products
+      */
       db.User.update({authorized : true}, {where : {uid : req.query.id}}).then(user => {
         console.log("[CONFIRMATION] Updated user");
         res.status(200);
@@ -257,6 +322,9 @@ module.exports = {
     },
 
     setPassword : function(req, res){
+      /*
+        *if there is no session-object -> generate a random password and send it to the user.
+      */
       if(req.session === null ||req.session === undefined){
         email = req.mail;
         var newPassword = crypto.randomBytes(15).toString('base64');
@@ -276,6 +344,11 @@ module.exports = {
           mc.sendGeneratedPassword(newPassword, email);
         });
       }
+
+      /*
+        *else if there is a valid session -> change the old password of the user to the new one given in the session
+        *send Infomail that the password was changed -> security reasons...could be that the user hasn't done this change
+      */
       else{
 
         var userID = req.session.userId;

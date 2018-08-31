@@ -17,10 +17,6 @@ function processPreOrder(req, res, product, orderID){
 }
 
 module.exports = {
-
-/*
-* TODO: Zwischentabelle für PreOrders und Products anlegen
-*/
 /*
 * insert new entry in preorder-table and in preorder_product-table
 * update product-table (amount)

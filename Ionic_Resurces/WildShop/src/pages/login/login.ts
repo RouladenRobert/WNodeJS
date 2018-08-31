@@ -33,7 +33,7 @@ export class LoginPage {
   private login(){
     console.log(this.email);
     this.reqProv.login(this.email, this.password).subscribe((session : Session) =>{
-      console.log('Login');
+      console.log(session);
         this.navCtrl.push(HomePage, {session : session});
     }, error => {
       if(error.ErrorCode != 1){
