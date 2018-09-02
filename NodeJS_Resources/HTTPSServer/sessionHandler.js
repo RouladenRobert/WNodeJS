@@ -26,7 +26,7 @@ module.exports = {
     console.log("[SESSION] Creating Session object....")
     var sessionID = crypto.randomBytes(sconsts.SESSION_ID_LENGTH).toString('base64');
     sessionID = sessionID.split("+").join("-");
-    var session = {}
+    var session = {};
     session.userID = userID;
     session.begin = new Date();
     session.updatedAt = new Date();

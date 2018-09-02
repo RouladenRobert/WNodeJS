@@ -15,5 +15,27 @@
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
 .toolbar-background {
-    background-color: transparent;
+    background-color:  color($colors, shopNavbarDefault);
+}
+
+// determine size of list-items
+.item {
+    min-height: 3em;
+}
+
+.bg-style {
+    background: color($colors, shopNavbarDefault);
+}
+
+.toolbar-title {
+  color : color($colors, light);
+}
+
+@font-face{
+  font-family: defFont;
+  src : url('../assets/fonts/Ubuntu.woff') format('woff');
+}
+
+p {
+  font-family: defFont;
 }

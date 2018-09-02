@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Order } from '../../interfaces/interfaces';
 import { Product } from '../../interfaces/interfaces';
 import { RequestProvider } from '../../providers/request/request';
+import {AlertController} from 'ionic-angular';
 
 /**
  * Generated class for the OrderPage page.
@@ -18,7 +19,7 @@ import { RequestProvider } from '../../providers/request/request';
 })
 export class OrderPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv : RequestProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv : RequestProvider, private alertCtl : AlertController) {
   }
 
   private productArr = [];
@@ -31,13 +32,11 @@ export class OrderPage {
   }
 
   private addOrder(){
-    console.log(this.product);
     if(this.session.productArr){
       this.productArr = this.session.productArr;
     }
     this.productArr.push({amount : this.orderObj.amount, desc : this.orderObj.comment, pid : this.product.pid, name : this.product.name, price : this.product.price})
     this.session.productArr = this.productArr;
-    console.log(this.session);
     this.reqProv.registerOrder(this.session).subscribe(res => {
           this.navCtrl.pop();
     }, err =>{

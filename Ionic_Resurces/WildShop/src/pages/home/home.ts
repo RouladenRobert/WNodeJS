@@ -7,6 +7,7 @@ import { RequestProvider} from '../../providers/request/request';
 import { LogoutPage } from '../logout/logout';
 import {SettingsPage} from '../settings/settings';
 import { Session } from '../../interfaces/interfaces';
+import {ConfirmationPage} from '../confirmation/confirmation';
 
 @Component({
   selector: 'page-home',
@@ -36,6 +37,12 @@ export class HomePage {
 
   private goToSettings(){
     this.navCtrl.push(SettingsPage, {session : this.session});
+  }
+
+  // executed if 'Bestellen' is pressed
+  // pushes ConfirmationPage
+  private goToConfirmation(){
+      this.navCtrl.push(ConfirmationPage, {session : this.session})
   }
 
   private logout(){

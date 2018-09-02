@@ -2,7 +2,12 @@
   <ion-navbar hideBackButton="true">
     <ion-title><p align="center" style="font-family: Monotype Corsiva, Arial">Home</p></ion-title>
     <ion-buttons end>
-      <button ion-button block (click)=logout()>Logout</button>
+      <button ion-button block (click)=logout()>
+         <ion-icon name="power" color="light"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end>
+      <button ion-button block (click)="goToConfirmation()"><ion-icon name="cart" color="light"></ion-icon></button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
@@ -11,7 +16,7 @@
   <ion-card (click)=goToShop()>
       <img src="assets/imgs/hirsch.jpg"/>
       <div class="card-title">Shop</div>
-      <div class="card-subtitle">8 Listings</div>
+      <div class="card-subtitle"></div>
     </ion-card>
 
     <ion-card (click)=goToInfo()>
@@ -27,8 +32,8 @@
     </ion-card>
 
     <ion-card (click)=goToSettings()>
-      <img src="assets/imgs/contact.jpg"/>
-      <div class="card-title">Kontakt</div>
+      <img src="assets/imgs/zahnrad.svg"/>
+      <div class="card-title">Einstellungen</div>
       <div class="card-subtitle"></div>
     </ion-card>
 </ion-content>

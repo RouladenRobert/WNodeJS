@@ -8,10 +8,12 @@
   <ion-navbar>
     <ion-title><p align="center" style="font-family: Monotype Corsiva, Arial">Shop</p></ion-title>
     <ion-buttons end>
-      <button ion-button block (click)=logout()>Logout</button>
+      <button ion-button block (click)=logout()>
+         <ion-icon name="power" color="light"></ion-icon>
+      </button>
     </ion-buttons>
     <ion-buttons end>
-      <button ion-button block (click)="goToConfirmation()"><ion-icon name="cart"></ion-icon></button>
+      <button ion-button block (click)="goToConfirmation()"><ion-icon name="cart" color="light"></ion-icon></button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>

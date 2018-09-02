@@ -34,13 +34,18 @@ $app-direction: ltr;
 // The "primary" color is the only required color in the map.
 
 $colors: (
-  primary:    #488aff,
+  primary:    #b71e16,
   secondary:  #32db64,
   danger:     #f53d3d,
   light:      #f4f4f4,
-  dark:       #222
+  dark:       #222,
+  shopButtonDefault : #b71e16,
+  shopNavbarDefault : #252525
 );
 
+ion-content {
+  background-color: shopNavbarDefault;
+}
 
 // App iOS Variables
 // --------------------------------------------------

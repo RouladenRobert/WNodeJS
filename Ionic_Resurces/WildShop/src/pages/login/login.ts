@@ -24,6 +24,7 @@ export class LoginPage {
   private email : string = "";
   private password : string = "";
   constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv: RequestProvider, private alertCtl : AlertController) {
+    console.log(this.email.length > 0 && this.password.length > 0);
   }
 
   ionViewDidLoad() {
@@ -50,19 +51,10 @@ export class LoginPage {
         });
         alert.present();
     });
-
   }
 
   private register(){
     this.navCtrl.push(RegisterPage);
-  }
-
-  private hideButton(){
-    if (this.email == "" || this.password == ""){
-      (<HTMLInputElement> document.getElementById("loginButton")).disabled = true;
-    }else{
-      (<HTMLInputElement> document.getElementById("loginButton")).disabled = false;
-    }
   }
 
   private forgotPassword(){
