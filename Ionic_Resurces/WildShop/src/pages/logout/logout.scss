@@ -16,5 +16,22 @@ page-logout {
 .fadeIn {
   animation-name: fadeIn;
   animation-duration: 3s;
+  vertical-align: middle;
+}
+
+.toolbar-background {
+  background: transparent;
+}
+
+.title {
+  color: color($colors, shopButtonDefault);
+  font-size: 300%;
+}
+ion-content{
+  background-image: url("../assets/imgs/fleisch_bunt.png");
+  background-size : cover;
+}
+.item {
+  background-color: transparent;
 }
 }

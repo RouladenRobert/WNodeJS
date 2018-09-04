@@ -1,10 +1,25 @@
 page-login {
-  .bg {
-    background: shopNavbarDefault !important;
+  .toolbar-background {
+    background: transparent;
+  }
+
+  input {
+    font-family: defFont;
+    font-size: 150%;
   }
 
 .custom-item-divider {
   border-color:  shopButtonDefault;
+  width: 50%;
+  margin-left: 25%;
+}
+
+ion-content{
+  background-image: url("../assets/imgs/fleisch_bunt.png");
+  background-size : cover;
+}
+.item {
+  background-color: transparent;
 }
 
 }

@@ -84,7 +84,7 @@ export class ShopPage {
   // executed if 'Bestellen' is pressed
   // pushes ConfirmationPage
   private goToConfirmation(){
-      this.navCtrl.push(ConfirmationPage, {session : this.session})
+      this.navCtrl.push(ConfirmationPage, {session : this.session});
   }
 
   private logout(){

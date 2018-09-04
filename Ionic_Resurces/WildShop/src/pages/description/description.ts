@@ -34,11 +34,10 @@ export class DescriptionPage {
   //send DB-request to fetch all description data
  private showDescription(){
     var prID = this.navParams.get('prID');
-    console.log(prID);
     //DB-request to fetch description data
     this.reqProv.getDescription(prID, this.session).subscribe((data: Product) => {
     console.log(data);
-      this.currProd = data[0];
+    this.currProd = data;
   }, error => {
     if(error.status === 401){
       let alert = this.alertCtl.create({
@@ -63,5 +62,23 @@ export class DescriptionPage {
   // pushes the currProd with the page
   private goToOrder(){
     this.navCtrl.push(OrderPage, {product : this.currProd, session : this.session});
+  }
+
+  private goToConfirmation(){
+      this.navCtrl.push(ConfirmationPage, {session : this.session});
+  }
+
+  private logout(){
+    console.log(this.session);
+    this.reqProv.logout(this.session).subscribe((data) => {
+      console.log(data);
+    }, err =>{
+      if(err.status === 401){
+        this.reqProv.logoutWithoutSession(this.navCtrl);
+        return;
+      }
+      console.log(err);
+    });
+    this.navCtrl.push(LogoutPage);
   }
 }

@@ -3,4 +3,24 @@ page-shop {
     position: relative;
     align: center;
   }
+  .toolbar-background {
+    background: transparent;
+  }
+
+  .bar-header {
+    height: 9%;
+  }
+
+  .header-button {
+    color: color($colors, shopButtonDefault);
+  }
+
+  ion-content{
+    background-image: url("../assets/imgs/steak.png");
+    background-size : cover;
+  }
+
+  .item {
+    background-color: transparent;
+  }
 }

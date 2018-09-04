@@ -35,7 +35,7 @@ export class OrderPage {
     if(this.session.productArr){
       this.productArr = this.session.productArr;
     }
-    this.productArr.push({amount : this.orderObj.amount, desc : this.orderObj.comment, pid : this.product.pid, name : this.product.name, price : this.product.price})
+    this.productArr.push({amount : this.orderObj.amount, desc : this.orderObj.comment, pid : this.product.pid, name : this.product.name, price : this.product.price});
     this.session.productArr = this.productArr;
     this.reqProv.registerOrder(this.session).subscribe(res => {
           this.navCtrl.pop();
@@ -48,8 +48,22 @@ export class OrderPage {
     });
   }
 
-  private checkInput(){
+  private goToConfirmation(){
+      this.navCtrl.push(ConfirmationPage, {session : this.session});
+  }
 
+  private logout(){
+    console.log(this.session);
+    this.reqProv.logout(this.session).subscribe((data) => {
+      console.log(data);
+    }, err =>{
+      if(err.status === 401){
+        this.reqProv.logoutWithoutSession(this.navCtrl);
+        return;
+      }
+      console.log(err);
+    });
+    this.navCtrl.push(LogoutPage);
   }
 
   /*private sendOrder(){

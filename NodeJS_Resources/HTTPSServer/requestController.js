@@ -24,18 +24,7 @@ module.exports = {
     */
     showProducts : function(req, res){
       db.Product.findAll({attributes : ["pid", "name", "price", "weight", "amount", "pic"]}).then(result =>{
-        prodArr = [];
-        for(p of result){
-          try{
-              p.dataValues.pic = fs.readFileSync(p.dataValues.pic).toString('base64');
-              prodArr.push(p);
-          }
-          catch(e){
-            res.status(501);
-            res.end();
-          }
-        }
-        res.send(prodArr);
+        res.send(result);
         res.end();
       }).catch(err => {
         var msg = constants.LOGGER_GET_PROD_ERR+" Error while getting products";
@@ -50,7 +39,8 @@ module.exports = {
     showDescription : function(req, res){
       var prID = req.body.prodID;
 
-      db.Product.findAll({atrribute : ["pid", "name", "description", "price", "weight"], where : {pid : prID}}).then(result => {
+      db.Product.findOne({atrribute : ["pid", "name", "description", "price", "weight", "pic"], where : {pid : prID}}).then(result => {
+        result.dataValues.pic = fs.readFileSync(result.dataValues.pic).toString('base64');
         res.send(result);
         res.end();
       }).catch(err =>{

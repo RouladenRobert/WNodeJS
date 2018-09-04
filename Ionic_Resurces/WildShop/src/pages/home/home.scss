@@ -1,4 +1,15 @@
 page-home {
+  .toolbar-background {
+    background: transparent;
+  }
+
+  .bar-header {
+    height: 9%;
+  }
+
+  .header-button {
+    color: color($colors, shopButtonDefault);
+  }
 
   ion-card {
    position: relative;

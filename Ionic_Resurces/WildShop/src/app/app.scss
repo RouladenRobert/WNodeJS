@@ -31,6 +31,16 @@
   color : color($colors, light);
 }
 
+.title_big {
+  color: color($colors, shopButtonDefault);
+  font-size: 300%;
+}
+
+.title_small {
+  color: color($colors, shopButtonDefault);
+  font-size: 140%;
+}
+
 @font-face{
   font-family: defFont;
   src : url('../assets/fonts/Ubuntu.woff') format('woff');

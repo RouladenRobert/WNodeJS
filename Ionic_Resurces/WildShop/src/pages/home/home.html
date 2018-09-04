@@ -1,13 +1,13 @@
-<ion-header>
+<ion-header no-border class="bar-header">
   <ion-navbar hideBackButton="true">
-    <ion-title><p align="center" style="font-family: Monotype Corsiva, Arial">Home</p></ion-title>
+    <ion-title><p align="center" class="title_small">Home</p></ion-title>
     <ion-buttons end>
       <button ion-button block (click)=logout()>
-         <ion-icon name="power" color="light"></ion-icon>
+         <ion-icon name="power" color="shopButtonDefault" style="zoom:1.5;"></ion-icon>
       </button>
     </ion-buttons>
     <ion-buttons end>
-      <button ion-button block (click)="goToConfirmation()"><ion-icon name="cart" color="light"></ion-icon></button>
+      <button ion-button block (click)="goToConfirmation()" class="header-button"><ion-icon name="cart" style="zoom:1.5;"></ion-icon></button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
