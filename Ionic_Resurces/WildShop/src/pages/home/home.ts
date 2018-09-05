@@ -8,6 +8,7 @@ import { LogoutPage } from '../logout/logout';
 import {SettingsPage} from '../settings/settings';
 import { Session } from '../../interfaces/interfaces';
 import {ConfirmationPage} from '../confirmation/confirmation';
+import {FunctionPoolProvider} from '../../providers/function-pool/function-pool';
 
 @Component({
   selector: 'page-home',
@@ -15,7 +16,7 @@ import {ConfirmationPage} from '../confirmation/confirmation';
 })
 export class HomePage {
 
-  constructor(public navCtrl: NavController, private navParams: NavParams, private reqProv : RequestProvider) {
+  constructor(public navCtrl: NavController, private navParams: NavParams, private reqProv : RequestProvider, private funcitonPoolProv : FunctionPoolProvider) {
 
   }
   private session = this.navParams.get('session');
@@ -42,20 +43,11 @@ export class HomePage {
   // executed if 'Bestellen' is pressed
   // pushes ConfirmationPage
   private goToConfirmation(){
-      this.navCtrl.push(ConfirmationPage, {session : this.session})
+      //this.navCtrl.push(ConfirmationPage, {session : this.session});
+      this.funcitonPoolProv.goToConfirmation(this.session, this.navCtrl, ConfirmationPage);
   }
 
   private logout(){
-    console.log(this.session);
-    this.reqProv.logout(this.session).subscribe((data) => {
-      console.log(data);
-    }, err =>{
-      if(err.status === 401){
-        this.reqProv.logoutWithoutSession(this.navCtrl);
-        return;
-      }
-      console.log(err);
-    });
-    this.navCtrl.push(LogoutPage);
+    this.funcitonPoolProv.logout(this.session, this.navCtrl, LogoutPage);
   }
 }

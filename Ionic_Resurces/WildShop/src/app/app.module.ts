@@ -21,6 +21,7 @@ import { ConfirmationPage } from '../pages/confirmation/confirmation';
 import { LogoutPage } from '../pages/logout/logout';
 import {SettingsPage} from '../pages/settings/settings';
 import { NewPasswordPage } from '../pages/new-password/new-password';
+import { FunctionPoolProvider } from '../providers/function-pool/function-pool';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { NewPasswordPage } from '../pages/new-password/new-password';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     RequestProvider,
-    Constants
+    Constants,
+    FunctionPoolProvider
   ]
 })
 export class AppModule {}

@@ -9,6 +9,7 @@ import {DescriptionPage} from '../description/description';
 import {ConfirmationPage} from '../confirmation/confirmation';
 import {AlertController} from 'ionic-angular';
 import {LogoutPage} from '../logout/logout';
+import {FunctionPoolProvider} from '../../providers/function-pool/function-pool';
 
 /**
  * Generated class for the ShopPage page.
@@ -25,7 +26,8 @@ import {LogoutPage} from '../logout/logout';
 export class ShopPage {
 
   private productList: Array<Product>;
-  constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient, private reqProv: RequestProvider, private alertCtl : AlertController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient, private reqProv: RequestProvider, private alertCtl : AlertController,
+    private funcitonPoolProv : FunctionPoolProvider) {
   }
   private session = this.navParams.get('session');
   ionViewDidLoad() {
@@ -49,8 +51,17 @@ export class ShopPage {
       alert.present();
       this.navCtrl.pop();
     }
-      console.log(data);
-    this.productList = data;
+    else if(data === []){
+      let alert = this.alertCtl.create({
+        title : "No products aviable at the moment.",
+        buttons : ['OK']
+      });
+      alert.present();
+      this.navCtrl.pop();
+    }
+    else{
+      this.productList = data;
+    }
   }, error =>{
     if(error.status === 401){
       let alert = this.alertCtl.create({
@@ -84,20 +95,11 @@ export class ShopPage {
   // executed if 'Bestellen' is pressed
   // pushes ConfirmationPage
   private goToConfirmation(){
-      this.navCtrl.push(ConfirmationPage, {session : this.session});
+      //this.navCtrl.push(ConfirmationPage, {session : this.session});
+      this.funcitonPoolProv.goToConfirmation(this.session, this.navCtrl, ConfirmationPage);
   }
 
   private logout(){
-    console.log(this.session);
-    this.reqProv.logout(this.session).subscribe((data) => {
-      console.log(data);
-    }, err =>{
-      if(err.status === 401){
-        this.reqProv.logoutWithoutSession(this.navCtrl);
-        return;
-      }
-      console.log(err);
-    });
-    this.navCtrl.push(LogoutPage);
+    this.funcitonPoolProv.logout(this.session, this.navCtrl, LogoutPage);
   }
 }

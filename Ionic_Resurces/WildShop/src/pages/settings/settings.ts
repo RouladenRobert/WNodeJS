@@ -5,6 +5,8 @@ import {Session} from '../../interfaces/interfaces';
 import {LogoutPage} from '../logout/logout';
 import {AlertController} from 'ionic-angular';
 import {NewPasswordPage} from '../new-password/new-password';
+import {FunctionPoolProvider} from '../../providers/function-pool/function-pool';
+import {ConfirmationPage} from '../confirmation/confirmation';
 
 /**
  * Generated class for the SettingsPage page.
@@ -20,7 +22,7 @@ import {NewPasswordPage} from '../new-password/new-password';
 })
 export class SettingsPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv : RequestProvider, private alertCtl : AlertController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv : RequestProvider, private alertCtl : AlertController, private funcitonPoolProv : FunctionPoolProvider) {
   }
   private session = this.navParams.get('session');
   ionViewDidLoad() {
@@ -42,5 +44,14 @@ export class SettingsPage {
 
   private changePassword(){
     this.navCtrl.push(NewPasswordPage, {session : this.session});
+ }
+
+ private goToConfirmation(){
+     //this.navCtrl.push(ConfirmationPage, {session : this.session});
+     this.funcitonPoolProv.goToConfirmation(this.session, this.navCtrl, ConfirmationPage);
+ }
+
+ private logout(){
+   this.funcitonPoolProv.logout(this.session, this.navCtrl, LogoutPage);
  }
 }

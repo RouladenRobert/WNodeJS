@@ -149,14 +149,14 @@ module.exports = {
             var session = sessionHandler.generateSessionObject(result.dataValues.uid);
             //create array which is used to store product-object if the user has created an shopping-cart before logout
 
+            var idObj = {};
             var prodArr = [];
             // try to find the products that were in users shopping-cart
             // await is needed because the results of this db-requests when the login is successful, the asynchronous execution would not guarantee the result is correct.
             await db.ShoppingCart.findAll({attributes : ['amount', 'description', 'UserUid', 'ProductPid'], where : {UserUid : result.dataValues.uid}}).then(async function(sc){
-
               if(sc !== null){
                 for(let p of sc){
-                  prodObj = {};
+                  var prodObj = {};
                   // database request is neccessary because the price and the name of the product could have be changed since the user's last login.
                   // await is needed because the results of this db-requests when the login is successful, the asynchronous execution would not guarantee the result is correct.
                     await db.Product.findOne({attributes : ['name', 'price'], where : {pid : p.dataValues.ProductPid}}).then(product => {
@@ -168,6 +168,7 @@ module.exports = {
                         prodObj.desc = p.dataValues.description;
                         prodObj.amount = p.dataValues.amount;
                         prodArr.push(prodObj);
+                        idObj[prodObj.pid] = prodObj.amount;
                       }
                     }).catch(err => {
                       res.status(501);
@@ -185,6 +186,7 @@ module.exports = {
 
             // set session.productArr to the objects found
             session.productArr = prodArr;
+            session.idObj = idObj;
             res.status(200);
             res.send(session);
           }else{
@@ -193,6 +195,7 @@ module.exports = {
           }
       }).catch(err =>{
         res.status(500);
+        console.log(err);
         console.log("[LOGIN] Error in Login");
         var msg = constants.LOGGER_LOGIN_ERR + " Error while searching user";
         logger.log(msg);

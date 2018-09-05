@@ -4,6 +4,9 @@ import { RequestProvider } from '../../providers/request/request';
 import { Product } from '../../interfaces/interfaces';
 import { OrderPage } from '../order/order';
 import {AlertController} from 'ionic-angular';
+import {ConfirmationPage} from '../confirmation/confirmation';
+import {LogoutPage} from '../logout/logout';
+import {FunctionPoolProvider} from '../../providers/function-pool/function-pool';
 
 /**
  * Generated class for the DescriptionPage page.
@@ -21,7 +24,7 @@ export class DescriptionPage {
 
   private currProd: Product;
   private session = this.navParams.get('session');
-  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv: RequestProvider, private alertCtl : AlertController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv: RequestProvider, private alertCtl : AlertController, private funcitonPoolProv : FunctionPoolProvider) {
   }
 
   ionViewDidLoad(){
@@ -65,20 +68,11 @@ export class DescriptionPage {
   }
 
   private goToConfirmation(){
-      this.navCtrl.push(ConfirmationPage, {session : this.session});
+      //this.navCtrl.push(ConfirmationPage, {session : this.session});
+      this.funcitonPoolProv.goToConfirmation(this.session, this.navCtrl, ConfirmationPage);
   }
 
   private logout(){
-    console.log(this.session);
-    this.reqProv.logout(this.session).subscribe((data) => {
-      console.log(data);
-    }, err =>{
-      if(err.status === 401){
-        this.reqProv.logoutWithoutSession(this.navCtrl);
-        return;
-      }
-      console.log(err);
-    });
-    this.navCtrl.push(LogoutPage);
+    this.funcitonPoolProv.logout(this.session, this.navCtrl, LogoutPage);
   }
 }

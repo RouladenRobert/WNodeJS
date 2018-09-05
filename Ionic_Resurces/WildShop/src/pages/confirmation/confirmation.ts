@@ -77,4 +77,14 @@ export class ConfirmationPage {
     this.session.productArr = newArr;
   }
 
+  private calcPrice(){
+    var price = 0;
+    if(this.productList.length !== 0){
+      for(let p of this.productList){
+        price += p.amount * p.price;
+      }
+    }
+    return price;
+  }
+
 }
