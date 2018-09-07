@@ -1,3 +1,13 @@
 page-settings {
+  .toolbar-background {
+    background: transparent;
+  }
 
+ion-content{
+  background-image: url("../assets/imgs/fleisch_bunt.png");
+  background-size : cover;
+}
+.item {
+  background-color: transparent;
+}
 }

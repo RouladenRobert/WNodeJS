@@ -34,7 +34,7 @@ export class ConfirmationPage {
   private sendOrder(){
     this.reqProv.sendOrder(this.session).subscribe((res) => {
       console.log("[ORDER] Bestellung erfolgreich");
-      this.session.productArr = null;
+      this.session.productArr = [];
       console.log(this.session);
       this.navCtrl.push(ShopPage, {session : this.session});
     }, error => {

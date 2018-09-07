@@ -20,7 +20,7 @@
 
 
 <ion-content padding center text-center>
-      <button ion-button round outline id="buy" (click)="goToOrder()">Jetzt kaufen</button>
       <div class="card-title" *ngIf="currProd">{{currProd.name}}</div>
       <div class="card-subtitle" *ngIf="currProd">{{currProd.price + "€"}}</div>
+      <div class="buy"><button ion-button round outline id="bt" (click)="goToOrder()">Jetzt kaufen</button></div>
 </ion-content>

@@ -1,3 +1,14 @@
 page-information {
+  .toolbar-background {
+    background: transparent;
+  }
 
+  .header-button {
+    color: color($colors, shopButtonDefault);
+  }
+
+  ion-content{
+    background-image: url("../assets/imgs/fleisch_bunt.png");
+    background-size : cover;
+  }
 }

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {FunctionPoolProvider} from '../../providers/function-pool/function-pool';
 
 /**
  * Generated class for the InformationPage page.
@@ -15,11 +16,17 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class InformationPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private fctPool : FunctionPoolProvider) {
   }
+
+
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad InformationPage');
   }
+
+  //private logout(){
+    //this.fctPool.logout();
+  //}
 
 }

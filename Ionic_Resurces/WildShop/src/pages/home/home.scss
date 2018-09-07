@@ -3,9 +3,6 @@ page-home {
     background: transparent;
   }
 
-  .bar-header {
-    height: 9%;
-  }
 
   .header-button {
     color: color($colors, shopButtonDefault);
@@ -15,6 +12,7 @@ page-home {
    position: relative;
    text-align: center;
    height: 100vh;
+   width: 100%;
    margin: 0 !important;
    padding: 0 !important;
  }
@@ -58,16 +56,16 @@ page-home {
  .grid-full ion-col {
    flex: 0 0 50%;
    max-width: 50%;
-   padding: 5px 0;
+   padding: 0 !important;
  }
  .row {
-   padding: 5px;
+   padding: 0px;
  }
  .col {
-   padding: 5px 0;
+   padding: 0px 0;
  }
  .card {
-   margin: 0 5px;
-   width: calc(100% - 10px);
+   margin: 0 !important;
+   width: 100%;
  }
 }
