@@ -5,6 +5,8 @@ import { ShopPage } from '../shop/shop';
 import { Session } from '../../interfaces/interfaces';
 import {AlertController} from 'ionic-angular';
 import {Product} from '../../interfaces/interfaces';
+import {FunctionPoolProvider} from '../../providers/function-pool/function-pool';
+import {LogoutPage} from '../logout/logout';
 
 /**
  * Generated class for the ConfirmationPage page.
@@ -20,7 +22,8 @@ import {Product} from '../../interfaces/interfaces';
 })
 export class ConfirmationPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv : RequestProvider, private alertCtl : AlertController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv : RequestProvider, private alertCtl : AlertController,
+              private funcitonPoolProv : FunctionPoolProvider) {
   }
 
   session = this.navParams.get('session');
@@ -36,7 +39,8 @@ export class ConfirmationPage {
       console.log("[ORDER] Bestellung erfolgreich");
       this.session.productArr = [];
       console.log(this.session);
-      this.navCtrl.push(ShopPage, {session : this.session});
+      this.navCtrl.pop();
+      //this.navCtrl.push(ShopPage, {session : this.session});
     }, error => {
       if(error.status === 401){
         let alert = this.alertCtl.create({
@@ -84,7 +88,11 @@ export class ConfirmationPage {
         price += p.amount * p.price;
       }
     }
-    return price;
+    return price.toFixed(2);
+  }
+
+  private logout(){
+    this.funcitonPoolProv.logout(this.session, this.navCtrl, LogoutPage);
   }
 
 }

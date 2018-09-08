@@ -43,7 +43,7 @@ export class OrderPage {
     }
 
     // check if id-object is undefined
-    if(this.productArr.length === 0 && this.idObj === undefined){
+    if(this.productArr.length === 0 && this.idObj === {}){
       // get product-id of chosen product.
       var pid = this.orderObj.prodID;
 
@@ -63,7 +63,7 @@ export class OrderPage {
         this.session.idObj = this.idObj;
       }
       else{
-        // case that the product is already iin the array -> update amount and the description.
+        // case that the product is already in the array -> update amount and the description.
         this.productArr[this.idObj[this.orderObj.prodID]].amount = this.productArr[this.idObj[this.orderObj.prodID]].amount + this.orderObj.amount;
         this.productArr[this.idObj[this.orderObj.prodID]].desc = this.productArr[this.idObj[this.orderObj.prodID]].desc +"\n"+this.orderObj.comment;
       }
