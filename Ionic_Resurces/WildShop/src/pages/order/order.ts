@@ -37,6 +37,9 @@ export class OrderPage {
 
   private addOrder(){
 
+    this.idObj = {};
+    this.productArr = [];
+
     //get current Product-array
     if(this.session.productArr){
       this.productArr = this.session.productArr;
@@ -64,6 +67,7 @@ export class OrderPage {
       }
       else{
         // case that the product is already in the array -> update amount and the description.
+        console.log(this.productArr[this.idObj[this.orderObj.prodID]].amount);
         this.productArr[this.idObj[this.orderObj.prodID]].amount = this.productArr[this.idObj[this.orderObj.prodID]].amount + this.orderObj.amount;
         this.productArr[this.idObj[this.orderObj.prodID]].desc = this.productArr[this.idObj[this.orderObj.prodID]].desc +"\n"+this.orderObj.comment;
       }

@@ -5,6 +5,7 @@ const consts = require('./constants.js');
 const crypto = require('crypto');
 
 var orderTable = new hashmap.HashMap();
+var priceTable = new hashmap.HashMap();
 var msg = undefined;
 var orderedProds = {names : [], amounts : []};
 const trans = mailer.createTransport(consts.MAIL_TRANSPORT);
@@ -12,7 +13,10 @@ const trans = mailer.createTransport(consts.MAIL_TRANSPORT);
 function sendOrderConfirmation(userID, prods, orderID){
     // find entry in user-table with id userID and get the email.
     // then send mail to this user.
-    console.log(orderID);
+    console.log("MAIL");
+    var price = priceTable.get(userID);
+    priceTable.delete(userID);
+    console.log("PERFE");
     db.User.findOne({attributes : ["email", "sname"], where : {uid : userID}}).then((user) => {
       if(!msg){
         msg = "Hallo "+user.sname+"! \n\nHier ist deine Bestellbestätigung.\nDie Bestellungs-ID lautet: "+orderID+"\n";
@@ -20,9 +24,9 @@ function sendOrderConfirmation(userID, prods, orderID){
       for(i=0; i<prods.names.length; i++){
         //console.log(ent.name);
         //console.log(ent.amount);
-        msg += "\n"+prods.names[i]+"  "+prods.amounts[i]+"x";
+        msg += "\n"+prods.names[i]+"  "+prods.amounts[i]+"x\n\n";
       }
-
+      msg += "Der Bestellwert beträgt " + price + "€.";
       console.log("[MAILER] Nachricht: "+msg);
       //send message
       var mailOpt = {
@@ -142,8 +146,9 @@ module.exports= {
 
   // this function is called when the requestContoller starts inserting the orders into the DB.
   // sendMail registeres the number of orders that have to be inserted into the DB.
-  sendMail : function(userID, numberOfOrders){
+  sendMail : function(userID, numberOfOrders, price){
     orderTable.set(userID, numberOfOrders);
+    priceTable.set(userID, price);
   },
 
   // registerProductForMail is called if the orderController/preOrderController insertes an order into the DB.
@@ -153,7 +158,6 @@ module.exports= {
     // get current number of remaining orders in list.
     curr = orderTable.get(userID);
     curr -= 1;
-
     // process the product
     orderedProds.names.push(productName);
     orderedProds.amounts.push(amount);
@@ -163,6 +167,7 @@ module.exports= {
     if(curr === 0){
       orderTable.delete(userID);
       // send mail
+      console.log("SENDING MAIL NOW");
       sendOrderConfirmation(userID, orderedProds, orderID);
       orderedProds = {names : [], amounts : []};
       return;

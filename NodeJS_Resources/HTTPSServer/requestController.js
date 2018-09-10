@@ -61,7 +61,7 @@ module.exports = {
        * find user that sended the order-request. If the user is has confirmed the registration -> do nothing and continue.
        * If the user hasn't confirmed the mail -> open alert and do not allow the order
       */
-      db.User.findOne({attributes : ['authorized'], where : {uid : req.session.userId}}).then(user => {
+      db.User.findOne({attributes : ['authorized'], where : {uid : req.session.userId}}).then(async function(user) {
         if(user.dataValues.authorized === false){
           var msg = constants.LOGGER_ORDER_SUCC + " Operation denied, user "+req.session.userId+ " not activated";
           logger.log(msg);
@@ -74,11 +74,16 @@ module.exports = {
           * check for every entry in productArr if it could be inserted into the order-table, the preorder-table or if it has to be divieded into two objects and
           * has to be inserted into both tables
           */
+          var price = 0;
+
+          var orderID = crypto.randomBytes(orderConsts.ORDER_ID_LENGTH).toString('base64');
+          orderID = '#'+orderID;
+
           for(let prod of productArr){
-            db.Product.findOne({attributes : ['amount'], where : {pid : prod.pid}}).then(product => {
+            await db.Product.findOne({attributes : ['amount'], where : {pid : prod.pid}}).then(product => {
                 var currAmount = product.dataValues.amount;
                 prod.currAmount = currAmount;
-                console.log(prod);
+                price += prod.amount * prod.price;
                 // all in preoder?
                 if(currAmount === 0){
                   preOrderController.insertPreOrder(req, res, prod, orderID);
@@ -113,6 +118,8 @@ module.exports = {
               res.end();
             });
           }
+          console.log(price);
+          mc.sendMail(req.session.userId, productArr.length, price);
         }
       }).catch(err => {
         var errorMsg = constants.LOGGER_ORDER_ERR +" Failed to look up the user-rights";
@@ -121,10 +128,6 @@ module.exports = {
         console.log("[ORDER] Failed to check if user is authenticated.");
         console.log(err);
       });
-
-      var orderID = crypto.randomBytes(orderConsts.ORDER_ID_LENGTH).toString('base64');
-      orderID = '#'+orderID;
-      mc.sendMail(req.session.userId, productArr.length);
 
     },
 
