@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { RequestProvider } from '../../providers/request/request';
 import { ShopPage } from '../shop/shop';
+import {HomePage} from '../home/home';
 import { Session } from '../../interfaces/interfaces';
 import {AlertController} from 'ionic-angular';
 import {Product} from '../../interfaces/interfaces';
@@ -38,8 +39,9 @@ export class ConfirmationPage {
     this.reqProv.sendOrder(this.session).subscribe((res) => {
       console.log("[ORDER] Bestellung erfolgreich");
       this.session.productArr = [];
+      this.session.idObj = {};
       console.log(this.session);
-      this.navCtrl.pop();
+      this.navCtrl.push(HomePage, {session : this.session});
       //this.navCtrl.push(ShopPage, {session : this.session});
     }, error => {
       if(error.status === 401){

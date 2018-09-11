@@ -143,6 +143,7 @@ module.exports = {
         if(result === null){
           res.status(401);
           res.send({msg : 'User not found!'});
+          return;
         }
         //console.log(result);
         // check if password is correct
@@ -320,6 +321,7 @@ module.exports = {
     },
 
     setPassword : function(req, res){
+      console.log(req.body.session);
       /*
         *if there is no session-object -> generate a random password and send it to the user.
       */
@@ -330,16 +332,17 @@ module.exports = {
           db.User.update({pword : hash}, {where : {email : email}}).then(user => {
             if(user === null){
               res.status(401);
-            }
-            else{
-              var session = sessionHandler.generateSessionObject(user.dataValues.uid);
-              res.send(session);
-              res.status(200);
+              res.send({status : "ERR"});
             }
           }).catch(err => {
             res.status(500);
           });
           mc.sendGeneratedPassword(newPassword, email);
+          res.status(200);
+          res.send({status : "OK"});
+        }).catch(err => {
+          res.status(501);
+          console.log(err);
         });
       }
 
@@ -357,6 +360,7 @@ module.exports = {
                 db.User.update({pword : hash}, {where : {uid : userID}}).then(user =>{
                   mc.sendChangedPasswordConfirm(userID);
                   res.status(200);
+                  res.send({status : "OK"});
                 }).catch(err => {
                   res.status(500);
                 });
