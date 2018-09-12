@@ -1,0 +1,7 @@
+{
+  "name": "WildShop_CMS",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}

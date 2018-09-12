@@ -1,31 +1,22 @@
-const express = require("express");
-const fs = require("fs");
+const fs = require('fs');
 const https = require("https");
-const path = require("path");
+const express = require('express');
+const path = require("path")
 const router = require("./router");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const session = require("./sessionHandler.js");
 const sessionConsts = require("./sessionConstants.js");
 
+
 const app = express();
-
-//load certificate and Private Key
-const certificate = fs.readFileSync(path.join(__dirname, 'certificate.pem'), 'utf8');
-const privateKey = fs.readFileSync(path.join(__dirname, 'privateKey.pem'), 'utf8');
-
 //use cors to allow acces from localhost
 app.use(cors());
 app.use(bodyParser());
 
-app.route('/shop').all(authorize);
-app.route('/product').all(authorize);
-app.route('/order').all(authorize);
-app.route('/logout').all(authorize);
-app.route('/setPw').all(authorize);
-app.route('/auth');
-app.route('/delete').all(authorize);
-app.route('/regOrder').all(authorize);
+const certificate = fs.readFileSync(path.join(__dirname, 'certificate.pem'), 'utf8');
+const privateKey = fs.readFileSync(path.join(__dirname, 'key.pem'), 'utf8');
+
 router(app);
 
 const server = https.createServer({
@@ -35,6 +26,7 @@ const server = https.createServer({
 
 server.listen(3000);
 console.log("Server startet at port 3000. \n");
+
 
 setInterval(session.cleanSessions, sessionConsts.SESSION_TIMEOUT_CHECK_INTERVALL);
 console.log("[SESSION] Timer active");
