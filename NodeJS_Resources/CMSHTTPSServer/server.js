@@ -24,8 +24,8 @@ const server = https.createServer({
   key: privateKey
 }, app);
 
-server.listen(3000);
-console.log("Server startet at port 3000. \n");
+server.listen(4000);
+console.log("Server startet at port 4000. \n");
 
 
 setInterval(session.cleanSessions, sessionConsts.SESSION_TIMEOUT_CHECK_INTERVALL);

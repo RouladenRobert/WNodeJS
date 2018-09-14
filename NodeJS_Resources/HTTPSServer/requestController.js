@@ -134,7 +134,7 @@ module.exports = {
 
     login : function(req, res){
       var mail = req.body.email;
-      var pass = req.body.pass
+      var pass = req.body.pass;
       /*
       * DB-request. Fetches uid, createdAt (as salt for sha256)= and password-hash
       * Hashen funktioniert nicht

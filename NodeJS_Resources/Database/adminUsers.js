@@ -1,0 +1,35 @@
+Sequelize = require("sequelize");
+const seq = require("./dbconnection.js");
+
+const AdminUser = seq.define('AdminUser', {
+  uid : {
+    type : Sequelize.INTEGER,
+    unique : true,
+    primaryKey : true,
+    autoIncrement : true,
+    allowNull : false
+  },
+  sname : {
+    type : Sequelize.STRING,
+    allowNull : false
+  },
+  name : {
+    type : Sequelize.STRING,
+    allowNull : false
+  },
+  email : {
+    type : Sequelize.STRING,
+    allowNull : false
+  },
+  pword : {
+    type : Sequelize.STRING,
+    allowNull : false
+  },
+  timestamp : Sequelize.DATE,
+  authorized : {
+    type : Sequelize.BOOLEAN,
+    allowNull : false
+  }
+});
+
+module.exports = AdminUser;

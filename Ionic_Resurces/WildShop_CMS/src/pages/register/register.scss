@@ -1,12 +1,17 @@
-page-login {
+page-register {
   .toolbar-background {
     background: transparent;
   }
 
   input {
     font-family: defFont;
-    font-size: 150%;
+    font-size: 100%;
   }
+
+#title {
+  color: color($colors, shopButtonDefault);
+  font-size: 150%;
+}
 
 .custom-item-divider {
   border-color:  shopButtonDefault;
@@ -21,5 +26,4 @@ ion-content{
 .item {
   background-color: transparent;
 }
-
 }

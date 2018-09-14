@@ -6,6 +6,7 @@ const Product = require("./products.js");
 const OrderProduct = require("./order_product.js");
 const PreorderProduct = require('./preorder_product.js');
 const ShoppingCart = require("./shopping_cart.js");
+const AdminUser = require('./adminUsers.js');
 //const ShoppingCartProduct = require("./shopping_car_product.js");
 
 
@@ -69,14 +70,17 @@ function execInit(initObj){
         PreOrder.sync(initObj).then(() =>{
           OrderProduct.sync(initObj).then(() => {
             PreorderProduct.sync(initObj).then(() => {
-              ShoppingCart.sync(initObj);
+              ShoppingCart.sync(initObj).then(() => {
+                AdminUser.sync(initObj).then(() => {
+                    return true;
+                });
+              });
             });
           });
         });
       });
     });
   });
-  return true;
 }
 
 module.exports = {
@@ -88,5 +92,6 @@ module.exports = {
   PreOrder : PreOrder,
   OrderProduct : OrderProduct,
   PreorderProduct : PreorderProduct,
-  ShoppingCart : ShoppingCart
+  ShoppingCart : ShoppingCart,
+  AdminUser : AdminUser
 }

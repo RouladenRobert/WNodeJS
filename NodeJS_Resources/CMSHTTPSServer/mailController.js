@@ -17,7 +17,7 @@ function sendOrderConfirmation(userID, prods, orderID){
     var price = priceTable.get(userID);
     priceTable.delete(userID);
     console.log("PERFE");
-    db.User.findOne({attributes : ["email", "sname"], where : {uid : userID}}).then((user) => {
+    db.AdminUser.findOne({attributes : ["email", "sname"], where : {uid : userID}}).then((user) => {
       if(!msg){
         msg = "Hallo "+user.sname+"! \n\nHier ist deine Bestellbestätigung.\nDie Bestellungs-ID lautet: "+orderID+"\n";
       }
@@ -55,7 +55,7 @@ function sendOrderConfirmation(userID, prods, orderID){
 
 function sendRegConfirmation(userID){
 
-  db.User.findOne({attributes : ["email", "sname"], where : {uid : userID}}).then(user => {
+  db.AdminUser.findOne({attributes : ["email", "sname"], where : {uid : userID}}).then(user => {
     msg = "Hallo "+user.dataValues.sname+"!\nBitte bestätige mit dem angefügten Link, dass du dich registriert hast.\nVielen Dank!\n\n";
     var url = consts.REG_MAIL_URL+userID;
     msg += url;
@@ -84,7 +84,7 @@ function sendRegConfirmation(userID){
 }
 
 function sendGeneratedPassword(pw, email){
-  db.User.findOne({attributes : ["sname"], where : {email : email}}).then(user => {
+  db.AdminUser.findOne({attributes : ["sname"], where : {email : email}}).then(user => {
     if(user === null){
       return;
     }
@@ -115,7 +115,7 @@ function sendGeneratedPassword(pw, email){
 }
 
 function sendChangedPasswordConfirm(userID){
-    db.User.findOne({attributes : ["email", "sname"], where : {uid : userID}}).then(user => {
+    db.AdminUser.findOne({attributes : ["email", "sname"], where : {uid : userID}}).then(user => {
       msg = "Hallo "+user.dataValues.sname+"!\nDu hast dein Passwort geändert.\nFalls du das nicht selbst warst, kontaktiere uns bitte!\n\n";
 
       var mailOpt = {

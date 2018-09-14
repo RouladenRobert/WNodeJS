@@ -19,4 +19,10 @@ module.exports = function(app){
 
   app.route("/preOrderDetails")
       .post(ctrl.getPreOrderDetails);
+
+  app.route("/setPw")
+      .post(ctrl.setPassword);
+
+  app.route("/register")
+      .post(ctrl.register);
 }

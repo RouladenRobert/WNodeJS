@@ -15,7 +15,133 @@ const salt = 10;
 module.exports = {
 
   login : function(req, res){
+    var mail = req.body.email;
+    var pass = req.body.pass;
 
+    db.AdminUser.findOne({attributes : ['email', 'uid', 'pword'], where : {email : mail}}).then(user => {
+      if(user === null){
+        res.status(200);
+        res.send("User not found");
+        return;
+      }
+
+      if(bcrypt.compareSync(pass, user.dataValues.pword)){
+        //create session
+        var session = sessionHandler.generateSessionObject(user.dataValues.uid);
+
+        res.status(200);
+        res.send(session);
+      }
+      else{
+        res.status(401);
+        res.status("Wrong password");
+      }
+    });
+
+
+  },
+
+  register : function(req, res){
+    var userInfo = req.body.user;
+    var timestamp = new Date();
+
+    bcrypt.hash(userInfo.pass, salt).then(function(hash){
+      /*
+      * INSERT new user into user-table
+      *sessionhandler muss auskommentiert werden, wenn die Funktion funktioniert
+      */
+      db.AdminUser.findOne({attributes : ['email', 'uid'], where : {email : userInfo.email}}).then(user => {
+        if(user === null){
+          db.AdminUser.create({sname : userInfo.surname, name : userInfo.name, email: userInfo.email, pword : hash,
+                          timestamp : timestamp, createdAt : timestamp, updatedAt : timestamp, authorized : false
+                          }).then(result => {
+                      var session = sessionHandler.generateSessionObject(result.dataValues.uid);
+                      res.status(200);
+                      res.send(session);
+                      res.end();
+                      mc.sendRegConfirmation(result.dataValues.uid);
+              }).catch(err => {
+                var msg = constants.LOGGER_REG_ERR + " Failed inserting admin-user in databse";
+                logger.log(msg);
+                res.status(500);
+                console.log("[REGISTER] Error in register admin");
+                console.log(err);
+                res.send(err);
+                res.end();
+              });
+        }
+        else{
+          var msg = constants.LOGGER_REG_SUCC + " Admin-user already exists";
+          logger.log(msg);
+          res.status(403);
+          res.send({reason : 'Admin-User already exists'});
+          res.end();
+        }
+      }).catch(err => {
+        var msg = constants.LOGGER_REG_ERR + " " +err;
+        logger.log(msg);
+        console.log(err);
+        res.status(500);
+      });
+    });
+
+
+  },
+
+    setPassword : function(req, res){
+      console.log(req.body.session);
+      /*
+        *if there is no session-object -> generate a random password and send it to the user.
+      */
+      if(req.session === null ||req.session === undefined){
+        email = req.mail;
+        var newPassword = crypto.randomBytes(15).toString('base64');
+        bcrypt.hash(newPassword, salt).then(hash => {
+          db.AdminUser.update({pword : hash}, {where : {email : email}}).then(user => {
+            if(user === null){
+              res.status(401);
+              res.send({status : "ERR"});
+            }
+          }).catch(err => {
+            res.status(500);
+          });
+          mc.sendGeneratedPassword(newPassword, email);
+          res.status(200);
+          res.send({status : "OK"});
+        }).catch(err => {
+          res.status(501);
+          console.log(err);
+        });
+      }
+
+      /*
+        *else if there is a valid session -> change the old password of the user to the new one given in the session
+        *send Infomail that the password was changed -> security reasons...could be that the user hasn't done this change
+      */
+      else{
+
+        var userID = req.session.userId;
+       db.AdminUser.findOne({attributes : ['pword'], where : {uid : userID}}).then(user =>{
+          bcrypt.compare(req.session.old_password, user.dataValues.pword).then(cp => {
+            if(cp){
+              bcrypt.hash(req.session.password, salt).then(hash => {
+                db.AdminUser.update({pword : hash}, {where : {uid : userID}}).then(user =>{
+                  mc.sendChangedPasswordConfirm(userID);
+                  res.status(200);
+                  res.send({status : "OK"});
+                }).catch(err => {
+                  res.status(500);
+                });
+              });
+            }
+            else{
+              res.status(401);
+            }
+          });
+        }).catch(err => {
+          res.status(500);
+        });
+    }
   },
 
   getOrderList : function(req, res){
@@ -55,7 +181,7 @@ module.exports = {
 
   loadHome : function(req, res){
 
-    
+
   }
 
 }

@@ -4,15 +4,34 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header>
+<ion-header no-border text-center>
 
-  <ion-navbar>
-    <ion-title>Login</ion-title>
+  <ion-navbar hideBackButton="true">
+    <ion-title><p class="title_big">Login</p></ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content padding>
+<ion-content padding center text-center>
+  <ion-list inset class="item">
 
+    <ion-item class="custom-item-divider">
+      <ion-input type="text" [(ngModel)]="email" name="email" placeholder="Email-Adresse" text-center></ion-input>
+    </ion-item>
+          <br>
+
+    <ion-item class="custom-item-divider">
+      <ion-input type="password" [(ngModel)]="password" name="password" placeholder="Passwort" text-center></ion-input>
+    </ion-item>
+          <br>
+
+    <!--<button id="loginButton" ion-button full (click)=login() disabled>Anmelden!</button>-->
+
+  </ion-list>
+  <button (click)=login() ion-button round outline large color="shopButtonDefault" [disabled]="email.length == 0 || password.length == 0">Anmelden!</button>
+
+  <button ion-button round outline large color="shopButtonDefault" (click)=register()>Registrieren</button>
+
+  <button ion-button round outline large color="shopButtonDefault" (click)=forgotPassword()>Passwort vergessen</button>
 </ion-content>
