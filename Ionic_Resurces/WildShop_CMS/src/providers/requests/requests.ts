@@ -36,4 +36,8 @@ export class RequestsProvider {
   public setPassword(session? : Session, mail?){
     return this.http.post(this.consts.url+"setPw", {session : session, mail : mail});
   }
+
+  public getOrderList(session : Session){
+    return this.http.post(this.consts.url + "orderList", {session : session});
+  }
 }

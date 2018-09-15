@@ -17,6 +17,7 @@ app.use(bodyParser());
 const certificate = fs.readFileSync(path.join(__dirname, 'certificate.pem'), 'utf8');
 const privateKey = fs.readFileSync(path.join(__dirname, 'key.pem'), 'utf8');
 
+app.route('/orderList').all(authorize);
 router(app);
 
 const server = https.createServer({

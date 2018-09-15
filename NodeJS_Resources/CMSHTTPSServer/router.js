@@ -5,10 +5,7 @@ module.exports = function(app){
   app.route("/login")
       .post(ctrl.login);
 
-  app.route("/home")
-      .post(ctrl.loadHome);
-
-  app.route("/oderList")
+  app.route("/orderList")
       .post(ctrl.getOrderList);
 
   app.route("/preOrderList")

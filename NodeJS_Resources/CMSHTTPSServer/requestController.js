@@ -144,9 +144,42 @@ module.exports = {
     }
   },
 
+  //get the list of products, max 100 default
+  // sends User-name, User-surname, orderID, creatdedAt and comment objects as a list of that objects
   getOrderList : function(req, res){
+      var limit = req.body.limit;
 
+      //load <limit> items of order-table and send the list back
 
+      if(limit === null || limit === undefined){
+        limit = 100;
+      }
+
+      db.Order.findAll({attributes : ['oid', 'UserUid', 'comment', 'createdAt'], limit : limit, include : [db.User]}).then(orders => {
+        orderList = [];
+          if(orders === null){
+            res.status(200);
+            res.send("No orders aviable");
+          }
+
+          for(o of orders){
+            orderObj = {};
+            orderObj.oid = o.dataValues.oid;
+            orderObj.createdAt = o.dataValues.createdAt;
+            orderObj.surname = o.dataValues.User.sname;
+            orderObj.name = o.dataValues.User.name;
+            orderObj.comment = o.dataValues.comment;
+            orderList.push(orderObj);
+          }
+
+          console.log(orderList);
+          res.status(200);
+          res.send(orderList);
+
+      }).catch(err => {
+        res.status(501);
+        console.log(err);
+      });
   },
 
   getOrderDetails : function(req, res){
@@ -178,10 +211,5 @@ module.exports = {
 
 
   },
-
-  loadHome : function(req, res){
-
-
-  }
 
 }
