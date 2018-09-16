@@ -22,4 +22,13 @@ module.exports = function(app){
 
   app.route("/register")
       .post(ctrl.register);
+
+  app.route("/finishOrder")
+      .post(ctrl.finishOrder);
+
+  app.route("/deleteOrder")
+      .post(ctrl.deleteOrder);
+
+  app.route("/userList")
+      .post(ctrl.getAdminUsers);
 }

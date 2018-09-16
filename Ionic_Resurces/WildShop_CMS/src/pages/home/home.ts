@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import {RequestsProvider} from '../../providers/requests/requests';
+import {OrderDetailPage} from '../order-detail/order-detail';
 
 @Component({
   selector: 'page-home',
@@ -13,6 +14,7 @@ export class HomePage {
   }
   private session = this.navParams.get('session');
   private orderList;
+  private userList;
 
   ionViewDidLoad(){
     this.loadData();
@@ -27,6 +29,16 @@ export class HomePage {
   }, err => {
       console.log(err);
   });
+
+  this.reqProv.getAdminUsers(this.session).subscribe(res => {
+      this.userList = res;
+  }, err => {
+      console.log(err);
+  });
+
   }
 
+  private goToDetail(item){
+    this.navCtrl.push(OrderDetailPage, {item : item, session : this.session});
+  }
 }

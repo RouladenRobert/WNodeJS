@@ -184,11 +184,85 @@ module.exports = {
 
   getOrderDetails : function(req, res){
 
+    var orderID = req.body.orderID;
+
+    if(orderID === null || orderID === undefined){
+      res.status(501);
+      res.send("No orderID given");
+      return;
+    }
+
+    db.Order.findOne({attributes : ['comment', 'createdAt'], include : [db.User], where : {oid : orderID}}).then(order => {
+      if(order === null){
+        res.status(501);
+        res.send("No order found for this ID");
+        return;
+      }
+      var userName = order.dataValues.User.name;
+      var userSurname = order.dataValues.User.sname;
+      db.OrderProduct.findAll({attributes : ['amount', 'ProductPid'], where : {OrderOid : orderID}}).then(async function(orderProd) {
+        toSend = {userName : userName, userSurname : userSurname, orderID : orderID, date : order.dataValues.createdAt, comment : order.dataValues.comment};
+        prodNames = [];
+        prodAmounts = [];
+        for(op of orderProd){
+          await db.Product.findOne({attributes : ['name'], where : {pid : op.dataValues.ProductPid}}).then(prod => {
+              prodNames.push(prod.name);
+          }).catch(err => {
+            console.log(err);
+          });
+          prodAmounts.push(op.dataValues.amount);
+        }
+        toSend.prodNames = prodNames;
+        toSend.prodAmounts = prodAmounts;
+
+        console.log(toSend);
+        res.status(200);
+        res.send(toSend);
+
+      }).catch(err => {
+        console.log(err);
+      });
+    }).catch(err => {
+      console.log(err);
+    });
+
 
   },
 
   getPreOrderList : function(req, res){
+    var limit = req.body.limit;
 
+    //load <limit> items of order-table and send the list back
+
+    if(limit === null || limit === undefined){
+      limit = 100;
+    }
+
+    db.PreOrder.findAll({attributes : ['oid', 'UserUid', 'comment', 'createdAt'], limit : limit, include : [db.User]}).then(orders => {
+      orderList = [];
+        if(orders === null){
+          res.status(200);
+          res.send("No orders aviable");
+        }
+
+        for(o of orders){
+          orderObj = {};
+          orderObj.oid = o.dataValues.oid;
+          orderObj.createdAt = o.dataValues.createdAt;
+          orderObj.surname = o.dataValues.User.sname;
+          orderObj.name = o.dataValues.User.name;
+          orderObj.comment = o.dataValues.comment;
+          orderList.push(orderObj);
+        }
+
+        console.log(orderList);
+        res.status(200);
+        res.send(orderList);
+
+    }).catch(err => {
+      res.status(501);
+      console.log(err);
+    });
 
   },
 
@@ -211,5 +285,81 @@ module.exports = {
 
 
   },
+
+  getAdminUsers : function(req, res){
+
+    limit = req.body.limit;
+
+    if(limit === null || limit === undefined){
+      limit = 10;
+    }
+
+    db.AdminUser.findAll({attributes : ['sname', 'name', 'email'], limit : limit}).then(users => {
+        var userList =[];
+        for(u of users){
+          var userObj = {};
+          userObj.name = u.dataValues.name;
+          userObj.surname = u.dataValues.sname;
+          userObj.email = u.dataValues.email;
+          userList.push(userObj);
+        }
+
+        res.status(200);
+        res.send(userList);
+
+    }).catch(err => {
+      console.log(err);
+      res.status(500);
+      res.end();
+    });
+
+  },
+
+  finishOrder : function(req, res){
+    var orderID = req.body.orderID;
+    db.Order.findOne({attributes : ['UserUid', 'comment', 'delivery_time'], where : {oid : orderID}}).then(order => {
+        var userID = order.dataValues.UserUid;
+        db.FinishedOrders.create({UserUid : userID, oid : orderID, comment : order.dataValues.comment, delivery_time : order.dataValues.delivery_time}).then(fo => {
+            db.OrderProduct.findOne({where : {OrderOid : orderID}}).then(op => {
+                db.FinishedOrderProducts.create({amount : op.dataValues.amount, FinishedOrderOid : op.dataValues.OrderOid, ProductPid : op.dataValues.ProductPid}).then(fop => {
+                  db.OrderProduct.destroy({where : {OrderOid : orderID}}).then(op => {
+                    db.Order.destroy({where : {oid : orderID}}).then(destroyed => {
+                      res.status(200);
+                      res.send('OK');
+                    }).catch(err => {
+                      console.log(err);
+                    });
+                  }).catch(err => {
+                    console.log(err);
+                  });
+                }).catch(err => {
+                  console.log(err);
+                });
+            }).catch(err => {
+                console.log(err);
+            });
+          }).catch(err => {
+              console.log(err);
+          });
+        }).catch(err => {
+          console.log(err);
+        });
+
+  },
+
+  deleteOrder : function(req, res){
+    var orderID = req.body.orderID;
+    db.OrderProduct.destroy({where : {OrderOid : orderID}}).then(op => {
+        db.Order.destroy({where : {oid : orderID}}).then(destroyed => {
+            res.status(200);
+            res.send("OK");
+        }).catch(err => {
+            console.log(err);
+        });
+    }).catch(err => {
+        console.log(err);
+    });
+
+  }
 
 }

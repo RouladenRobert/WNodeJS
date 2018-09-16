@@ -18,6 +18,10 @@ const certificate = fs.readFileSync(path.join(__dirname, 'certificate.pem'), 'ut
 const privateKey = fs.readFileSync(path.join(__dirname, 'key.pem'), 'utf8');
 
 app.route('/orderList').all(authorize);
+app.route('/orderDetails').all(authorize);
+app.route('/finishOrder').all(authorize);
+app.route('/deleteOrder').all(authorize);
+app.route('/userList').all(authorize);
 router(app);
 
 const server = https.createServer({

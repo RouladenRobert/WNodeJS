@@ -1,7 +1,7 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>
-      Ionic Blank
+  <ion-navbar hideBackButton="true">
+    <ion-title text-center>
+      Übersicht
     </ion-title>
   </ion-navbar>
 </ion-header>
@@ -9,30 +9,33 @@
 <ion-content padding>
   <ion-grid>
     <ion-row>
-      <ion-col>
-        <table>
-          <tr>
-            <th>Order-ID</th>
-            <th>Nachname</th>
-            <th>Vorname</th>
-            <th>Kommentar</th>
-            <th>Bestellt am</th>
-          </tr>
-            <ion-list>
-              <tr ion-item *ngFor="let item of orderList">
-                <button>
-                    <td>{{item.oid}}</td>
-                    <td>{{item.name}}</td>
-                    <td>{{item.surname}}</td>
-                    <td>{{item.comment}}</td>
-                    <td>{{item.createdAt}}</td> 
-                </button>
-              </tr>
-            </ion-list>
-        </table>
+      <ion-col class="border">
+        <h1>Bestellungen</h1>
+        <ion-row>
+          <ion-col><b>OrderID</b></ion-col>
+          <ion-col><b>Vorname</b></ion-col>
+          <ion-col><b>Nachname</b></ion-col>
+          <ion-col><b>Kommentar</b></ion-col>
+        </ion-row>
+        <ion-row *ngFor="let item of orderList">
+          <ion-col><button (click)="goToDetail(item)">{{item.oid}}</button></ion-col>
+          <ion-col>{{item.name}}</ion-col>
+          <ion-col>{{item.surname}}</ion-col>
+          <ion-col>{{item.comment}}</ion-col>
+        </ion-row>
       </ion-col>
-      <ion-col>
-        2 of 2
+      <ion-col class="border">
+        <h1>Admins</h1>
+        <ion-row>
+          <ion-col><b>Vorname</b></ion-col>
+          <ion-col><b>Nachname</b></ion-col>
+          <ion-col><b>E-Mail</b></ion-col>
+        </ion-row>
+        <ion-row *ngFor="let item of userList">
+          <ion-col>{{item.surname}}</ion-col>
+          <ion-col>{{item.name}}</ion-col>
+          <ion-col>{{item.email}}</ion-col>
+        </ion-row>
       </ion-col>
     </ion-row>
     <ion-row>

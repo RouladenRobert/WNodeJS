@@ -40,4 +40,20 @@ export class RequestsProvider {
   public getOrderList(session : Session){
     return this.http.post(this.consts.url + "orderList", {session : session});
   }
+
+  public getOrderDetails(session : Session, orderID : String){
+    return this.http.post(this.consts.url + "orderDetails", {session : session, orderID : orderID});
+  }
+
+  public finishOrder(session : Session, orderID){
+    return this.http.post(this.consts.url+"finishOrder", {session : session, orderID : orderID});
+  }
+
+  public deleteOrder(session : Session, orderID){
+    return this.http.post(this.consts.url+"deleteOrder", {session : session, orderID : orderID});
+  }
+
+  public getAdminUsers(session : Session){
+    return this.http.post(this.consts.url+"userList", {session : session});
+  }
 }

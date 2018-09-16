@@ -6,13 +6,32 @@
 -->
 <ion-header>
 
-  <ion-navbar>
-    <ion-title>OrderDetail</ion-title>
+  <ion-navbar text-center>
+    <ion-title>Details</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-
+  <ion-grid>
+    <ion-row>
+      <ion-col><b>Vorname</b></ion-col>
+      <ion-col><b>Nachname</b></ion-col>
+      <ion-col><b>Produkt</b></ion-col>
+      <ion-col><b>Menge</b></ion-col>
+      <ion-col><b>Datum</b></ion-col>
+    </ion-row>
+    <ion-row *ngFor="let i of item.prodNames; let ind = index">
+      <ion-col>{{item.userName}}</ion-col>
+      <ion-col>{{item.userSurname}}</ion-col>
+      <ion-col>{{i}}</ion-col>
+      <ion-col>{{item.prodAmounts[ind]}}</ion-col>
+      <ion-col>{{item.date}}</ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
+<ion-footer>
+  <button ion-button round outline (click)="finishOrder()">Bestellung abgeschlossen</button>
+  <button ion-button round outline (click)="deleteOrder()">Bestellung löschen</button>
+</ion-footer>
