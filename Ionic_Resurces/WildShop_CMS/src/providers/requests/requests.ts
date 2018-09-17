@@ -56,4 +56,8 @@ export class RequestsProvider {
   public getAdminUsers(session : Session){
     return this.http.post(this.consts.url+"userList", {session : session});
   }
+
+  public getProducts(session : Session, limit){
+    return this.http.post(this.consts.url+"prodList", {session : session, limit : limit});
+  }
 }

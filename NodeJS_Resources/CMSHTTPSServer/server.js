@@ -22,6 +22,9 @@ app.route('/orderDetails').all(authorize);
 app.route('/finishOrder').all(authorize);
 app.route('/deleteOrder').all(authorize);
 app.route('/userList').all(authorize);
+app.route('/deleteProduct').all(authorize);
+app.route('/addProduct').all(authorize);
+app.route('/prodList').all(authorize);
 router(app);
 
 const server = https.createServer({

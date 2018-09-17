@@ -205,8 +205,17 @@ module.exports = {
         prodNames = [];
         prodAmounts = [];
         for(op of orderProd){
-          await db.Product.findOne({attributes : ['name'], where : {pid : op.dataValues.ProductPid}}).then(prod => {
-              prodNames.push(prod.name);
+          await db.Product.findOne({attributes : ['name'], where : {pid : op.dataValues.ProductPid}}).then(async function(prod){
+            if(prod !== null){
+                prodNames.push(prod.name);
+            }
+            else{
+              await db.ProductPool.findOne({attributes : ['name'], where : {pid : op.dataValues.ProductPid}}).then(prodpool => {
+                  prodNames.push(prodpool.name);
+              }).catch(err => {
+                console.log(err);
+              });
+            }
           }).catch(err => {
             console.log(err);
           });
@@ -276,13 +285,110 @@ module.exports = {
 
   },
 
-  deleteOrder : function(req, res){
+  deletePreOrder : function(req, res){
 
 
   },
 
-  deletePreOrder : function(req, res){
+  deleteProduct : function(req, res){
+    var prodID = req.body.prodID;
 
+    db.Product.findOne({where : {pid : prodID}}).then(prod => {
+      if(prod === null){
+        res.status(404);
+        res.send("Could not find product with id "+ prodID);
+        return;
+      }
+
+      db.ProductPool.create({pid : prodID, name : prod.dataValues.name, description : prod.dataValues.description, amaount : prod.dataValues.amount, price : prod.dataValues.price,
+                              weight : prod.dataValues.weight, preOrderable : prod.dataValues.preOrderable, pic : prod.dataValues.pic, createdAt : prod.dataValues.createdAt,
+                              updatedAt : new Date()}).then(prodpool => {
+
+            db.Product.destroy({where : {pid : prodID}}).then(destroyed => {
+                res.status(200);
+                res.send("OK");
+            }).catch(err => {
+              console.log(err);
+            })
+        }).catch(err => {
+            console.log(err);
+        });
+    }).catch(err => {
+      console.log(err);
+    })
+
+  },
+
+  addProduct : function(req, res){
+    var prodID = req.body.prodID;
+
+    if(prodID !== undefined){
+      db.ProductPool.findOne({where : {pid : prodID}}).then(pord => {
+          db.Product.create({pid : prodID, name : prod.dataValues.name, description : prod.dataValues.description, amaount : prod.dataValues.amount, price : prod.dataValues.price,
+                                  weight : prod.dataValues.weight, preOrderable : prod.dataValues.preOrderable, pic : prod.dataValues.pic, createdAt : prod.dataValues.createdAt,
+                                  updatedAt : new Date()}).then(prodRes => {
+
+          db.ProductPool.destroy({wehre : {pid : prodID}}).then(destroyed => {
+              res.status(200);
+              res.send("OK");
+          }).catch(err => {
+              console.log(err);
+          });
+
+        }).catch(err => {
+            console.log(err);
+        });
+      }).catch(err => {
+          console.log(err);
+      });
+    }
+    else{
+      var prodObj = req.body.prodObj;
+      if(prodObj === null || prodObj === undefined){
+        res.status(500);
+        res.send("Please type in the correct data to add a new product");
+        return;
+      }
+
+      db.Product.create({pid : prodObj.pid, name : prodObj.name, description : prodObj.description, amount : prodObj.amount, price : prodObj.price, weight : prodObj.weight,
+                        preOrderable : prodObj.preOrderable, pic : prodObj.pic, createdAt : new Date(), updatedAt : new Date()}).then(prod => {
+                          res.status(200);
+                          res.send("Added product");
+          }).catch(err => {
+            console.log(err);
+          })
+    }
+
+  },
+
+  getProductList : function(req, res){
+    var limit = req.body.limit;
+    if(!limit){
+      limit = 100;
+    }
+
+    db.Product.findAll({attributes : ['name', 'amount', 'weight', 'price', 'preOrderable'], limit : limit}).then(prods => {
+      var prodList = [];
+      for(p of prods){
+        var prodObj = {};
+        prodObj.name = p.dataValues.name;
+        prodObj.amount = p.dataValues.amount;
+        prodObj.price = p.dataValues.price;
+        prodObj.weight = p.dataValues.weight;
+        if(p.dataValues.preOrderable == 'true'){
+          prodObj.preOrderable = 'ja';
+        }
+        else{
+          prodObj.preOrderable = 'nein';
+        }
+        prodList.push(prodObj);
+      }
+      res.status(200);
+      res.send(prodList);
+
+    }).catch(err => {
+      console.log(err);
+    });
 
   },
 

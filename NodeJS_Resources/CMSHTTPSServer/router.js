@@ -31,4 +31,13 @@ module.exports = function(app){
 
   app.route("/userList")
       .post(ctrl.getAdminUsers);
+
+  app.route("/deleteProduct")
+      .post(ctrl.deleteProduct);
+
+  app.route("/addProduct")
+      .post(ctrl.addProduct);
+
+  app.route("/prodList")
+      .post(ctrl.getProductList);
 }

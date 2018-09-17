@@ -15,6 +15,7 @@ export class HomePage {
   private session = this.navParams.get('session');
   private orderList;
   private userList;
+  private prodList;
 
   ionViewDidLoad(){
     this.loadData();
@@ -34,6 +35,12 @@ export class HomePage {
       this.userList = res;
   }, err => {
       console.log(err);
+  });
+
+  this.reqProv.getProducts(this.session, 20).subscribe(res => {
+    this.prodList = res;
+  }, err => {
+    console.log(err);
   });
 
   }

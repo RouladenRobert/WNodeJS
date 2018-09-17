@@ -9,6 +9,7 @@ const ShoppingCart = require("./shopping_cart.js");
 const AdminUser = require('./adminUsers.js');
 const FinishedOrders = require('./finishedOrders.js');
 const FinishedOrderProducts = require('./finishedOrderProducts');
+const ProductPool = require('./product_pool.js');
 //const ShoppingCartProduct = require("./shopping_car_product.js");
 
 
@@ -83,7 +84,9 @@ function execInit(initObj){
                 AdminUser.sync(initObj).then(() => {
                   FinishedOrders.sync(initObj).then(() => {
                     FinishedOrderProducts.sync(initObj).then(() => {
-                        return true;
+                      ProductPool.sync(initObj).then(() => {
+                          return true;
+                      });
                     });
                   });
                 });
@@ -108,5 +111,6 @@ module.exports = {
   ShoppingCart : ShoppingCart,
   AdminUser : AdminUser,
   FinishedOrders : FinishedOrders,
-  FinishedOrderProducts :  FinishedOrderProducts
+  FinishedOrderProducts :  FinishedOrderProducts,
+  ProductPool : ProductPool
 }
