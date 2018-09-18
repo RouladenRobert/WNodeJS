@@ -33,6 +33,10 @@ export class RequestsProvider {
     });
   }
 
+  public logout(session : Session){
+    return this.http.post(this.consts.url+"logout", {session : session});
+  }
+
   public setPassword(session? : Session, mail?){
     return this.http.post(this.consts.url+"setPw", {session : session, mail : mail});
   }
@@ -59,5 +63,17 @@ export class RequestsProvider {
 
   public getProducts(session : Session, limit){
     return this.http.post(this.consts.url+"prodList", {session : session, limit : limit});
+  }
+
+  public getPreOrderList(session : Session){
+    return this.http.post(this.consts.url+"preOrderList", {session : session});
+  }
+
+  public getPreOrderDetails(session : Session, preOrderID){
+    return this.http.post(this.consts.url+"preOrderDetails", {session : session, preOrderID : preOrderID});
+  }
+
+  public deletePreOrder(session : Session, preOrderID){
+    return this.http.post(this.consts.url+"deletePreOrder", {session : session, preOrderID : preOrderID});
   }
 }

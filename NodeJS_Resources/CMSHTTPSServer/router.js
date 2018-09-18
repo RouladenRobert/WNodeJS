@@ -40,4 +40,7 @@ module.exports = function(app){
 
   app.route("/prodList")
       .post(ctrl.getProductList);
+
+  app.route("/logout")
+      .post(ctrl.logout);
 }

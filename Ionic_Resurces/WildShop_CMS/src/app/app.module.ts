@@ -15,6 +15,7 @@ import {ProductsPage} from '../pages/products/products';
 import {ProductDetailPage} from '../pages/product-detail/product-detail';
 import {NewPasswordPage} from '../pages/new-password/new-password';
 import {RegisterPage} from '../pages/register/register';
+import {PreOrderDetailPage} from '../pages/pre-order-detail/pre-order-detail';
 import { RequestsProvider } from '../providers/requests/requests';
 import {Constants} from '../Constants/constants';
 
@@ -28,7 +29,8 @@ import {Constants} from '../Constants/constants';
     OrderDetailPage,
     ProductDetailPage,
     RegisterPage,
-    NewPasswordPage
+    NewPasswordPage,
+    PreOrderDetailPage
   ],
   imports: [
     BrowserModule,
@@ -45,7 +47,8 @@ import {Constants} from '../Constants/constants';
     OrderDetailPage,
     ProductDetailPage,
     RegisterPage,
-    NewPasswordPage
+    NewPasswordPage,
+    PreOrderDetailPage
   ],
   providers: [
     StatusBar,

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import {RequestsProvider} from '../../providers/requests/requests';
 import {OrderDetailPage} from '../order-detail/order-detail';
+import {PreOrderDetailPage} from '../pre-order-detail/pre-order-detail';
 
 @Component({
   selector: 'page-home',
@@ -16,6 +17,7 @@ export class HomePage {
   private orderList;
   private userList;
   private prodList;
+  private preOrderList;
 
   ionViewDidLoad(){
     this.loadData();
@@ -43,9 +45,20 @@ export class HomePage {
     console.log(err);
   });
 
+  this.reqProv.getPreOrderList(this.session).subscribe(res => {
+    this.preOrderList = res;
+  }, err => {
+    console.log(err);
+  });
+
   }
 
   private goToDetail(item){
-    this.navCtrl.push(OrderDetailPage, {item : item, session : this.session});
+    if(item.orderID !== (null || undefined)){
+        this.navCtrl.push(OrderDetailPage, {item : item, session : this.session});
+    }
+    else if(item.preOrderID !== (null || undefined)){
+        this.navCtrl.push(PreOrderDetailPage, {item : item, session : this.session});
+    }
   }
 }

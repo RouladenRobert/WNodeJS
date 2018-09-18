@@ -25,6 +25,9 @@ app.route('/userList').all(authorize);
 app.route('/deleteProduct').all(authorize);
 app.route('/addProduct').all(authorize);
 app.route('/prodList').all(authorize);
+app.route('/deletePreOrder').all(authorize);
+app.route('/preOrderDetails').all(authorize);
+app.route('/logout').all(authorize);
 router(app);
 
 const server = https.createServer({

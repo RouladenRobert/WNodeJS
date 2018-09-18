@@ -41,6 +41,16 @@ module.exports = {
 
   },
 
+  logout : function(req, res){
+    var sessionID = req.session.sessionID;
+
+    sessionHandler.invalidateSession(sessionID);
+
+    res.status(200);
+    res.end();
+
+  },
+
   register : function(req, res){
     var userInfo = req.body.user;
     var timestamp = new Date();
@@ -276,6 +286,56 @@ module.exports = {
   },
 
   getPreOrderDetails : function(req, res){
+      var preOrderID = req.body.preOrderID;
+
+      if(preOrderID === null || preOrderID === undefined){
+        res.status(501);
+        res.send("No orderID given");
+        return;
+      }
+
+      db.PreOrder.findOne({attributes : ['comment', 'createdAt'], include : [db.User], where : {poid : preOrderID}}).then(order => {
+        if(order === null){
+          res.status(501);
+          res.send("No order found for this ID");
+          return;
+        }
+        var userName = order.dataValues.User.name;
+        var userSurname = order.dataValues.User.sname;
+        db.PreOrderProduct.findAll({attributes : ['amount', 'ProductPid'], where : {PreOrderPoid : preOrderID}}).then(async function(orderProd) {
+          toSend = {userName : userName, userSurname : userSurname, preOrderID : preOrderID, date : order.dataValues.createdAt, comment : order.dataValues.comment};
+          prodNames = [];
+          prodAmounts = [];
+          for(op of orderProd){
+            await db.Product.findOne({attributes : ['name'], where : {pid : op.dataValues.ProductPid}}).then(async function(prod){
+              if(prod !== null){
+                  prodNames.push(prod.name);
+              }
+              else{
+                await db.ProductPool.findOne({attributes : ['name'], where : {pid : op.dataValues.ProductPid}}).then(prodpool => {
+                    prodNames.push(prodpool.name);
+                }).catch(err => {
+                  console.log(err);
+                });
+              }
+            }).catch(err => {
+              console.log(err);
+            });
+            prodAmounts.push(op.dataValues.amount);
+          }
+          toSend.prodNames = prodNames;
+          toSend.prodAmounts = prodAmounts;
+
+          console.log(toSend);
+          res.status(200);
+          res.send(toSend);
+
+        }).catch(err => {
+          console.log(err);
+        });
+      }).catch(err => {
+        console.log(err);
+      });
 
 
   },
@@ -286,7 +346,18 @@ module.exports = {
   },
 
   deletePreOrder : function(req, res){
+      var preOrderID = req.body.preOrderID;
 
+      db.PreOrderProduct.destroy({where : {PreOrderPoid : preOrderID }}).then(pre => {
+        db.PreOrder.destroy({wehre : {poid : preOrderID}}).then(destroyed => {
+          res.status(200);
+          res.send("OK");
+        }).catch(err => {
+          console.log(err);
+        });
+      }).catch(err => {
+        console.log(err);
+      });
 
   },
 
