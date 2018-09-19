@@ -3,6 +3,12 @@ import { NavController, NavParams } from 'ionic-angular';
 import {RequestsProvider} from '../../providers/requests/requests';
 import {OrderDetailPage} from '../order-detail/order-detail';
 import {PreOrderDetailPage} from '../pre-order-detail/pre-order-detail';
+import {FunctionPoolProvider} from '../../providers/function-pool/function-pool';
+import {LogoutPage} from '../logout/logout';
+import {PreOrdersPage} from '../pre-orders/pre-orders';
+import {ProductsPage} from '../products/products';
+import {AdminsPage} from '../admins/admins';
+import {OrdersPage} from '../orders/orders';
 
 @Component({
   selector: 'page-home',
@@ -10,7 +16,7 @@ import {PreOrderDetailPage} from '../pre-order-detail/pre-order-detail';
 })
 export class HomePage {
 
-  constructor(public navCtrl: NavController, private reqProv : RequestsProvider, private navParams : NavParams) {
+  constructor(public navCtrl: NavController, private reqProv : RequestsProvider, private navParams : NavParams, private funcitonPool : FunctionPoolProvider) {
 
   }
   private session = this.navParams.get('session');
@@ -54,11 +60,31 @@ export class HomePage {
   }
 
   private goToDetail(item){
-    if(item.orderID !== (null || undefined)){
+    if(item.oid !== (null || undefined)){
         this.navCtrl.push(OrderDetailPage, {item : item, session : this.session});
     }
-    else if(item.preOrderID !== (null || undefined)){
+    else if(item.poid !== (null || undefined)){
         this.navCtrl.push(PreOrderDetailPage, {item : item, session : this.session});
     }
+  }
+
+  private logout(){
+    this.funcitonPool.logout(this.session, this.navCtrl, LogoutPage);
+  }
+
+  private goToOrders(){
+    this.navCtrl.push(OrdersPage, {session : this.session});
+  }
+
+  private goToPreOrders(){
+    this.navCtrl.push(PreOrdersPage, {session : this.session});
+  }
+
+  private goToProducts(){
+    this.navCtrl.push(ProductsPage, {session : this.session});
+  }
+
+  private goToAdmins(){
+    this.navCtrl.push(AdminsPage, {session : this.session});
   }
 }

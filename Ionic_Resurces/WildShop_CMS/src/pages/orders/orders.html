@@ -7,12 +7,29 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Orders</ion-title>
+    <ion-title text-center>Orders</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content padding>
-
+<ion-content padding text-center>
+  <ion-grid>
+    <ion-row>
+      <ion-col><b>OrderID</b></ion-col>
+      <ion-col><b>Nachname</b></ion-col>
+      <ion-col><b>Vorname</b></ion-col>
+      <ion-col><b>Kommentar</b></ion-col>
+      <ion-col><b>Datum</b></ion-col>
+    </ion-row>
+    <button *ngFor="let item of orderList" (click)="goToDetail(item)">
+      <ion-row>
+        <ion-col>{{item.oid}}</ion-col>
+        <ion-col>{{item.name}}</ion-col>
+        <ion-col>{{item.surname}}</ion-col>
+        <ion-col>{{item.comment}}</ion-col>
+        <ion-col>{{item.createdAt}}</ion-col>
+      </ion-row>
+    </button>
+  </ion-grid>
 </ion-content>

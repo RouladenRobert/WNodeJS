@@ -48,7 +48,7 @@ export class PreOrderDetailPage {
           console.log(err);
         });
       }},
-    {text : 'Abbrechen', onTap : function(e){return true;}}]
+    {text : 'Abbrechen', handler : function(e){return true;}}]
     });
     alert.present();
   }

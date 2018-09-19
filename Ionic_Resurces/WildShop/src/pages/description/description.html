@@ -22,5 +22,7 @@
 <ion-content padding center text-center>
       <div class="card-title" *ngIf="currProd">{{currProd.name}}</div>
       <div class="card-subtitle" *ngIf="currProd">{{currProd.price + "€"}}</div>
+      <div class="card-subtitle" *ngIf="currProd">{{currProd.description}}</div>
+      <div *ngIf="currProd && currProd.amount==0">Aktuell nicht verfügbar. Produkt wird automatisch vorbestellt.</div>
       <div class="buy"><button ion-button round outline id="bt" (click)="goToOrder()">Jetzt kaufen</button></div>
 </ion-content>

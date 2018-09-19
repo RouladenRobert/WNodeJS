@@ -9,6 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import {LoginPage} from '../pages/login/login';
+import {LogoutPage} from '../pages/logout/logout';
 import {OrderDetailPage} from '../pages/order-detail/order-detail';
 import {OrdersPage} from '../pages/orders/orders';
 import {ProductsPage} from '../pages/products/products';
@@ -18,6 +19,7 @@ import {RegisterPage} from '../pages/register/register';
 import {PreOrderDetailPage} from '../pages/pre-order-detail/pre-order-detail';
 import { RequestsProvider } from '../providers/requests/requests';
 import {Constants} from '../Constants/constants';
+import { FunctionPoolProvider } from '../providers/function-pool/function-pool';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,8 @@ import {Constants} from '../Constants/constants';
     ProductDetailPage,
     RegisterPage,
     NewPasswordPage,
-    PreOrderDetailPage
+    PreOrderDetailPage,
+    LogoutPage
   ],
   imports: [
     BrowserModule,
@@ -48,14 +51,16 @@ import {Constants} from '../Constants/constants';
     ProductDetailPage,
     RegisterPage,
     NewPasswordPage,
-    PreOrderDetailPage
+    PreOrderDetailPage,
+    LogoutPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     RequestsProvider,
-    Constants
+    Constants,
+    FunctionPoolProvider
   ]
 })
 export class AppModule {}

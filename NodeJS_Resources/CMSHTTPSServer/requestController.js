@@ -257,7 +257,7 @@ module.exports = {
       limit = 100;
     }
 
-    db.PreOrder.findAll({attributes : ['oid', 'UserUid', 'comment', 'createdAt'], limit : limit, include : [db.User]}).then(orders => {
+    db.PreOrder.findAll({attributes : ['poid', 'UserUid', 'comment', 'createdAt'], limit : limit, include : [db.User]}).then(orders => {
       orderList = [];
         if(orders === null){
           res.status(200);

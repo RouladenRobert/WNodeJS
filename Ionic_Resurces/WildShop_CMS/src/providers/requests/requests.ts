@@ -76,4 +76,5 @@ export class RequestsProvider {
   public deletePreOrder(session : Session, preOrderID){
     return this.http.post(this.consts.url+"deletePreOrder", {session : session, preOrderID : preOrderID});
   }
+
 }

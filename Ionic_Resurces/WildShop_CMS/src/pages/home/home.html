@@ -3,6 +3,11 @@
     <ion-title text-center>
       Übersicht
     </ion-title>
+    <ion-buttons end>
+      <button ion-button block (click)=logout()>
+         <ion-icon name="power" style="zoom:1.5;"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -10,7 +15,7 @@
   <ion-grid>
     <ion-row>
       <ion-col class="border">
-        <h1>Bestellungen</h1>
+        <button (click)="goToOrders()"><h1>Bestellungen</h1></button>
         <ion-row>
           <ion-col><b>OrderID</b></ion-col>
           <ion-col><b>Vorname</b></ion-col>
@@ -25,7 +30,7 @@
         </ion-row>
       </ion-col>
       <ion-col class="border">
-        <h1>Admins</h1>
+        <button (click)="goToAdmins()"><h1>Admins</h1></button>
         <ion-row>
           <ion-col><b>Vorname</b></ion-col>
           <ion-col><b>Nachname</b></ion-col>
@@ -40,7 +45,7 @@
     </ion-row>
     <ion-row>
       <ion-col class="border">
-        <h1>Produkte</h1>
+        <button (click)="goToProducts()"><h1>Produkte</h1></button>
         <ion-row>
           <ion-col><b>Name</b></ion-col>
           <ion-col><b>Preis</b></ion-col>
@@ -57,7 +62,7 @@
         </ion-row>
       </ion-col>
       <ion-col class="border">
-        <h1>Vorbestellungen</h1>
+        <button (click)="goToPreOrders()"><h1>Vorbestellungen</h1></button>
         <ion-row>
           <ion-col><b>OrderID</b></ion-col>
           <ion-col><b>Vornanme</b></ion-col>
