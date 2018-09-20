@@ -36,6 +36,14 @@ export class OrdersPage {
     });
   }
 
+  private deleteOrder(item){
+    this.reqProv.deleteOrder(this.session, item.oid).subscribe(res => {
+      console.log(res);
+    }, err => {
+      console.log(err);
+    });
+  }
+
   private goToDetail(item){
     this.navCtrl.push(OrderDetailPage, {session : this.session, item : item});
   }

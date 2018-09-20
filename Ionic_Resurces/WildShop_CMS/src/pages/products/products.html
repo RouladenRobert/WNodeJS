@@ -14,5 +14,21 @@
 
 
 <ion-content padding>
+  <ion-grid>
+    <ion-row>
+      <ion-col><b>OrderID</b></ion-col>
+      <ion-col><b>Vornanme</b></ion-col>
+      <ion-col><b>Nachname</b></ion-col>
+      <ion-col><b>Kommentar</b></ion-col>
+    </ion-row>
+    <ion-row *ngFor="let item of preOrderList">
+      <ion-col>{{item.poid}}</ion-col>
+      <ion-col>{{item.surname}}</ion-col>
+      <ion-col>{{item.name}}</ion-col>
+      <ion-col>{{item.comment}}</ion-col>
+      <ion-col><button (click)="deleteProduct(item)"></button></ion-col>
+      <ion-col><button (click)="editProduct(item)"></button></ion-col>
+    </ion-row>
+  </ion-grid>
 
 </ion-content>
