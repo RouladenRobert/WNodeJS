@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import {RequestsProvider} from '../../providers/requests/requests';
 import {ProductEditorPage} from '../product-editor/product-editor';
+import {LoginPage} from '../login/login';
 
 /**
  * Generated class for the ProductsPage page.
@@ -25,6 +26,16 @@ export class ProductsPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ProductsPage');
+    this.loadProducts();
+  }
+
+  private loadProducts(){
+    this.reqProv.getProducts(this.session).subscribe(res => {
+      this.productList = res;
+      console.log(res);
+    }, err => {
+      console.log(err);
+    });
   }
 
   private deleteProduct(item){
@@ -32,6 +43,9 @@ export class ProductsPage {
       this.productList = res;
       console.log(res);
     }, err => {
+      if(err.status === 401){
+        this.navCtrl.push(LoginPage);
+      }
       console.log(err);
     });
   }

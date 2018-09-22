@@ -14,7 +14,7 @@ module.exports = {
     service : 'gmail',
     auth : {
       user : 'jonas.seng1@gmail.com',
-      pass : 'louisundrene'
+      pass : '&H?tW0_p2Ndq'
     }
   },
   MAIL_ADDR : 'jonas.seng1@gmail.com',

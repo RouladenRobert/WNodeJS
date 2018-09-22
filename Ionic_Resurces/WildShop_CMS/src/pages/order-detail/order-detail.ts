@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import {RequestsProvider} from '../../providers/requests/requests';
 import {AlertController} from 'ionic-angular';
 import {HomePage} from '../home/home';
+import {LoginPage} from '../login/login';
 
 /**
  * Generated class for the OrderDetailPage page.
@@ -18,7 +19,7 @@ import {HomePage} from '../home/home';
 })
 export class OrderDetailPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv : RequestsProvider, private alertCtl : AlertController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public reqProv : RequestsProvider, private alertCtl : AlertController) {
   }
 
   private item = this.navParams.get('item');
@@ -33,27 +34,38 @@ export class OrderDetailPage {
       this.item = res;
       console.log(res);
     }, err => {
+      if(err.status === 401){
+        this.navCtrl.push(LoginPage);
+      }
       console.log(err);
     });
     }
 
   private finishOrder(){
-    console.log(this.item);
     this.reqProv.finishOrder(this.session, this.item.orderID).subscribe(res => {
       this.navCtrl.push(HomePage, {session : this.session});
-      return;
     }, err => {
+      if(err.status === 401){
+        this.navCtrl.push(LoginPage);
+      }
       console.log(err);
     })
   }
 
   private deleteOrder(){
+    let reqP = this.reqProv;
+    let oID = this.item.orderID;
+    let session = this.session;
+    let navC = this.navCtrl;
     let alert = this.alertCtl.create({
       title : "Bestellung wirklich löschen?",
-      buttons : [{text : 'Ja', handler : function(e){
-        this.reqProv.deleteOrder(this.session, this.item.orderID).subscribe(res => {
-          this.navCtrl.pop();
+      buttons : [{text : 'Ja', role : 'submit', handler : function(e){
+        reqP.deleteOrder(session, oID).subscribe(res => {
+          navC.pop();
         }, err => {
+          if(err.status === 401){
+            navC.push(LoginPage);
+          }
           console.log(err);
         });
       }},
@@ -61,4 +73,5 @@ export class OrderDetailPage {
     });
     alert.present();
   }
+
   }

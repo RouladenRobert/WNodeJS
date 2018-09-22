@@ -34,7 +34,7 @@ module.exports = {
       }
       else{
         res.status(401);
-        res.status("Wrong password");
+        res.send("Wrong password");
       }
     });
 
@@ -68,7 +68,6 @@ module.exports = {
                       var session = sessionHandler.generateSessionObject(result.dataValues.uid);
                       res.status(200);
                       res.send(session);
-                      res.end();
                       mc.sendRegConfirmation(result.dataValues.uid);
               }).catch(err => {
                 var msg = constants.LOGGER_REG_ERR + " Failed inserting admin-user in databse";
@@ -77,7 +76,6 @@ module.exports = {
                 console.log("[REGISTER] Error in register admin");
                 console.log(err);
                 res.send(err);
-                res.end();
               });
         }
         else{
@@ -85,7 +83,6 @@ module.exports = {
           logger.log(msg);
           res.status(403);
           res.send({reason : 'Admin-User already exists'});
-          res.end();
         }
       }).catch(err => {
         var msg = constants.LOGGER_REG_ERR + " " +err;
@@ -351,7 +348,7 @@ module.exports = {
       db.PreOrderProduct.destroy({where : {PreOrderPoid : preOrderID }}).then(pre => {
         db.PreOrder.destroy({wehre : {poid : preOrderID}}).then(destroyed => {
           res.status(200);
-          res.send("OK");
+          res.end();
         }).catch(err => {
           console.log(err);
         });
@@ -377,7 +374,7 @@ module.exports = {
 
             db.Product.destroy({where : {pid : prodID}}).then(destroyed => {
                 res.status(200);
-                res.send("OK");
+                res.end();
             }).catch(err => {
               console.log(err);
             })
@@ -401,7 +398,7 @@ module.exports = {
 
           db.ProductPool.destroy({wehre : {pid : prodID}}).then(destroyed => {
               res.status(200);
-              res.send("OK");
+              res.end();
           }).catch(err => {
               console.log(err);
           });
@@ -502,7 +499,7 @@ module.exports = {
                   db.OrderProduct.destroy({where : {OrderOid : orderID}}).then(op => {
                     db.Order.destroy({where : {oid : orderID}}).then(destroyed => {
                       res.status(200);
-                      res.send('OK');
+                      res.end();
                     }).catch(err => {
                       console.log(err);
                     });
@@ -529,7 +526,7 @@ module.exports = {
     db.OrderProduct.destroy({where : {OrderOid : orderID}}).then(op => {
         db.Order.destroy({where : {oid : orderID}}).then(destroyed => {
             res.status(200);
-            res.send("OK");
+            res.end();
         }).catch(err => {
             console.log(err);
         });

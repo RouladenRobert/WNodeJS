@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import {RequestsProvider} from '../../providers/requests/requests';
 import {OrderDetailPage} from '../order-detail/order-detail';
+import {LoginPage} from '../login/login';
 
 /**
  * Generated class for the OrdersPage page.
@@ -32,6 +33,9 @@ export class OrdersPage {
       this.orderList = res;
       console.log(res);
     }, err => {
+      if(err.status === 401){
+        this.navCtrl.push(LoginPage);
+      }
       console.log(err);
     });
   }
@@ -40,6 +44,9 @@ export class OrdersPage {
     this.reqProv.deleteOrder(this.session, item.oid).subscribe(res => {
       console.log(res);
     }, err => {
+      if(err.status === 401){
+        this.navCtrl.push(LoginPage);
+      }
       console.log(err);
     });
   }

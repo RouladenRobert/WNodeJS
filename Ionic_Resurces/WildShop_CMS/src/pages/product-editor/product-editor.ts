@@ -13,7 +13,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   selector: 'page-prodcut-editor',
   templateUrl: 'prodcut-editor.html',
 })
-export class ProdcutEditorPage {
+export class ProductEditorPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }

@@ -40,7 +40,7 @@ module.exports = {
       var prID = req.body.prodID;
 
       db.Product.findOne({atrribute : ["pid", "name", "description", "price", "weight", "pic"], where : {pid : prID}}).then(result => {
-        result.dataValues.pic = fs.readFileSync(result.dataValues.pic).toString('base64');
+        //result.dataValues.pic = fs.readFileSync(result.dataValues.pic).toString('base64');
         res.send(result);
         res.end();
       }).catch(err =>{

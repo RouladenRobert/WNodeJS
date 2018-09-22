@@ -20,6 +20,7 @@ import {PreOrderDetailPage} from '../pages/pre-order-detail/pre-order-detail';
 import { RequestsProvider } from '../providers/requests/requests';
 import {Constants} from '../Constants/constants';
 import { FunctionPoolProvider } from '../providers/function-pool/function-pool';
+import {AdminsPage} from '../pages/admins/admins';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { FunctionPoolProvider } from '../providers/function-pool/function-pool';
     RegisterPage,
     NewPasswordPage,
     PreOrderDetailPage,
-    LogoutPage
+    LogoutPage,
+    AdminsPage
   ],
   imports: [
     BrowserModule,
@@ -52,7 +54,8 @@ import { FunctionPoolProvider } from '../providers/function-pool/function-pool';
     RegisterPage,
     NewPasswordPage,
     PreOrderDetailPage,
-    LogoutPage
+    LogoutPage,
+    AdminsPage
   ],
   providers: [
     StatusBar,

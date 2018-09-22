@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Products</ion-title>
+    <ion-title text-center>Products</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -16,16 +16,20 @@
 <ion-content padding>
   <ion-grid>
     <ion-row>
-      <ion-col><b>OrderID</b></ion-col>
-      <ion-col><b>Vornanme</b></ion-col>
-      <ion-col><b>Nachname</b></ion-col>
-      <ion-col><b>Kommentar</b></ion-col>
+      <ion-col><b>Name</b></ion-col>
+      <ion-col><b>Gewicht</b></ion-col>
+      <ion-col><b>Preis</b></ion-col>
+      <ion-col><b>Bestand</b></ion-col>
+      <ion-col><b>Vorbestellbar</b></ion-col>
+      <ion-col><b>Löschen</b></ion-col>
+      <ion-col><b>Bearbeiten</b></ion-col>
     </ion-row>
-    <ion-row *ngFor="let item of preOrderList">
-      <ion-col>{{item.poid}}</ion-col>
-      <ion-col>{{item.surname}}</ion-col>
+    <ion-row *ngFor="let item of productList">
       <ion-col>{{item.name}}</ion-col>
-      <ion-col>{{item.comment}}</ion-col>
+      <ion-col>{{item.weight}}g</ion-col>
+      <ion-col>{{item.price}}€</ion-col>
+      <ion-col>{{item.amount}}</ion-col>
+      <ion-col>{{item.preOrderable}}</ion-col>
       <ion-col><button (click)="deleteProduct(item)"></button></ion-col>
       <ion-col><button (click)="editProduct(item)"></button></ion-col>
     </ion-row>

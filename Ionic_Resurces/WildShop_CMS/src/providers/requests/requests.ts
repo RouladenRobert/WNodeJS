@@ -61,7 +61,7 @@ export class RequestsProvider {
     return this.http.post(this.consts.url+"userList", {session : session});
   }
 
-  public getProducts(session : Session, limit){
+  public getProducts(session : Session, limit?){
     return this.http.post(this.consts.url+"prodList", {session : session, limit : limit});
   }
 
@@ -75,6 +75,10 @@ export class RequestsProvider {
 
   public deletePreOrder(session : Session, preOrderID){
     return this.http.post(this.consts.url+"deletePreOrder", {session : session, preOrderID : preOrderID});
+  }
+
+  public deleteProduct(session : Session, productID){
+    return this.http.post(this.consts.url+"deleteProduct", {session : session, prodID : productID});
   }
 
 }
