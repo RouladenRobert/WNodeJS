@@ -51,7 +51,12 @@ export class ProductsPage {
   }
 
   private editProduct(item){
-    this.navCtrl.push(ProductEditorPage, {session : this.session, item : item});
+    if(item === null || item === undefined){
+      this.navCtrl.push(ProductEditorPage, {session : this.session});
+    }
+    else{
+        this.navCtrl.push(ProductEditorPage, {session : this.session, item : item});  
+    }
   }
 
 }

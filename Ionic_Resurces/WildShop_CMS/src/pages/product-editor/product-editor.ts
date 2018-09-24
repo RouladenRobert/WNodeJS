@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 /**
- * Generated class for the ProdcutEditorPage page.
+ * Generated class for the ProductEditorPage page.
  *
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
@@ -10,8 +10,8 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 @IonicPage()
 @Component({
-  selector: 'page-prodcut-editor',
-  templateUrl: 'prodcut-editor.html',
+  selector: 'page-product-editor',
+  templateUrl: 'product-editor.html',
 })
 export class ProductEditorPage {
 
@@ -19,14 +19,18 @@ export class ProductEditorPage {
   }
 
   private session = this.navParams.get('session');
-  private item = this.navParams.get('item');
+  private item;
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad ProdcutEditorPage');
+    if(this.navParams.get('item') !== null && this.navParams.get('item') !== undefined){
+      this.item = this.navParams.get('item');
+    }
+
+    console.log(document.getElementById("desc"));
   }
 
-  private sendChanges(item){
-    //must be implemented in backend first
+  private sendProduct(item){
+
   }
 
 }

@@ -14,6 +14,7 @@ import {OrderDetailPage} from '../pages/order-detail/order-detail';
 import {OrdersPage} from '../pages/orders/orders';
 import {ProductsPage} from '../pages/products/products';
 import {ProductDetailPage} from '../pages/product-detail/product-detail';
+import {ProductEditorPage} from '../pages/product-editor/product-editor';
 import {NewPasswordPage} from '../pages/new-password/new-password';
 import {RegisterPage} from '../pages/register/register';
 import {PreOrderDetailPage} from '../pages/pre-order-detail/pre-order-detail';
@@ -35,7 +36,8 @@ import {AdminsPage} from '../pages/admins/admins';
     NewPasswordPage,
     PreOrderDetailPage,
     LogoutPage,
-    AdminsPage
+    AdminsPage,
+    ProductEditorPage
   ],
   imports: [
     BrowserModule,
@@ -55,7 +57,8 @@ import {AdminsPage} from '../pages/admins/admins';
     NewPasswordPage,
     PreOrderDetailPage,
     LogoutPage,
-    AdminsPage
+    AdminsPage,
+    ProductEditorPage
   ],
   providers: [
     StatusBar,

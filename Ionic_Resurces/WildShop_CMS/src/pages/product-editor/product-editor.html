@@ -1,5 +1,5 @@
 <!--
-  Generated template for the ProdcutEditorPage page.
+  Generated template for the ProductEditorPage page.
 
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
@@ -7,32 +7,17 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>ProductEditor</ion-title>
+    <ion-title text-center>ProductEditor</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <ion-row>
-          <ion-col><b>Name</b></ion-col>
-          <ion-col><b>Preis</b></ion-col>
-          <ion-col><b>Gewicht</b></ion-col>
-          <ion-col><b>Bestand</b></ion-col>
-          <ion-col><b>Vorbestellbar</b></ion-col>
-        </ion-row>
-        <ion-row *ngFor="let item of prodList">
-          <ion-col><ion-input placeholder="item.name"></ion-input></ion-col>
-          <ion-col><ion-input type="number" placeholder="item.price €"></ion-input></ion-col>
-          <ion-col><ion-input typee = "number" placeholder="item.weight g"></ion-input></ion-col>
-          <ion-col><ion-input type = "number" placeholder="item.amount"></ion-input></ion-col>
-          <ion-col><ion-checkbox [(ngModel)]="item.preOrderable"></ion-checkbox></ion-col>
-        </ion-row>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-input id="name"></ion-input>
+  <ion-input id="amount" type="number"></ion-input>
+  <ion-input id="price" type="number"></ion-input>
+  <ion-input id="desc"></ion-input>
+  <ion-checkbox></ion-checkbox>
 
 </ion-content>
