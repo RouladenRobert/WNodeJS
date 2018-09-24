@@ -368,7 +368,7 @@ module.exports = {
         return;
       }
 
-      db.ProductPool.create({pid : prodID, name : prod.dataValues.name, description : prod.dataValues.description, amaount : prod.dataValues.amount, price : prod.dataValues.price,
+      db.ProductPool.create({pid : prodID, name : prod.dataValues.name, description : prod.dataValues.description, amount : prod.dataValues.amount, price : prod.dataValues.price,
                               weight : prod.dataValues.weight, preOrderable : prod.dataValues.preOrderable, pic : prod.dataValues.pic, createdAt : prod.dataValues.createdAt,
                               updatedAt : new Date()}).then(prodpool => {
 
@@ -423,7 +423,7 @@ module.exports = {
         prodObj.pic = "../";
       }
 
-      db.Product.create({name : prodObj.name, description : prodObj.description, amount : prodObj.amount, price : prodObj.price, weight : prodObj.weight,
+      db.Product.create({name : prodObj.name, description : prodObj.desc, amount : prodObj.amount, price : prodObj.price, weight : prodObj.weight,
                         preOrderable : prodObj.preOrderable, pic : prodObj.pic, createdAt : new Date(), updatedAt : new Date()}).then(prod => {
                           res.status(200);
                           res.end();

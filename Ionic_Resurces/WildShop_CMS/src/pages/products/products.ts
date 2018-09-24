@@ -40,7 +40,9 @@ export class ProductsPage {
 
   private deleteProduct(ind){
     this.reqProv.deleteProduct(this.session, this.productList[ind].pid).subscribe(res => {
-      this.productList = res;
+      var item = this.productList[ind];
+      this.productList = this.productList.filter(i => i !== item);
+      console.log(this.productList);
     }, err => {
       if(err.status === 401){
         this.navCtrl.push(LoginPage);

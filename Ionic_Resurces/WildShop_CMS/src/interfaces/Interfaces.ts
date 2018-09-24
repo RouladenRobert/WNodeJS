@@ -4,7 +4,7 @@ export interface Product{
   name : string;
   price: number;
   weight: number;
-  pid : number;
+  pid? : number;
   description?:string;
   amount? : number;
   pic? : string;

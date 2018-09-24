@@ -22,6 +22,7 @@ export class OrdersPage {
   }
   private session = this.navParams.get('session');
   private orderList;
+  private searchString;
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad OrdersPage');

@@ -23,11 +23,13 @@ export class ProductEditorPage {
   }
 
   private session = this.navParams.get('session');
-  private item = {name : '', amount : null, price : null, desc : '', weight : null, preOrderable : false};
+  private item = {name : null, amount : null, price : null, desc : null, weight : null, preOrderable : 'nein'};
   private buttonText = "Produkt einfügen";
-  private mapPreOrderable = {'ja' : true, 'nein' : false};
+  private mapPreOrderableEntry = {'ja' : true, 'nein' : false};
+  private mapPreOrderableLeave = {true : 'ja', false : 'nein'};
   private bNewItem = true;
-  private alert = alertCtl.create({title : 'Session abgelaufen, bitte neu einloggen.',
+  private enabled = true;
+  private alert = this.alertCtl.create({title : 'Session abgelaufen, bitte neu einloggen.',
                                   buttons : [{text : 'OK', handler : function(e){
                                     this.navCtrl.push(LoginPage);
                                   }}]});
@@ -36,10 +38,14 @@ export class ProductEditorPage {
     if(this.navParams.get('item') !== null && this.navParams.get('item') !== undefined){
       this.item = this.navParams.get('item');
       console.log(this.item);
-      this.item.preOrderable = this.mapPreOrderable[this.item.preOrderable];
+      this.item.preOrderable = this.mapPreOrderableEntry[this.item.preOrderable];
       this.buttonText = "Produkt aktualisieren";
       this.bNewItem = false;
     }
+  }
+
+  ionViewWillLeave(){
+    this.item.preOrderable = this.mapPreOrderableLeave[this.item.preOrderable];
   }
 
   private sendProduct(){
@@ -65,6 +71,12 @@ export class ProductEditorPage {
         }
         console.log(err);
       });
+    }
+  }
+
+  private enableButton(){
+    if(this.item.name !== null && this.item.amount !== null && this.item.price !== null && this.item.desc !== null && this.item.weight !== null){
+        this.enabled = false;
     }
   }
 

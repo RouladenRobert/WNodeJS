@@ -30,8 +30,8 @@
       <ion-col>{{item.price}}€</ion-col>
       <ion-col>{{item.amount}}</ion-col>
       <ion-col>{{item.preOrderable}}</ion-col>
-      <ion-col><button (click)="deleteProduct(ind)"></button></ion-col>
-      <ion-col><button (click)="editProduct(item, ind)"></button></ion-col>
+      <ion-col><button (click)="deleteProduct(ind)"> <ion-icon name="trash"></ion-icon></button></ion-col>
+      <ion-col><button (click)="editProduct(item, ind)"><ion-icon name="create"></ion-icon></button></ion-col>
     </ion-row>
   </ion-grid>
 

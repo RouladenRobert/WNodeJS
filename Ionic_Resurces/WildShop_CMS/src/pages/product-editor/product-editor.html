@@ -17,34 +17,34 @@
   <ion-list>
     <ion-item>
       <ion-label>Produktname:</ion-label>
-      <ion-input id="name" [(ngModel)]="item.name"></ion-input>
+      <ion-input id="name" [(ngModel)]="item.name" (input)="enableButton()"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label>Anzahl:</ion-label>
-      <ion-input id="amount" type="number" [(ngModel)]="item.amount"></ion-input>
+      <ion-input id="amount" type="number" [(ngModel)]="item.amount" (input)="enableButton()"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label>Preis:</ion-label>
-      <ion-input id="price" type="number" [(ngModel)]="item.price"></ion-input>
+      <ion-input id="price" type="number" [(ngModel)]="item.price" (input)="enableButton()"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label>Gewicht:</ion-label>
-      <ion-input id="weight" [(ngModel)]="item.weight"></ion-input>
+      <ion-input id="weight" [(ngModel)]="item.weight" (input)="enableButton()"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label>Beschreibung:</ion-label>
-      <ion-input id="desc" [(ngModel)]="item.desc"></ion-input>
+      <ion-input id="desc" [(ngModel)]="item.desc" (input)="enableButton()"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label>Vorbestellbar:</ion-label>
-      <ion-checkbox item-right [(ngModel)]="item.preOrderable"></ion-checkbox>
+      <ion-checkbox item-right [(ngModel)]="item.preOrderable" (input)="enableButton()"></ion-checkbox>
     </ion-item>
 
   </ion-list>
-  <button ion-button round outline (click)="sendProduct()">{{buttonText}}</button>
+  <button ion-button round outline (click)="sendProduct()" [disabled]="enabled">{{buttonText}}</button>
 </ion-content>
