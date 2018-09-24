@@ -38,10 +38,9 @@ export class ProductsPage {
     });
   }
 
-  private deleteProduct(item){
-    this.reqProv.deleteProduct(this.session, item.pid).subscribe(res => {
+  private deleteProduct(ind){
+    this.reqProv.deleteProduct(this.session, this.productList[ind].pid).subscribe(res => {
       this.productList = res;
-      console.log(res);
     }, err => {
       if(err.status === 401){
         this.navCtrl.push(LoginPage);
@@ -50,12 +49,13 @@ export class ProductsPage {
     });
   }
 
-  private editProduct(item){
+  private editProduct(item, ind){
     if(item === null || item === undefined){
       this.navCtrl.push(ProductEditorPage, {session : this.session});
     }
     else{
-        this.navCtrl.push(ProductEditorPage, {session : this.session, item : item});  
+        item.pid = this.productList[ind].pid;
+        this.navCtrl.push(ProductEditorPage, {session : this.session, item : item});
     }
   }
 

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {Constants} from '../../Constants/constants';
 import {Session} from '../../interfaces/interfaces';
+import {Product} from '../../interfaces/interfaces';
 
 /*
   Generated class for the RequestsProvider provider.
@@ -79,6 +80,14 @@ export class RequestsProvider {
 
   public deleteProduct(session : Session, productID){
     return this.http.post(this.consts.url+"deleteProduct", {session : session, prodID : productID});
+  }
+
+  public addProduct(session : Session, product : Product){
+    return this.http.post(this.consts.url+"addProduct", {session : session, product : product});
+  }
+
+  public updateProduct(session : Session, product : Product){
+    return this.http.post(this.consts.url+"updateProduct", {session : session, product : product});
   }
 
 }

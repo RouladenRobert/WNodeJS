@@ -24,14 +24,14 @@
       <ion-col><b>Löschen</b></ion-col>
       <ion-col><b>Bearbeiten</b></ion-col>
     </ion-row>
-    <ion-row *ngFor="let item of productList">
+    <ion-row *ngFor="let item of productList; let ind = index">
       <ion-col>{{item.name}}</ion-col>
       <ion-col>{{item.weight}}g</ion-col>
       <ion-col>{{item.price}}€</ion-col>
       <ion-col>{{item.amount}}</ion-col>
       <ion-col>{{item.preOrderable}}</ion-col>
-      <ion-col><button (click)="deleteProduct(item)"></button></ion-col>
-      <ion-col><button (click)="editProduct(item)"></button></ion-col>
+      <ion-col><button (click)="deleteProduct(ind)"></button></ion-col>
+      <ion-col><button (click)="editProduct(item, ind)"></button></ion-col>
     </ion-row>
   </ion-grid>
 

@@ -38,6 +38,9 @@ module.exports = function(app){
   app.route("/addProduct")
       .post(ctrl.addProduct);
 
+  app.route("/updateProduct")
+      .post(ctrl.updateProduct);
+
   app.route("/prodList")
       .post(ctrl.getProductList);
 

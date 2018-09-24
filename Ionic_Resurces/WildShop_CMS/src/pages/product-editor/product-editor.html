@@ -7,17 +7,44 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title text-center>ProductEditor</ion-title>
+    <ion-title text-center>Produkt-Editor</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-  <ion-input id="name"></ion-input>
-  <ion-input id="amount" type="number"></ion-input>
-  <ion-input id="price" type="number"></ion-input>
-  <ion-input id="desc"></ion-input>
-  <ion-checkbox></ion-checkbox>
+  <ion-list>
+    <ion-item>
+      <ion-label>Produktname:</ion-label>
+      <ion-input id="name" [(ngModel)]="item.name"></ion-input>
+    </ion-item>
 
+    <ion-item>
+      <ion-label>Anzahl:</ion-label>
+      <ion-input id="amount" type="number" [(ngModel)]="item.amount"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Preis:</ion-label>
+      <ion-input id="price" type="number" [(ngModel)]="item.price"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Gewicht:</ion-label>
+      <ion-input id="weight" [(ngModel)]="item.weight"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Beschreibung:</ion-label>
+      <ion-input id="desc" [(ngModel)]="item.desc"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Vorbestellbar:</ion-label>
+      <ion-checkbox item-right [(ngModel)]="item.preOrderable"></ion-checkbox>
+    </ion-item>
+
+  </ion-list>
+  <button ion-button round outline (click)="sendProduct()">{{buttonText}}</button>
 </ion-content>

@@ -3,7 +3,6 @@
 export interface Product{
   name : string;
   price: number;
-  stock: number;
   weight: number;
   pid : number;
   description?:string;

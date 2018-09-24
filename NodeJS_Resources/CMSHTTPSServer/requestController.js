@@ -411,21 +411,55 @@ module.exports = {
       });
     }
     else{
-      var prodObj = req.body.prodObj;
+      var prodObj = req.body.product;
+      var preOrderMapping = {true : 'true', false : 'false'};
+      prodObj.preOrderable = preOrderMapping[prodObj.preOrderable];
       if(prodObj === null || prodObj === undefined){
         res.status(500);
         res.send("Please type in the correct data to add a new product");
         return;
       }
+      else if(prodObj.pic === undefined || prodObj.pic === null){
+        prodObj.pic = "../";
+      }
 
-      db.Product.create({pid : prodObj.pid, name : prodObj.name, description : prodObj.description, amount : prodObj.amount, price : prodObj.price, weight : prodObj.weight,
+      db.Product.create({name : prodObj.name, description : prodObj.description, amount : prodObj.amount, price : prodObj.price, weight : prodObj.weight,
                         preOrderable : prodObj.preOrderable, pic : prodObj.pic, createdAt : new Date(), updatedAt : new Date()}).then(prod => {
                           res.status(200);
-                          res.send("Added product");
+                          res.end();
           }).catch(err => {
             console.log(err);
           })
     }
+
+  },
+
+  updateProduct : function(req, res){
+    var prodObj = req.body.product;
+    var preOrderMapping = {true : 'true', false : 'false'};
+    prodObj.preOrderable = preOrderMapping[prodObj.preOrderable];
+    if(prodObj === null || prodObj === undefined){
+      res.status(500);
+      res.send("Please type in the correct data to add a new product");
+      return;
+    }
+    else if(prodObj.pic === undefined || prodObj.pic === null){
+      prodObj.pic = "../";
+    }
+
+    db.Product.update({name : prodObj.name, description : prodObj.desc, amount : prodObj.amount, preOrderable : prodObj.preOrderable, price : prodObj.price, weight : prodObj.weight},
+                      {where : {pid : prodObj.pid}}).then(prod => {
+                        if(prod === null){
+                          res.status(500);
+                          res.end();
+                        }
+                        res.status(200);
+                        res.end();
+
+    }).catch(err => {
+      res.status(500);
+      res.end();
+    });
 
   },
 
@@ -435,7 +469,7 @@ module.exports = {
       limit = 100;
     }
 
-    db.Product.findAll({attributes : ['name', 'amount', 'weight', 'price', 'preOrderable'], limit : limit}).then(prods => {
+    db.Product.findAll({attributes : ['pid', 'name', 'amount', 'weight', 'price', 'preOrderable', 'description'], limit : limit}).then(prods => {
       var prodList = [];
       for(p of prods){
         var prodObj = {};
@@ -443,6 +477,8 @@ module.exports = {
         prodObj.amount = p.dataValues.amount;
         prodObj.price = p.dataValues.price;
         prodObj.weight = p.dataValues.weight;
+        prodObj.pid = p.dataValues.pid;
+        prodObj.desc = p.dataValues.description;
         if(p.dataValues.preOrderable == 'true'){
           prodObj.preOrderable = 'ja';
         }
