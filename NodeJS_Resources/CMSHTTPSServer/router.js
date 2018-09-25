@@ -46,4 +46,7 @@ module.exports = function(app){
 
   app.route("/logout")
       .post(ctrl.logout);
+
+  app.route("/searchOrder")
+      .post(ctrl.searchOrder);
 }

@@ -570,6 +570,26 @@ module.exports = {
         console.log(err);
     });
 
+  },
+
+  searchOrder : function(req, res){
+    var string = req.body.searchString;
+
+    db.Order.findAll({attributes : ['oid', 'name', 'surname', 'createdAt', 'comment'], where : {$or : [{oid : string}, {name : string}, {surname : string}]} }).then(orders => {
+        if(orders === null){
+          res.status(404);
+          res.end();
+          return;
+        }
+
+        res.status(200);
+        res.send(orders);
+
+    }).catch(err => {
+      console.log(err);
+      res.status(500);
+      res.end();
+    });
   }
 
 }

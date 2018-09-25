@@ -90,4 +90,7 @@ export class RequestsProvider {
     return this.http.post(this.consts.url+"updateProduct", {session : session, product : product});
   }
 
+  public searchOrder(session : Session, searchString){
+    return this.http.post(this.consts.url+"searchOrder", {session : session, searchString : searchString});
+  }
 }

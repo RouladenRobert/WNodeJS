@@ -23,6 +23,7 @@ export class ProductsPage {
 
   private session = this.navParams.get('session');
   private productList;
+  private productsShown;
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ProductsPage');
@@ -32,6 +33,7 @@ export class ProductsPage {
   private loadProducts(){
     this.reqProv.getProducts(this.session).subscribe(res => {
       this.productList = res;
+      this.productsShown = res;
       console.log(res);
     }, err => {
       console.log(err);
@@ -59,6 +61,22 @@ export class ProductsPage {
         item.pid = this.productList[ind].pid;
         this.navCtrl.push(ProductEditorPage, {session : this.session, item : item});
     }
+  }
+
+  private search(ev : any){
+    const val = ev.target.value;
+
+    if(val === ""){
+      this.productsShown = this.productList;
+    }
+
+    if(val && val.trim() != ''){
+      this.productsShown = this.productList.filter((item) => {
+        return (item.name.toLowerCase().indexOf(val.toLowerCase()) > -1);
+      });
+    }
+
+    console.log(this.productsShown);
   }
 
 }

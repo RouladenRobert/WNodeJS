@@ -14,6 +14,7 @@
 
 
 <ion-content padding>
+  <ion-searchbar (ionInput)="search($event)" placeholder="Nach Produkten suchen..."></ion-searchbar>
   <ion-grid>
     <ion-row>
       <ion-col><b>Name</b></ion-col>
@@ -24,7 +25,7 @@
       <ion-col><b>Löschen</b></ion-col>
       <ion-col><b>Bearbeiten</b></ion-col>
     </ion-row>
-    <ion-row *ngFor="let item of productList; let ind = index">
+    <ion-row *ngFor="let item of productsShown; let ind = index">
       <ion-col>{{item.name}}</ion-col>
       <ion-col>{{item.weight}}g</ion-col>
       <ion-col>{{item.price}}€</ion-col>
