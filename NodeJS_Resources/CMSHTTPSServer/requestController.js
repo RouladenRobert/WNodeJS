@@ -65,9 +65,8 @@ module.exports = {
           db.AdminUser.create({sname : userInfo.surname, name : userInfo.name, email: userInfo.email, pword : hash,
                           timestamp : timestamp, createdAt : timestamp, updatedAt : timestamp, authorized : false
                           }).then(result => {
-                      var session = sessionHandler.generateSessionObject(result.dataValues.uid);
                       res.status(200);
-                      res.send(session);
+                      res.end();
                       mc.sendRegConfirmation(result.dataValues.uid);
               }).catch(err => {
                 var msg = constants.LOGGER_REG_ERR + " Failed inserting admin-user in databse";
@@ -92,6 +91,21 @@ module.exports = {
       });
     });
 
+
+  },
+
+  confirmAdmin : function(req, res){
+      var userID = req.query.id;
+
+      db.AdminUser.update({authorized : true}, {where : {uid : userID}}).then(user => {
+        res.status(200);
+        res.end();
+        mc.sendConfirmationToNewAdmin(userID);
+      }).catch(err => {
+        console.log(err);
+        res.status(500);
+        res.end();
+      });
 
   },
 

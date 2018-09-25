@@ -29,6 +29,7 @@ app.route('/deletePreOrder').all(authorize);
 app.route('/preOrderDetails').all(authorize);
 app.route('/logout').all(authorize);
 app.route('/searchOrder').all(authorize);
+app.route('/confirm');
 router(app);
 
 const server = https.createServer({

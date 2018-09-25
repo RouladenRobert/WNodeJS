@@ -49,4 +49,7 @@ module.exports = function(app){
 
   app.route("/searchOrder")
       .post(ctrl.searchOrder);
+
+  app.route("/confirm")
+      .post(ctrl.confirmAdmin);
 }

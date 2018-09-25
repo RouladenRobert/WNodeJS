@@ -4,7 +4,6 @@ import {User} from '../../interfaces/interfaces';
 import {RequestsProvider} from '../../providers/requests/requests';
 import {LoginPage} from '../login/login';
 import {Session} from '../../interfaces/interfaces';
-import {HomePage} from '../home/home';
 import {AlertController} from 'ionic-angular';
 /**
  * Generated class for the RegisterPage page.
@@ -36,9 +35,15 @@ export class RegisterPage {
 
   private register(){
     console.log("Register: ", this.surname, this.name);
-    this.reqProv.register({ email: this.email, surname: this.surname, name: this.name, pass: this.password }).subscribe( (res : Session) =>{
-      this.navCtrl.push(HomePage, {session : res});
-      console.log(res);
+    const nC = this.navCtrl;
+    this.reqProv.register({ email: this.email, surname: this.surname, name: this.name, pass: this.password }).subscribe( (res) =>{
+      let alert = this.alertCtl.create({
+        title : "Sie wurden erfolgreich registriert. Sie werden auf die Login-Seite weitergeleitet, eine Verifikation Ihres Accounts erfolgt durch einen Administrator. Sie erhalten eine E-Mail, sobald Sie freigegeben sind.",
+        buttons : [{text : 'OK', handler : function(e){
+          nC.push(LoginPage);
+        }}]
+      });
+      alert.present();
     }, err => {
       if(err.status === 403){
         let alert = this.alertCtl.create({
