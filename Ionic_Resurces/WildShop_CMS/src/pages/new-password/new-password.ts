@@ -76,9 +76,6 @@ export class NewPasswordPage {
   }
 
   private checkPasswords(){
-    if(this.new_pw1 === this.new_pw2){
-      return true;
-    }
-    return false;
+    return this.new_pw2 === this.new_pw1;
   }
 }

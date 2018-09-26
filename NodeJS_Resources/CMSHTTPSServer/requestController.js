@@ -461,24 +461,15 @@ module.exports = {
       prodObj.pic = "../";
     }
 
-    db.findOne({attributes : ['amount']}).then(p => {
+    db.Product.findOne({attributes : ['amount']}).then(p => {
       if(p.dataValues.amount === 0){
+          updateProductHelper(req, res, prodObj);
           moveOrders(prodObj.pid, prodObj.amount);
+          return;
       }
 
-      db.Product.update({name : prodObj.name, description : prodObj.desc, amount : prodObj.amount, preOrderable : prodObj.preOrderable, price : prodObj.price, weight : prodObj.weight},
-                        {where : {pid : prodObj.pid}}).then(prod => {
-                          if(prod === null){
-                            res.status(404);
-                            res.end();
-                          }
-                          res.status(200);
-                          res.end();
+      updateProductHelper(req, res, prodObj);
 
-      }).catch(err => {
-        res.status(500);
-        res.end();
-      });
     }).catch(err => {
       res.status(500);
       res.end();
@@ -625,32 +616,32 @@ function moveOrders(pid, limit){
         remaining = remaining - po.dataValues.amount;
         if(remaining < 0){
           toSubs = -1*(remaining);
-        }
-        await db.OrderProduct.create({amount : po.dataValues.amount - toSubs, createdAt : po.dataValues.createdAt, updatedAt : new Date(),
-            OrderOid : po.dataValues.PreOrderPoid, ProductPid : po.dataValues.ProductPid}).then(order => {
-              await db.PreOrderProduct.destroy({where : {ProductPid : order.dataValues.ProductPid}}).then(destroyed => {
-                  await db.PreOrder.findOne({where : {poid : order.dataValues.OrderOid}}).then(pOrder => {
-                    var delivery = new Date();
-                    delivery.setDate(delivery.getDate() +1);
-                      awiat db.Order.create({oid : pOrder.dataValues.poid, comment : pOrder.dataValues.comment, UserUid : pOrder.dataValues.UserUid,
-                        createdAt : pOrder.dataValues.createdAt, updatedAt : new Date(), delivery_time : delivery}).then(order => {
-                          await db.PreOrder.destroy({where : {poid : order.dataValues.oid}}).then(destroyed => {
-                            return;
-                          }).catch(err => {
-                            console.log(err);
-                          });
-                        }).catch(err => {
-                          console.log(err);
-                        });
-                  }).catch(err => {
-                    console.log(err);
-                  });
+          db.OrderProduct.create({amount : po.dataValues.amount - toSubs, createdAt : po.dataValues.createdAt, updatedAt : new Date(), OrderOid : po.dataValues.PreOrderPoid,
+              ProductPid : po.dataValues.ProductPid}).then(orderProd => {
+                updatePreOrderProduct(po.dataValues.ProductPid, po.dataValues.PreOrderPoid, toSubs);
+                db.PreOrder.findOne({where : {poid : po.dataValues.PreOrderPoid}}).then(preOrder => {
+                  createOrder(preOrder);
+                }).catch(err => {
+                  console.log(err);
+                });
               }).catch(err => {
                 console.log(err);
               });
-            }).catch(err => {
+        }
+        else{
+            db.OrderProduct.create({amount : po.dataValues.amount, createdAt : po.dataValues.createdAt, updatedAt : new Date(), OrderOid : po.dataValues.PreOrderPoid,
+              ProductPid : po.dataValues.ProductPid}).then(orderProd => {
+                removePreOrderProduct(po.dataValues.ProductPid, po.dataValues.PreOrderPoid);
+                db.PreOrder.findOne({where : {poid : po.dataValues.PreOrderPoid}}).then(preOrder => {
+                    createOrder(preOrder);
+                    removePreOrder(preOrder.dataValues.poid);
+                }).catch(err => {
+                  console.log(err);
+                });
+            }).catch(err =>{
               console.log(err);
             });
+        }
       }
   }).catch(err => {
     console.log(err);
@@ -683,10 +674,28 @@ function updatePreOrderProduct(prodID, poid, amount){
   });
 }
 
-function updateOrder(prodID, oid, amount){
-  db.OrderProduct.update({amount : amount}, {where : {$and : [{ProductPid : prodID}, {OrderOid : oid}]}}).then(updated => {
+function createOrder(data){
+  const del = new Date();
+  del = del.setDate(del.getDate() +1);
+  db.Order.create({oid : data.dataValues.poid, comment : data.dataValues.comment, createdAt : data.dataValues.createdAt, updatedAt : new Date(), UserUid : data.dataValues.UserUid, delivery_time : del}).then(order => {
     return;
-  }).catch(err => {
+  }).catch(err =>{
     console.log(err);
+  });
+}
+
+function updateProductHelper(req, res, prodObj){
+  db.Product.update({name : prodObj.name, description : prodObj.desc, amount : prodObj.amount, preOrderable : prodObj.preOrderable, price : prodObj.price, weight : prodObj.weight},
+                    {where : {pid : prodObj.pid}}).then(prod => {
+                      if(prod === null){
+                        res.status(404);
+                        res.end();
+                      }
+                      res.status(200);
+                      res.end();
+
+  }).catch(err => {
+    res.status(500);
+    res.end();
   });
 }
