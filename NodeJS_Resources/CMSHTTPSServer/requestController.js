@@ -461,15 +461,24 @@ module.exports = {
       prodObj.pic = "../";
     }
 
-    db.Product.update({name : prodObj.name, description : prodObj.desc, amount : prodObj.amount, preOrderable : prodObj.preOrderable, price : prodObj.price, weight : prodObj.weight},
-                      {where : {pid : prodObj.pid}}).then(prod => {
-                        if(prod === null){
-                          res.status(500);
-                          res.end();
-                        }
-                        res.status(200);
-                        res.end();
+    db.findOne({attributes : ['amount']}).then(p => {
+      if(p.dataValues.amount === 0){
+          moveOrders(prodObj.pid, prodObj.amount);
+      }
 
+      db.Product.update({name : prodObj.name, description : prodObj.desc, amount : prodObj.amount, preOrderable : prodObj.preOrderable, price : prodObj.price, weight : prodObj.weight},
+                        {where : {pid : prodObj.pid}}).then(prod => {
+                          if(prod === null){
+                            res.status(404);
+                            res.end();
+                          }
+                          res.status(200);
+                          res.end();
+
+      }).catch(err => {
+        res.status(500);
+        res.end();
+      });
     }).catch(err => {
       res.status(500);
       res.end();
@@ -606,4 +615,78 @@ module.exports = {
     });
   }
 
+}
+
+function moveOrders(pid, limit){
+  db.PreOrderProduct.findAll({where : {ProductPid : pid}}).then(async function(preOrder) {
+    var remaining = limit;
+    var toSubs = 0;
+      for(po of preOrder){
+        remaining = remaining - po.dataValues.amount;
+        if(remaining < 0){
+          toSubs = -1*(remaining);
+        }
+        await db.OrderProduct.create({amount : po.dataValues.amount - toSubs, createdAt : po.dataValues.createdAt, updatedAt : new Date(),
+            OrderOid : po.dataValues.PreOrderPoid, ProductPid : po.dataValues.ProductPid}).then(order => {
+              await db.PreOrderProduct.destroy({where : {ProductPid : order.dataValues.ProductPid}}).then(destroyed => {
+                  await db.PreOrder.findOne({where : {poid : order.dataValues.OrderOid}}).then(pOrder => {
+                    var delivery = new Date();
+                    delivery.setDate(delivery.getDate() +1);
+                      awiat db.Order.create({oid : pOrder.dataValues.poid, comment : pOrder.dataValues.comment, UserUid : pOrder.dataValues.UserUid,
+                        createdAt : pOrder.dataValues.createdAt, updatedAt : new Date(), delivery_time : delivery}).then(order => {
+                          await db.PreOrder.destroy({where : {poid : order.dataValues.oid}}).then(destroyed => {
+                            return;
+                          }).catch(err => {
+                            console.log(err);
+                          });
+                        }).catch(err => {
+                          console.log(err);
+                        });
+                  }).catch(err => {
+                    console.log(err);
+                  });
+              }).catch(err => {
+                console.log(err);
+              });
+            }).catch(err => {
+              console.log(err);
+            });
+      }
+  }).catch(err => {
+    console.log(err);
+  });
+
+}
+
+function removePreOrderProduct(prodID, poid){
+  db.PreOrderProduct.destroy({where : {$and : [{ProductPid : prodID}, {PreOrderPoid : poid}]}}).then(destroyed => {
+    return;
+  }).catch(err => {
+    console.log(err);
+  });
+
+}
+
+function removePreOrder(id){
+  db.PreOrder.destroy({where : {poid : id}}).then(destroyed => {
+    return;
+  }).catch(err => {
+    console.log(err);
+  });
+}
+
+function updatePreOrderProduct(prodID, poid, amount){
+  db.PreOrderProduct.update({amount : amount}, {where : {$and : [{ProductPid : prodID}, {PreOrderPoid : poid}]}}).then(updated => {
+    return;
+  }).catch(err => {
+    console.log(err);
+  });
+}
+
+function updateOrder(prodID, oid, amount){
+  db.OrderProduct.update({amount : amount}, {where : {$and : [{ProductPid : prodID}, {OrderOid : oid}]}}).then(updated => {
+    return;
+  }).catch(err => {
+    console.log(err);
+  });
 }

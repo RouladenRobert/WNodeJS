@@ -76,7 +76,6 @@ export class ProductsPage {
       });
     }
 
-    console.log(this.productsShown);
   }
 
 }
