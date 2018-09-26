@@ -141,6 +141,34 @@ function sendChangedPasswordConfirm(userID){
       });
   }
 
+  function sendOrderInfo(userIDs){
+    for(user of userIDs){
+      db.User.findOne({attributes : ['email', 'sname'], where : {uid : user}}).then(u => {
+        var toSend = "Hallo "+u.dataValues.sname+"! \nGute Nachrichten!\nDeine Bestellung vom "+user.date+" ist nun vom Status 'vorbestellt' auf 'bestellt' verschoben worden.\n"+
+                  "In Kürze sollte die Ware eingehen!\n\nVielen Dank!"
+
+        var sendObj = {
+                  from : consts.MAIL_ADDR,
+                  to : user.email,
+                  subject : consts.PW_MAIL_SUBJECT,
+                  text : toSend};
+
+        trans.sendMail(mailOpt, function(error, info){
+            if(error){
+              console.log(error);
+            }
+            else{
+              toSend = undefined;
+              console.log("mail sent!");
+            }
+        });
+
+      }).catch(err => {
+        console.log(err);
+      });
+    }
+  }
+
 
 module.exports= {
 
@@ -161,5 +189,9 @@ module.exports= {
 
   sendConfirmationToNewAdmin : function(userID){
     return sendConfirmationToNewAdmin(userID);
+  }
+
+  sendOrderInfo : function(userIDs){
+    return sendOrderInfo(userIDs);
   }
 }

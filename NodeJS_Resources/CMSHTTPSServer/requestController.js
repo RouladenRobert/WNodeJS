@@ -463,8 +463,9 @@ module.exports = {
 
     db.Product.findOne({attributes : ['amount']}).then(p => {
       if(p.dataValues.amount === 0){
-          updateProductHelper(req, res, prodObj);
+          var users = updateProductHelper(req, res, prodObj);
           moveOrders(prodObj.pid, prodObj.amount);
+          mc.sendOrderInfo(users);
           return;
       }
 
@@ -609,6 +610,7 @@ module.exports = {
 }
 
 function moveOrders(pid, limit){
+  var users = [];
   db.PreOrderProduct.findAll({where : {ProductPid : pid}}).then(async function(preOrder) {
     var remaining = limit;
     var toSubs = 0;
@@ -616,10 +618,11 @@ function moveOrders(pid, limit){
         remaining = remaining - po.dataValues.amount;
         if(remaining < 0){
           toSubs = -1*(remaining);
-          db.OrderProduct.create({amount : po.dataValues.amount - toSubs, createdAt : po.dataValues.createdAt, updatedAt : new Date(), OrderOid : po.dataValues.PreOrderPoid,
-              ProductPid : po.dataValues.ProductPid}).then(orderProd => {
+          await db.OrderProduct.create({amount : po.dataValues.amount - toSubs, createdAt : po.dataValues.createdAt, updatedAt : new Date(), OrderOid : po.dataValues.PreOrderPoid,
+              ProductPid : po.dataValues.ProductPid}).then(async function(orderProd) => {
                 updatePreOrderProduct(po.dataValues.ProductPid, po.dataValues.PreOrderPoid, toSubs);
-                db.PreOrder.findOne({where : {poid : po.dataValues.PreOrderPoid}}).then(preOrder => {
+                await db.PreOrder.findOne({where : {poid : po.dataValues.PreOrderPoid}}).then(preOrder => {
+                  users.push({user : preOrder.dataValues.UserUid, date : preOrder.dataValues.createdAt);
                   createOrder(preOrder);
                 }).catch(err => {
                   console.log(err);
@@ -629,10 +632,11 @@ function moveOrders(pid, limit){
               });
         }
         else{
-            db.OrderProduct.create({amount : po.dataValues.amount, createdAt : po.dataValues.createdAt, updatedAt : new Date(), OrderOid : po.dataValues.PreOrderPoid,
-              ProductPid : po.dataValues.ProductPid}).then(orderProd => {
+            await db.OrderProduct.create({amount : po.dataValues.amount, createdAt : po.dataValues.createdAt, updatedAt : new Date(), OrderOid : po.dataValues.PreOrderPoid,
+              ProductPid : po.dataValues.ProductPid}).then(async function(orderProd) => {
                 removePreOrderProduct(po.dataValues.ProductPid, po.dataValues.PreOrderPoid);
-                db.PreOrder.findOne({where : {poid : po.dataValues.PreOrderPoid}}).then(preOrder => {
+                await db.PreOrder.findOne({where : {poid : po.dataValues.PreOrderPoid}}).then(preOrder => {
+                    users.push({user : preOrder.dataValues.UserUid, date : preOrder.dataValues.createdAt);
                     createOrder(preOrder);
                     removePreOrder(preOrder.dataValues.poid);
                 }).catch(err => {
@@ -643,10 +647,11 @@ function moveOrders(pid, limit){
             });
         }
       }
+
   }).catch(err => {
     console.log(err);
   });
-
+  return users;
 }
 
 function removePreOrderProduct(prodID, poid){
