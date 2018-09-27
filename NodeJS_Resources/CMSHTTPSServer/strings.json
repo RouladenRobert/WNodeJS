@@ -1,0 +1,15 @@
+{
+  "registration" : "Die Registrierung wurde entgegengenommen. Es erfolgt eine Verifikation durch einen anderen Administrator.\n\nBei Abschluss der Verifikation wird Ihnen eine Mail geschickt und Sie können sich mit den von Ihnen angegeben Login-Daten einloggen.\n\nVielen Dank!\n\n",
+
+  "h" : "Hallo",
+
+  "newAdmin" : "Ein neuer Administrator möchte sich registrieren! Um den Account freizugeben, klicken Sie bitte auf den angefügten Link. \nSoll er nicht aktiviert werden, kann diese Mail ignoriert werden.\n\n",
+
+  "changedPassword" : "\nDu hast dein Passwort geändert.\nFalls du das nicht selbst warst, kontaktiere uns bitte!\n\n",
+
+  "adminFree" : "Ihr Administrator-Account wurde nun freigegeben! Sie können sich ab sofort einloggen! \n\nVielen Dank!",
+
+  "oderOfDate" : "Gute Nachrichten!\nDeine Bestellung vom ",
+
+  "stateChanged" : " ist nun vom Status 'vorbestellt' auf 'bestellt' verschoben worden.\nIn Kürze sollte die Ware eingehen!\n\nVielen Dank!"
+}

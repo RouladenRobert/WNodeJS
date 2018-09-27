@@ -15,10 +15,12 @@ const trans = mailer.createTransport(consts.MAIL_TRANSPORT);
 function sendRegConfirmation(userID){
 
   db.AdminUser.findOne({attributes : ["email", "sname"], where : {uid : userID}}).then(user => {
-    msg = "Hallo "+user.dataValues.sname+"!\nDie Registrierung wurde entgegengenommen. Es erfolgt eine Verifikation durch einen anderen Administrator.\n"+
-    "\nBei Abschluss der Verifikation wird Ihnen eine Mail geschickt und Sie können sich mit den von Ihnen angegeben Login-Daten einloggen.\n\nVielen Dank!\n\n";
+
+    const messages = require("strings.json");
+
+    msg = messages["h"]+" "+user.dataValues.sname+"!\n"+messages["registration"];
     var url = consts.REG_MAIL_URL+userID;
-    verMsg = "Ein neuer Administrator möchte sich registrieren! Um den Account freizugeben, klicken Sie bitte auf den angefügten Link. \nSoll er nicht aktiviert werden, kann diese Mail ignoriert werden.\n\n"
+    verMsg = messages["newAdmin"];
     verMsg += url;
 
     var mailOptReg = {
@@ -64,7 +66,9 @@ function sendGeneratedPassword(pw, email){
       return;
     }
 
-    msg = "Hallo "+user.dataValues.sname+"!\nWir haben dein Passwort geändert!\nDas Passwort lautet "+pw+".\n\nBitte ändere das Passwort umgehend!";
+    const messages = require("strings.json");
+
+    msg = messages["h"]+" "+user.dataValues.sname+"!"+messages["changedPassword"];
 
     var mailOpt = {
       from : consts.MAIL_ADDR,
@@ -91,7 +95,9 @@ function sendGeneratedPassword(pw, email){
 
 function sendChangedPasswordConfirm(userID){
     db.AdminUser.findOne({attributes : ["email", "sname"], where : {uid : userID}}).then(user => {
-      msg = "Hallo "+user.dataValues.sname+"!\nDu hast dein Passwort geändert.\nFalls du das nicht selbst warst, kontaktiere uns bitte!\n\n";
+      const messages = require('strings.json');
+
+      msg = messages["h"]+" "+user.dataValues.sname+"!\n"+messages["changedPassword"];
 
       var mailOpt = {
         from : consts.MAIL_ADDR,
@@ -118,7 +124,8 @@ function sendChangedPasswordConfirm(userID){
 
   function sendConfirmationToNewAdmin(userID){
       db.AdminUser,findOne({attributes : ['email', 'sname'], where : {uid : userID}}).then(user => {
-        msg = "Hallo "+user.dataValues.sname+"! Ihr Administrator-Account wurde nun freigegeben! Sie können sich ab sofort einloggen! \n\nVielen Dank!";
+        const messages = require('strings.json');
+        msg = messages["h"]+" "+user.dataValues.sname+"!\n"+messages["adminFree"];
 
         var mailOpt = {
           from : consts.MAIL_ADDR,
@@ -144,8 +151,8 @@ function sendChangedPasswordConfirm(userID){
   function sendOrderInfo(userIDs){
     for(user of userIDs){
       db.User.findOne({attributes : ['email', 'sname'], where : {uid : user}}).then(u => {
-        var toSend = "Hallo "+u.dataValues.sname+"! \nGute Nachrichten!\nDeine Bestellung vom "+user.date+" ist nun vom Status 'vorbestellt' auf 'bestellt' verschoben worden.\n"+
-                  "In Kürze sollte die Ware eingehen!\n\nVielen Dank!"
+        const messages = require('strings.json');
+        var toSend = messages["h"]+" "+u.dataValues.sname+"! \n"+messages["stateChanged"];
 
         var sendObj = {
                   from : consts.MAIL_ADDR,
