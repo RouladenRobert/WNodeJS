@@ -34,7 +34,6 @@ export class HomePage {
     // if one data-box could not be loaded the other boxes should not be affected
     this.reqProv.getOrderList(this.session).subscribe(res => {
       this.orderList = res;
-      console.log(res);
   }, err => {
       console.log(err);
   });

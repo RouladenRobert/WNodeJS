@@ -9,10 +9,10 @@ const preOrderController = require("./preOrderController.js");
 const mc = require("./mailController.js");
 const orderConsts = require("./orderConstants.js");
 const crypto = require("crypto");
-const logger = require('../Logger/logger.js');
+const loggerModule = require('../Logger/logger.js');
 const salt = 10;
 
-logger.createInstance('F:/Jonas/Programmierung/Ionic/WildShop/WNodeJS/NodeJS_Resources/CMSHTTPSServer/log.txt');
+const logger = new loggerModule.Logger(constants.LOGFILE_PATH);
 
 module.exports = {
 
@@ -21,7 +21,7 @@ module.exports = {
     var pass = req.body.pass;
     var logMsg = '';
 
-    db.AdminUser.findOne({attributes : ['email', 'uid', 'pword'], where : {email : mail}}).then(user => {
+    db.AdminUser.findOne({attributes : ['email', 'uid', 'pword'], where : {email : mail, authorized : true}}).then(user => {
       if(user === null){
         res.status(200);
         res.send("User not found");

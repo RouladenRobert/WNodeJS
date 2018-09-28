@@ -43,5 +43,5 @@ module.exports = {
   LOGGER_LOGIN_TRY : '[LOGIN TRIAL]',
   LOGGER_REGISTER_TRY : '[REGISTER TRIAL]',
   LOGGER_CONFIRM_TRY : '[CONFIMRATION TRIAL]',
-  LOGFILE_PATH : '../HTTPSServer/log.txt'
+  LOGFILE_PATH : 'HTTPSServer/log.txt'
 }

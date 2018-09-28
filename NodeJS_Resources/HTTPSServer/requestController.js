@@ -9,10 +9,10 @@ const preOrderController = require("./preOrderController.js");
 const mc = require("./mailController.js");
 const orderConsts = require("./orderConstants.js");
 const crypto = require("crypto");
-const logger = require('../Logger/logger.js');
+const loggerModule = require('../Logger/logger.js');
 const salt = 10;
 
-logger.createInstance('../HTTPSServer/log.txt');
+const logger = new loggerModule.Logger(constants.LOGFILE_PATH);
 
 module.exports = {
 

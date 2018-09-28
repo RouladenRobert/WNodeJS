@@ -5,9 +5,12 @@ const constants = require('../HTTPSServer/constants.js');
 class MessageHandler {
   constructor(file){
     this.msgCounter = 0;
+    this.path = file;
     this.msgTable = new hashTable.HashMap();
     try{
+      // is opened for usage in removeMessage, the interface is pritty incosistent, so the addMessage will not use this opened file, it will use fs.appendFileSync(file) instead
       this.logFile = fs.openSync(file, 'r+');
+      console.log(file);
     }
     catch(e){
       console.log("[LOGGER] file can't be found or opened");
@@ -18,16 +21,16 @@ class MessageHandler {
 
   addMessage(msg){
     var date = new Date().toString();
-    var message = msg + " - "+date+'\n';
+    var message = msg + " - "+date+"\n";
     try{
-      fs.appendFileSync(constants.LOGFILE_PATH, message);
+      fs.appendFileSync(this.path, message);
       this.msgTable.set(msg, this.msgCounter);
       this.msgCounter += 1;
     }
     catch(e){
       try{
-        var message_log_err = 'Error while logging message: '+message+' - '+date+'\n';
-        fs.appendFileSync(constants.LOGFILE_PATH, message_log_err);
+        var message_log_err = 'Error while logging message: '+message+' - '+date+"\n";
+        fs.appendFileSync(this.path, message_log_err);
       }
       catch(ex){
         console.log("[LOGGER] Couldn't write to file "+this.logFile);
@@ -57,7 +60,7 @@ class MessageHandler {
     catch(e){
       try{
         var msg = constants.LOGGER_LOG_ERR + " Error while logging... - "+date+'\n';
-        fs.appendFileSync(constants.LOGFILE_PATH, msg);
+        fs.appendFileSync(this.path, msg);
       }
       catch(e){
         console.log(constants.LOGGER_LOG_ERR+" at messageHandler line 61");

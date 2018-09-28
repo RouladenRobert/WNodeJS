@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Navbar } from 'ionic-angular';
+import { ViewChild } from '@angular/core';
 import {RequestsProvider} from '../../providers/requests/requests';
 import {ProductEditorPage} from '../product-editor/product-editor';
 import {LoginPage} from '../login/login';
+import {HomePage} from '../home/home';
 
 /**
  * Generated class for the ProductsPage page.
@@ -18,6 +20,8 @@ import {LoginPage} from '../login/login';
 })
 export class ProductsPage {
 
+  @ViewChild(Navbar) navBar : Navbar
+
   constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv : RequestsProvider) {
   }
 
@@ -26,8 +30,10 @@ export class ProductsPage {
   private productsShown;
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad ProductsPage');
     this.loadProducts();
+    this.navBar.backButtonClick = () => {
+      this.navCtrl.push(HomePage, {session : this.session});
+    }
   }
 
   private loadProducts(){
