@@ -12,6 +12,8 @@ const crypto = require("crypto");
 const logger = require('../Logger/logger.js');
 const salt = 10;
 
+logger.createInstance('../HTTPSServer/log.txt');
+
 module.exports = {
 
     showHome : function(req, res){
@@ -199,12 +201,12 @@ module.exports = {
           }
       }).catch(err =>{
         res.status(500);
-        console.log(err);
-        console.log("[LOGIN] Error in Login");
         var msg = constants.LOGGER_LOGIN_ERR + " Error while searching user";
         logger.log(msg);
       });
 
+      msg = constants.LOGGER_LOGIN_TRY + " IP "+req.connection.remoteAddress+" tries to login.";
+      logger.log(msg);
     },
 
     register : function(req, res){
@@ -250,7 +252,8 @@ module.exports = {
         });
       });
 
-
+      msg = constants.LOGGER_REGISTER_TRY+" IP "+req.connection.remoteAddress+" tries to register";
+      logger.log(msg);
     },
 
     logout : function(req, res){
@@ -318,6 +321,9 @@ module.exports = {
         console.log("[DELETE] Failure while deleting user");
         res.status(500);
       });
+
+      msg = constants.LOGGER_CONFIRM_TRY+ " IP "+req.connection.remoteAddress+" tries to confirm";
+      logger.log(msg);
     },
 
     setPassword : function(req, res){
@@ -342,7 +348,8 @@ module.exports = {
           res.send({status : "OK"});
         }).catch(err => {
           res.status(501);
-          console.log(err);
+          msg = constants.LOGGER_NEW_PASS_ERR+" Error while hashsing";
+          logger.log(msg);
         });
       }
 
@@ -372,6 +379,8 @@ module.exports = {
           });
         }).catch(err => {
           res.status(500);
+          msg = constants.LOGGER_NEW_PASS_ERR+" Error while hashsing";
+          logger.log(msg);
         });
     }
   },

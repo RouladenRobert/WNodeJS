@@ -12,16 +12,21 @@ const crypto = require("crypto");
 const logger = require('../Logger/logger.js');
 const salt = 10;
 
+logger.createInstance('F:/Jonas/Programmierung/Ionic/WildShop/WNodeJS/NodeJS_Resources/CMSHTTPSServer/log.txt');
+
 module.exports = {
 
   login : function(req, res){
     var mail = req.body.email;
     var pass = req.body.pass;
+    var logMsg = '';
 
     db.AdminUser.findOne({attributes : ['email', 'uid', 'pword'], where : {email : mail}}).then(user => {
       if(user === null){
         res.status(200);
         res.send("User not found");
+        logMsg = constants.LOGGER_LOGIN_SUCC+" User "+user.dataValues.email+" not found";
+        logger.log(logMsg);
         return;
       }
 
@@ -34,11 +39,19 @@ module.exports = {
       }
       else{
         res.status(401);
-        res.send("Wrong password");
+        res.end();
+        logMsg = constants.LOGGER_LOGIN_SUCC + " User "+user.dataValues.uid+" typed in wrong password";
+        logger.log(logMsg);
       }
+    }).catch(err => {
+      res.status(500);
+      res.end();
+      logMsg = constants.LOGGER_LOGIN_ERR + " Error while accessing the database";
+      logger.log(logMsg);
     });
 
-
+    logMsg = constants.LOGGER_LOGIN_TRY+" IP "+req.connection.remoteAddress+" tried to login";
+    logger.log(logMsg);
   },
 
   logout : function(req, res){
@@ -54,6 +67,7 @@ module.exports = {
   register : function(req, res){
     var userInfo = req.body.user;
     var timestamp = new Date();
+    var logMsg = '';
 
     bcrypt.hash(userInfo.pass, salt).then(function(hash){
       /*
@@ -69,48 +83,50 @@ module.exports = {
                       res.end();
                       mc.sendRegConfirmation(result.dataValues.uid);
               }).catch(err => {
-                var msg = constants.LOGGER_REG_ERR + " Failed inserting admin-user in databse";
-                logger.log(msg);
                 res.status(500);
-                console.log("[REGISTER] Error in register admin");
-                console.log(err);
                 res.send(err);
+                logMsg = constants.LOGGER_REG_ERR + " Failed inserting admin-user in databse";
+                logger.log(msg);
               });
         }
         else{
-          var msg = constants.LOGGER_REG_SUCC + " Admin-user already exists";
-          logger.log(msg);
           res.status(403);
           res.send({reason : 'Admin-User already exists'});
+          logMsg = constants.LOGGER_REG_SUCC + " Admin-user already exists";
+          logger.log(msg);
         }
       }).catch(err => {
+        res.status(500);
         var msg = constants.LOGGER_REG_ERR + " " +err;
         logger.log(msg);
-        console.log(err);
-        res.status(500);
       });
     });
 
-
+    logMsg = constants.LOGGER_REGISTER_TRY+" IP "+req.connection.remoteAddress+" tries to register";
+    logger.log(logMsg);
   },
 
   confirmAdmin : function(req, res){
       var userID = req.query.id;
+      var logMsg = '';
 
       db.AdminUser.update({authorized : true}, {where : {uid : userID}}).then(user => {
         res.status(200);
         res.end();
         mc.sendConfirmationToNewAdmin(userID);
       }).catch(err => {
-        console.log(err);
+        logMsg = constants.LOGGER_ADMIN_CONFIRM_ERR+" Error while activating admin-user";
+        logger.log(logMsg);
         res.status(500);
         res.end();
       });
 
+      logMsg = constants.LOGGER_ADMIN_CONFIRM_TRY + " IP "+req.connection.remoteAddress+" tries to activate admin";
+      logger.log(logMsg);
   },
 
     setPassword : function(req, res){
-      console.log(req.body.session);
+      var logMsg = '';
       /*
         *if there is no session-object -> generate a random password and send it to the user.
       */
@@ -125,14 +141,20 @@ module.exports = {
             }
           }).catch(err => {
             res.status(500);
+            logMsg = constants.LOGGER_NEW_PASS_ERR+" Error while accessing databse";
+            logger.log(logMsg);
           });
           mc.sendGeneratedPassword(newPassword, email);
           res.status(200);
           res.send({status : "OK"});
         }).catch(err => {
           res.status(501);
-          console.log(err);
+          logMsg = constants.LOGGER_NEW_PASS_ERR+" Error while hashing new password";
+          logger.log(logMsg);
         });
+
+        logMsg = constants.LOGGER_NEW_PASS_TRY+ " IP "+req.connection.remoteAddress+" tries to change password without being logged in";
+        logger.log(logMsg);
       }
 
       /*
@@ -151,17 +173,26 @@ module.exports = {
                   res.status(200);
                   res.send({status : "OK"});
                 }).catch(err => {
+                  logMsg = constants.LOGGER_NEW_PASS_ERR+" Error while accessing databse";
+                  logger.log(logMsg);
                   res.status(500);
                 });
               });
             }
             else{
+              logMsg = constants.LOGGER_NEW_PASS_OK+" User "+user.dataValues.uid+" not found";
+              logger.log(logMsg);
               res.status(401);
             }
           });
         }).catch(err => {
+          logMsg = constants.LOGGER_NEW_PASS_ERR+" Error while hashing password";
+          logger.log(logMsg);
           res.status(500);
         });
+
+        logMsg = constants.LOGGER_NEW_PASS_TRY+ " IP "+req.connection.remoteAddress+" tries to change password while logged in";
+        logger.log(logMsg);
     }
   },
 
@@ -193,23 +224,26 @@ module.exports = {
             orderList.push(orderObj);
           }
 
-          console.log(orderList);
           res.status(200);
           res.send(orderList);
 
       }).catch(err => {
         res.status(501);
-        console.log(err);
+        var logMsg = constants.LOGGER_GET_ORDER_ERR+" Failed to load orders";
+        logger.log(logMsg);
       });
   },
 
   getOrderDetails : function(req, res){
 
     var orderID = req.body.orderID;
+    var logMsg = '';
 
     if(orderID === null || orderID === undefined){
       res.status(501);
       res.send("No orderID given");
+      logMsg = constants.LOGGER_GET_ORDER_DETAILS_SUCC+" No orderID given";
+      logger.log(logMsg);
       return;
     }
 
@@ -217,6 +251,8 @@ module.exports = {
       if(order === null){
         res.status(501);
         res.send("No order found for this ID");
+        logMsg = constants.LOGGER_GET_ORDER_DETAILS_SUCC+" No orderID found";
+        logger.log(logMsg);
         return;
       }
       var userName = order.dataValues.User.name;
@@ -234,29 +270,32 @@ module.exports = {
               await db.ProductPool.findOne({attributes : ['name'], where : {pid : op.dataValues.ProductPid}}).then(prodpool => {
                   prodNames.push(prodpool.name);
               }).catch(err => {
-                console.log(err);
+                logMsg = constants.LOGGER_GET_ORDER_DETAILS_ERR+" Error while getting product form ProductPool";
+                logger.log(logMsg);
               });
             }
           }).catch(err => {
-            console.log(err);
+            logMsg = constants.LOGGER_GET_ORDER_DETAILS_ERR+" Error while getting product form Products";
+            logger.log(logMsg);
           });
           prodAmounts.push(op.dataValues.amount);
         }
         toSend.prodNames = prodNames;
         toSend.prodAmounts = prodAmounts;
 
-        console.log(toSend);
         res.status(200);
         res.send(toSend);
 
       }).catch(err => {
-        console.log(err);
+        logMsg = constants.LOGGER_GET_ORDER_DETAILS_ERR+" Error while getting order-product-assignment";
+        logger.log(logMsg);
       });
     }).catch(err => {
-      console.log(err);
+      logMsg = constants.LOGGER_GET_ORDER_DETAILS_ERR+" Error while getting order";
+      logger.log(logMsg);
     });
 
-
+    logMsg = constants.LOGGER_GET_ORDER_DETAILS_TRY+" IP "+req.connection.remoteAddress+" tries to get order-details";
   },
 
   getPreOrderList : function(req, res){
@@ -285,23 +324,25 @@ module.exports = {
           orderList.push(orderObj);
         }
 
-        console.log(orderList);
         res.status(200);
         res.send(orderList);
 
     }).catch(err => {
       res.status(501);
-      console.log(err);
+      var logMsg = constants.LOGGER_GET_PREORDER_ERR+" Error while accessing databse";
     });
 
   },
 
   getPreOrderDetails : function(req, res){
       var preOrderID = req.body.preOrderID;
+      var logMsg = '';
 
       if(preOrderID === null || preOrderID === undefined){
         res.status(501);
         res.send("No orderID given");
+        logMsg = constants.LOGGER_GET_PREORDER_DETAILS_ERR+" No preOrderID given";
+        logger.log(logMsg);
         return;
       }
 
@@ -309,6 +350,9 @@ module.exports = {
         if(order === null){
           res.status(501);
           res.send("No order found for this ID");
+          logMsg = constants.LOGGER_GET_PREORDER_DETAILS_SUCC+" No preOrderID found";
+          logger.log(logMsg);
+
           return;
         }
         var userName = order.dataValues.User.name;
@@ -326,28 +370,33 @@ module.exports = {
                 await db.ProductPool.findOne({attributes : ['name'], where : {pid : op.dataValues.ProductPid}}).then(prodpool => {
                     prodNames.push(prodpool.name);
                 }).catch(err => {
-                  console.log(err);
+                  logMsg = constants.LOGGER_GET_PREORDER_DETAILS_ERR+" Error while getting products from ProductPool";
+                  logger.log(logMsg);
                 });
               }
             }).catch(err => {
-              console.log(err);
+              logMsg = constants.LOGGER_GET_PREORDER_DETAILS_ERR+" Error while getting products from Products";
+              logger.log(logMsg);
             });
             prodAmounts.push(op.dataValues.amount);
           }
           toSend.prodNames = prodNames;
           toSend.prodAmounts = prodAmounts;
 
-          console.log(toSend);
           res.status(200);
           res.send(toSend);
 
         }).catch(err => {
-          console.log(err);
+          logMsg = constants.LOGGER_GET_PREORDER_DETAILS_ERR+" Error while getting preorder-product-assignment";
+          logger.log(logMsg);
         });
       }).catch(err => {
-        console.log(err);
+        logMsg = constants.LOGGER_GET_PREORDER_DETAILS_ERR+" Error while getting preorders";
+        logger.log(logMsg);
       });
 
+      logMsg = constants.LOGGER_GET_PREORDER_DETAILS_TRY+" IP "+req.connection.remoteAddress+" tries to get preorder-details";
+      logger.log(logMsg);
 
   },
 
@@ -358,27 +407,39 @@ module.exports = {
 
   deletePreOrder : function(req, res){
       var preOrderID = req.body.preOrderID;
+      var logMsg = '';
 
       db.PreOrderProduct.destroy({where : {PreOrderPoid : preOrderID }}).then(pre => {
         db.PreOrder.destroy({wehre : {poid : preOrderID}}).then(destroyed => {
           res.status(200);
           res.end();
         }).catch(err => {
-          console.log(err);
+          res.status(500);
+          res.end();
+          logMsg = constants.LOGGER_DEL_PREORDER_ERR+" Error while deleting PreOrder";
+          logger.log(logMsg);
         });
       }).catch(err => {
-        console.log(err);
+        res.status(500);
+        res.end();
+        logMsg = constants.LOGGER_DEL_PREORDER_ERR+" Error while deleting PreOrderProduct";
+        logger.log(logMsg);
       });
 
+      logMsg = constants.LOGGER_DEL_PREORDER_TRY+" IP "+req.connection.remoteAddress+" tries to delete preorder";
+      logger.log(logMsg);
   },
 
   deleteProduct : function(req, res){
     var prodID = req.body.prodID;
+    var logMsg = '';
 
     db.Product.findOne({where : {pid : prodID}}).then(prod => {
       if(prod === null){
         res.status(404);
-        res.send("Could not find product with id "+ prodID);
+        res.end();
+        logMsg = constants.LOGGER_DEL_PRODUCT_SUCC+" Product not found";
+        logger.log(logMsg);
         return;
       }
 
@@ -390,19 +451,26 @@ module.exports = {
                 res.status(200);
                 res.end();
             }).catch(err => {
-              console.log(err);
+              logMsg = constants.LOGGER_DEL_PRODUCT_ERR+" Failed to delete product";
+              logger.log(logMsg);
             })
         }).catch(err => {
-            console.log(err);
+          logMsg = constants.LOGGER_DEL_PRODUCT_ERR+" Failed to move to product-pool";
+          logger.log(logMsg);
         });
     }).catch(err => {
-      console.log(err);
-    })
+      logMsg = constants.LOGGER_DEL_PRODUCT_ERR+" Failed to find product";
+      logger.log(logMsg);
+    });
+
+    logMsg = constants.LOGGER_DEL_PRODUCT_TRY+" IP "+req.connection.remoteAddress+" tries to delete product";
+    logger.log(logMsg);
 
   },
 
   addProduct : function(req, res){
     var prodID = req.body.prodID;
+    var logMsg = '';
 
     if(prodID !== undefined){
       db.ProductPool.findOne({where : {pid : prodID}}).then(pord => {
@@ -414,14 +482,17 @@ module.exports = {
               res.status(200);
               res.end();
           }).catch(err => {
-              console.log(err);
+              logMsg = constants.LOGGER_ADD_PRODUCT_ERR+" Failed to delete prouct in product-pool";
+              logger.log(logMsg);
           });
 
         }).catch(err => {
-            console.log(err);
+          logMsg = constants.LOGGER_ADD_PRODUCT_ERR+" Failed to create product";
+          logger.log(logMsg);
         });
       }).catch(err => {
-          console.log(err);
+        logMsg = constants.LOGGER_ADD_PRODUCT_ERR+" Failed to find prouct in product-pool";
+        logger.log(logMsg);
       });
     }
     else{
@@ -430,7 +501,9 @@ module.exports = {
       prodObj.preOrderable = preOrderMapping[prodObj.preOrderable];
       if(prodObj === null || prodObj === undefined){
         res.status(500);
-        res.send("Please type in the correct data to add a new product");
+        res.end();
+        logMsg = constants.LOGGER_ADD_PRODUCT_ERR+" No product-object given";
+        logger.log(logMsg);
         return;
       }
       else if(prodObj.pic === undefined || prodObj.pic === null){
@@ -442,19 +515,25 @@ module.exports = {
                           res.status(200);
                           res.end();
           }).catch(err => {
-            console.log(err);
+            logMsg = constants.LOGGER_ADD_PRODUCT_ERR+" Failed to create product";
+            logger.log(logMsg);
           })
     }
 
+    logMsg = constants.LOGGER_ADD_PRODUCT_TRY+" IP "+req.connection.remoteAddress+" tries to add a product";
+    logger.log(logMsg);
   },
 
   updateProduct : function(req, res){
     var prodObj = req.body.product;
     var preOrderMapping = {true : 'true', false : 'false'};
+    var logMsg = '';
     prodObj.preOrderable = preOrderMapping[prodObj.preOrderable];
     if(prodObj === null || prodObj === undefined){
       res.status(500);
-      res.send("Please type in the correct data to add a new product");
+      res.end();
+      logMsg = constants.LOGGER_UPDATE_PRODUCT_ERR+" No given object";
+      logger.log(logMsg);
       return;
     }
     else if(prodObj.pic === undefined || prodObj.pic === null){
@@ -474,12 +553,18 @@ module.exports = {
     }).catch(err => {
       res.status(500);
       res.end();
+      logMsg = constants.LOGGER_UPDATE_PRODUCT_ERR+" Failed to find product";
+      logger.log(logMsg);
     });
+
+    logMsg = constants.LOGGER_UPDATE_PRODUCT_TRY+" IP "+req.connection.remoteAddress+" tries to update product";
+    logger.log(logMsg);
 
   },
 
   getProductList : function(req, res){
     var limit = req.body.limit;
+    var logMsg = '';
     if(!limit){
       limit = 100;
     }
@@ -506,14 +591,16 @@ module.exports = {
       res.send(prodList);
 
     }).catch(err => {
-      console.log(err);
+      logMsg = constants.LOGGER_GET_PROD_ERR+" Failed to load products";
+      logger.log(logMsg);
     });
 
   },
 
   getAdminUsers : function(req, res){
 
-    limit = req.body.limit;
+    var limit = req.body.limit;
+    var logMsg = '';
 
     if(limit === null || limit === undefined){
       limit = 10;
@@ -533,15 +620,17 @@ module.exports = {
         res.send(userList);
 
     }).catch(err => {
-      console.log(err);
       res.status(500);
       res.end();
+      logMsg = constants.LOGGER_GET_USER_ERR+" Failed to load users";
+      logger.log(logMsg);
     });
 
   },
 
   finishOrder : function(req, res){
     var orderID = req.body.orderID;
+    var logMsg = '';
     db.Order.findOne({attributes : ['UserUid', 'comment', 'delivery_time'], where : {oid : orderID}}).then(order => {
         var userID = order.dataValues.UserUid;
         db.FinishedOrders.create({UserUid : userID, oid : orderID, comment : order.dataValues.comment, delivery_time : order.dataValues.delivery_time}).then(fo => {
@@ -552,39 +641,53 @@ module.exports = {
                       res.status(200);
                       res.end();
                     }).catch(err => {
-                      console.log(err);
+                      logMsg = constants.LOGGER_FINISH_ERR+" Failed to delete order";
+                      logger.log(logMsg);
                     });
                   }).catch(err => {
-                    console.log(err);
+                    logMsg = constants.LOGGER_FINISH_ERR+" Failed to delete order-product-assignment";
+                    logger.log(logMsg);
                   });
                 }).catch(err => {
-                  console.log(err);
+                  logMsg = constants.LOGGER_FINISH_ERR+" Failed to create finished order-product-assignment";
+                  logger.log(logMsg);
                 });
             }).catch(err => {
-                console.log(err);
+              logMsg = constants.LOGGER_FINISH_ERR+" Failed to find order-product-assignment";
+              logger.log(logMsg);
             });
           }).catch(err => {
-              console.log(err);
+            logMsg = constants.LOGGER_FINISH_ERR+" Failed to delete finished order";
+            logger.log(logMsg);
           });
         }).catch(err => {
-          console.log(err);
+          logMsg = constants.LOGGER_FINISH_ERR+" Failed to find order";
+          logger.log(logMsg);
         });
+
+        logMsg = constants.LOGGER_FINISH_TRY+" IP "+req.connection.remoteAddress+"tries to finish order";
+        logger.log(logMsg);
 
   },
 
   deleteOrder : function(req, res){
     var orderID = req.body.orderID;
+    var logMsg = '';
     db.OrderProduct.destroy({where : {OrderOid : orderID}}).then(op => {
         db.Order.destroy({where : {oid : orderID}}).then(destroyed => {
             res.status(200);
             res.end();
         }).catch(err => {
-            console.log(err);
+            logMsg = constants.LOGGER_DEL_ORDER_ERR+" Failed to delete order-product-assignment";
+            logger.log(logMsg);
         });
     }).catch(err => {
-        console.log(err);
+      logMsg = constants.LOGGER_DEL_ORDER_ERR+" Failed to delete order";
+      logger.log(logMsg);
     });
 
+    logMsg = constants.LOGGER_DEL_ORDER_TRY+" IP "+req.connection.remoteAddress+" tries to delete order";
+    logger.log(logMsg);
   },
 
   searchOrder : function(req, res){
@@ -601,9 +704,10 @@ module.exports = {
         res.send(orders);
 
     }).catch(err => {
-      console.log(err);
       res.status(500);
       res.end();
+      var logMsg = constants.LOGGER_SEARCH_ERR+" Failed to find string";
+      logger.log(logMsg);
     });
   }
 
@@ -619,10 +723,10 @@ function moveOrders(pid, limit){
         if(remaining < 0){
           toSubs = -1*(remaining);
           await db.OrderProduct.create({amount : po.dataValues.amount - toSubs, createdAt : po.dataValues.createdAt, updatedAt : new Date(), OrderOid : po.dataValues.PreOrderPoid,
-              ProductPid : po.dataValues.ProductPid}).then(async function(orderProd) => {
+              ProductPid : po.dataValues.ProductPid}).then(async function(orderProd){
                 updatePreOrderProduct(po.dataValues.ProductPid, po.dataValues.PreOrderPoid, toSubs);
                 await db.PreOrder.findOne({where : {poid : po.dataValues.PreOrderPoid}}).then(preOrder => {
-                  users.push({user : preOrder.dataValues.UserUid, date : preOrder.dataValues.createdAt);
+                  users.push({user : preOrder.dataValues.UserUid, date : preOrder.dataValues.createdAt});
                   createOrder(preOrder);
                 }).catch(err => {
                   console.log(err);
@@ -633,10 +737,10 @@ function moveOrders(pid, limit){
         }
         else{
             await db.OrderProduct.create({amount : po.dataValues.amount, createdAt : po.dataValues.createdAt, updatedAt : new Date(), OrderOid : po.dataValues.PreOrderPoid,
-              ProductPid : po.dataValues.ProductPid}).then(async function(orderProd) => {
+              ProductPid : po.dataValues.ProductPid}).then(async function(orderProd) {
                 removePreOrderProduct(po.dataValues.ProductPid, po.dataValues.PreOrderPoid);
                 await db.PreOrder.findOne({where : {poid : po.dataValues.PreOrderPoid}}).then(preOrder => {
-                    users.push({user : preOrder.dataValues.UserUid, date : preOrder.dataValues.createdAt);
+                    users.push({user : preOrder.dataValues.UserUid, date : preOrder.dataValues.createdAt});
                     createOrder(preOrder);
                     removePreOrder(preOrder.dataValues.poid);
                 }).catch(err => {

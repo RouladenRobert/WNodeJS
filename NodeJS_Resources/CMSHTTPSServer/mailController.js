@@ -3,6 +3,7 @@ const mailer = require('nodemailer');
 const db = require("../Database/database.js");
 const consts = require('./constants.js');
 const crypto = require('crypto');
+const fs = require('fs');
 
 var orderTable = new hashmap.HashMap();
 var priceTable = new hashmap.HashMap();
@@ -16,7 +17,7 @@ function sendRegConfirmation(userID){
 
   db.AdminUser.findOne({attributes : ["email", "sname"], where : {uid : userID}}).then(user => {
 
-    const messages = require("strings.json");
+    const messages = fs.readFileSync("strings.json");
 
     msg = messages["h"]+" "+user.dataValues.sname+"!\n"+messages["registration"];
     var url = consts.REG_MAIL_URL+userID;
@@ -66,7 +67,7 @@ function sendGeneratedPassword(pw, email){
       return;
     }
 
-    const messages = require("strings.json");
+    const messages = fs.readFileSync("strings.json");
 
     msg = messages["h"]+" "+user.dataValues.sname+"!"+messages["changedPassword"];
 
@@ -95,7 +96,7 @@ function sendGeneratedPassword(pw, email){
 
 function sendChangedPasswordConfirm(userID){
     db.AdminUser.findOne({attributes : ["email", "sname"], where : {uid : userID}}).then(user => {
-      const messages = require('strings.json');
+      const messages = fs.readFileSync('strings.json');
 
       msg = messages["h"]+" "+user.dataValues.sname+"!\n"+messages["changedPassword"];
 
@@ -124,7 +125,7 @@ function sendChangedPasswordConfirm(userID){
 
   function sendConfirmationToNewAdmin(userID){
       db.AdminUser,findOne({attributes : ['email', 'sname'], where : {uid : userID}}).then(user => {
-        const messages = require('strings.json');
+        const messages = fs.readFileSync('strings.json');
         msg = messages["h"]+" "+user.dataValues.sname+"!\n"+messages["adminFree"];
 
         var mailOpt = {
@@ -151,7 +152,7 @@ function sendChangedPasswordConfirm(userID){
   function sendOrderInfo(userIDs){
     for(user of userIDs){
       db.User.findOne({attributes : ['email', 'sname'], where : {uid : user}}).then(u => {
-        const messages = require('strings.json');
+        const messages = fs.readFileSync('strings.json');
         var toSend = messages["h"]+" "+u.dataValues.sname+"! \n"+messages["stateChanged"];
 
         var sendObj = {
@@ -196,7 +197,7 @@ module.exports= {
 
   sendConfirmationToNewAdmin : function(userID){
     return sendConfirmationToNewAdmin(userID);
-  }
+  },
 
   sendOrderInfo : function(userIDs){
     return sendOrderInfo(userIDs);

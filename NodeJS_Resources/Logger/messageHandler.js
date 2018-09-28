@@ -3,11 +3,11 @@ const fs = require('fs');
 const constants = require('../HTTPSServer/constants.js');
 
 class MessageHandler {
-  constructor(){
+  constructor(file){
     this.msgCounter = 0;
     this.msgTable = new hashTable.HashMap();
     try{
-      this.logFile = fs.openSync('../HTTPSServer/log.txt', 'r+');
+      this.logFile = fs.openSync(file, 'r+');
     }
     catch(e){
       console.log("[LOGGER] file can't be found or opened");
