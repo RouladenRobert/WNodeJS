@@ -66,8 +66,20 @@ export class RequestsProvider {
     return this.http.post(this.consts.url+"prodList", {session : session, limit : limit});
   }
 
+  public getProductPool(session : Session){
+    return this.http.post(this.consts.url+"prodPool", {session : session});
+  }
+
   public getPreOrderList(session : Session){
     return this.http.post(this.consts.url+"preOrderList", {session : session});
+  }
+
+  public pushToProducts(session : Session, pid : number){
+    return this.http.post(this.consts.url+"pushProd", {session : session, pid : pid});
+  }
+
+  public pushToProductPool(session : Session, pid : number){
+    return this.http.post(this.consts.url+"pushPool", {session : session, pid : pid});
   }
 
   public getPreOrderDetails(session : Session, preOrderID){

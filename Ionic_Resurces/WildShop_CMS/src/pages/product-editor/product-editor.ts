@@ -4,6 +4,7 @@ import {RequestsProvider} from '../../providers/requests/requests';
 import {ProductsPage} from '../products/products';
 import {AlertController} from 'ionic-angular';
 import {LoginPage} from '../login/login';
+import {HomePage} from '../home/home';
 
 /**
  * Generated class for the ProductEditorPage page.
@@ -29,9 +30,21 @@ export class ProductEditorPage {
   private mapPreOrderableLeave = {true : 'ja', false : 'nein'};
   private bNewItem = true;
   private enabled = true;
-  private alert = this.alertCtl.create({title : 'Session abgelaufen, bitte neu einloggen.',
+  private pid;
+  private sessionAlert = this.alertCtl.create({title : 'Session abgelaufen, bitte neu einloggen.',
                                   buttons : [{text : 'OK', handler : function(e){
                                     this.navCtrl.push(LoginPage);
+                                  }}]});
+  private prodAlert = this.alertCtl.create({title : 'Offenbar ist das Produkt bereits vorhanden. Soll es aktiviert werden?',
+                                  buttons : [{text : 'Ja', handler : function(e){
+                                    console.log(pid);
+                                    let session = navParams.get('session');
+                                    reqProv.pushToProducts(session, pid).subscribe(res => {
+                                      navCtrl.push(HomePage);
+                                      return;
+                                    }, err => {
+                                      console.log(err);
+                                    });
                                   }}]});
 
   ionViewDidLoad() {
@@ -52,11 +65,15 @@ export class ProductEditorPage {
     if(this.bNewItem){
       console.log("Add");
       this.reqProv.addProduct(this.session, this.item).subscribe(res => {
+        if(res){
+          this.pid = res.pid;
+          this.prodAlert.present();
+        }
         this.navCtrl.push(ProductsPage, {session : this.session});
       }, err => {
         if(err.status === 401){
             //create alert and go to login on confirm
-            this.alert.present();
+            this.sessionAlert.present();
         }
         console.log(err);
       });
@@ -67,7 +84,7 @@ export class ProductEditorPage {
       }, err => {
         if(err.status === 401){
           //create alert...
-          this.alert.present();
+          this.sessionAlert.present();
         }
         console.log(err);
       });

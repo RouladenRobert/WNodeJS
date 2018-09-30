@@ -29,6 +29,9 @@ app.route('/deletePreOrder').all(authorize);
 app.route('/preOrderDetails').all(authorize);
 app.route('/logout').all(authorize);
 app.route('/searchOrder').all(authorize);
+app.route('/prodPool').all(authorize);
+app.route('/pushPool').all(authorize);
+app.route('/pushProd').all(authorize);
 app.route('/confirm');
 router(app);
 

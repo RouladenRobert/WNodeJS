@@ -52,4 +52,13 @@ module.exports = function(app){
 
   app.route("/confirm")
       .post(ctrl.confirmAdmin);
+
+  app.route("/prodPool")
+      .post(ctrl.getProductPool);
+
+  app.route("/pushPool")
+      .post(ctrl.pushToProductPool);
+
+  app.route("/pushProd")
+      .post(ctrl.pushToProducts);
 }

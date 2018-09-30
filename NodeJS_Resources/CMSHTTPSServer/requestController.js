@@ -469,47 +469,28 @@ module.exports = {
   },
 
   addProduct : function(req, res){
-    var prodID = req.body.prodID;
     var logMsg = '';
-
-    if(prodID !== undefined){
-      db.ProductPool.findOne({where : {pid : prodID}}).then(pord => {
-          db.Product.create({pid : prodID, name : prod.dataValues.name, description : prod.dataValues.description, amaount : prod.dataValues.amount, price : prod.dataValues.price,
-                                  weight : prod.dataValues.weight, preOrderable : prod.dataValues.preOrderable, pic : prod.dataValues.pic, createdAt : prod.dataValues.createdAt,
-                                  updatedAt : new Date()}).then(prodRes => {
-
-          db.ProductPool.destroy({wehre : {pid : prodID}}).then(destroyed => {
-              res.status(200);
-              res.end();
-          }).catch(err => {
-              logMsg = constants.LOGGER_ADD_PRODUCT_ERR+" Failed to delete prouct in product-pool";
-              logger.log(logMsg);
-          });
-
-        }).catch(err => {
-          logMsg = constants.LOGGER_ADD_PRODUCT_ERR+" Failed to create product";
-          logger.log(logMsg);
-        });
-      }).catch(err => {
-        logMsg = constants.LOGGER_ADD_PRODUCT_ERR+" Failed to find prouct in product-pool";
-        logger.log(logMsg);
-      });
+    var prodObj = req.body.product;
+    var preOrderMapping = {true : 'true', false : 'false'};
+    prodObj.preOrderable = preOrderMapping[prodObj.preOrderable];
+    if(prodObj === null || prodObj === undefined){
+      res.status(500);
+      res.end();
+      logMsg = constants.LOGGER_ADD_PRODUCT_ERR+" No product-object given";
+      logger.log(logMsg);
+      return;
     }
-    else{
-      var prodObj = req.body.product;
-      var preOrderMapping = {true : 'true', false : 'false'};
-      prodObj.preOrderable = preOrderMapping[prodObj.preOrderable];
-      if(prodObj === null || prodObj === undefined){
-        res.status(500);
-        res.end();
-        logMsg = constants.LOGGER_ADD_PRODUCT_ERR+" No product-object given";
-        logger.log(logMsg);
+    else if(prodObj.pic === undefined || prodObj.pic === null){
+      prodObj.pic = "../";
+    }
+
+    db.ProductPool.findOne({where : {name : req.body.product.name}}).then(p => {
+      console.log(p);
+      if(p){
+        res.status(202);
+        res.send({pid : p.dataValues.pid});
         return;
       }
-      else if(prodObj.pic === undefined || prodObj.pic === null){
-        prodObj.pic = "../";
-      }
-
       db.Product.create({name : prodObj.name, description : prodObj.desc, amount : prodObj.amount, price : prodObj.price, weight : prodObj.weight,
                         preOrderable : prodObj.preOrderable, pic : prodObj.pic, createdAt : new Date(), updatedAt : new Date()}).then(prod => {
                           res.status(200);
@@ -517,8 +498,13 @@ module.exports = {
           }).catch(err => {
             logMsg = constants.LOGGER_ADD_PRODUCT_ERR+" Failed to create product";
             logger.log(logMsg);
-          })
-    }
+          });
+
+    }).catch(err => {
+      res.status(500);
+      res.end();
+      //logger.log();
+    });
 
     logMsg = constants.LOGGER_ADD_PRODUCT_TRY+" IP "+req.connection.remoteAddress+" tries to add a product";
     logger.log(logMsg);
@@ -595,6 +581,102 @@ module.exports = {
       logger.log(logMsg);
     });
 
+  },
+
+  getProductPool : function(req, res){
+    db.ProductPool.findAll({attributes : ['pid', 'name', 'amount', 'weight', 'price', 'preOrderable', 'description']}).then(prods => {
+      var prodList = [];
+      for(p of prods){
+        var prodObj = {};
+        prodObj.name = p.dataValues.name;
+        prodObj.amount = p.dataValues.amount;
+        prodObj.price = p.dataValues.price;
+        prodObj.weight = p.dataValues.weight;
+        prodObj.pid = p.dataValues.pid;
+        prodObj.desc = p.dataValues.description;
+        if(p.dataValues.preOrderable == 'true'){
+          prodObj.preOrderable = 'ja';
+        }
+        else{
+          prodObj.preOrderable = 'nein';
+        }
+        prodList.push(prodObj);
+      }
+
+      res.status(200);
+      res.send(prodList);
+
+    }).catch(err => {
+      res.status(500);
+      res.end();
+      //logger.log();
+    });
+
+  },
+
+  pushToProducts : function(req, res){
+    var pid = req.body.pid;
+
+    db.ProductPool.findOne({where : {pid : pid}}).then(pp => {
+      if(pp === null){
+        res.status(404);
+        res.end();
+        //logger.log()
+      }
+      db.Product.create({pid : prodID, name : pp.dataValues.name, description : pp.dataValues.description, amaount : pp.dataValues.amount, price : pp.dataValues.price,
+                              weight : pp.dataValues.weight, preOrderable : pp.dataValues.preOrderable, pic : pp.dataValues.pic, createdAt : pp.dataValues.createdAt,
+                              updatedAt : new Date()}).then(prod => {
+                                db.ProductPool.destroy({where : {pid : pid}}).then(destroyed => {
+                                  res.status(200);
+                                  res.end();
+                                }).catch(err => {
+                                  res.status(500);
+                                  res.end();
+                                  //logger.log()
+                                });
+                              }).catch(err => {
+                                res.status(500),
+                                res.end();
+                                //logger.log()
+                              })
+    }).catch(err => {
+      res.status(500);
+      res.end();
+      //logger.log()
+    });
+  },
+
+  pushToProductPool : function(req, res){
+    var pid = req.body.pid;
+
+    db.Product.findOne({where : {pid : pid}}).then(prod => {
+      if(prod === null){
+        res.status(404);
+        res.end();
+        //logger.log();
+      }
+
+      db.ProductPool.create({pid : prodID, name : prod.dataValues.name, description : prod.dataValues.description, amaount : prod.dataValues.amount, price : prod.dataValues.price,
+                              weight : prod.dataValues.weight, preOrderable : prod.dataValues.preOrderable, pic : prod.dataValues.pic, createdAt : prod.dataValues.createdAt,
+                              updatedAt : new Date()}).then(pp => {
+                                db.Product.destroy({where : {pid : pid}}).then(destroyed => {
+                                  res.status(200);
+                                  res.end();
+                                }).catch(err => {
+                                  res.status(500);
+                                  res.end();
+                                  //logger.log();
+                                });
+                              }).catch(err => {
+                                res.status(500);
+                                res.end();
+                                //logger.log();
+                              });
+    }).catch(err => {
+      res.status(500);
+      res.end();
+      //logger.log()
+    })
   },
 
   getAdminUsers : function(req, res){

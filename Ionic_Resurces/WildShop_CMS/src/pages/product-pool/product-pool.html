@@ -1,0 +1,37 @@
+<!--
+  Generated template for the ProductPoolPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title text-center>ProductPool</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col><b>Aktive Produkte</b></ion-col>
+      <ion-col><b>Verschieben</b></ion-col>
+      <ion-col><b>Inaktive Produkte</b></ion-col>
+    </ion-row>
+    <ion-row *ngFor="let item of products; let ind = index">
+      <ion-col>{{item.name}}</ion-col>
+      <ion-col><button (click)="pushToProductPool(ind)"><ion-icon name="arrow-round-forward"></ion-icon></button></ion-col>
+      <ion-col></ion-col>
+    </ion-row>
+    <ion-row *ngFor="let item of pool; let ind = index">
+      <ion-col></ion-col>
+      <ion-col><button (click)="pushToProducts(ind)"><ion-icon name="arrow-round-back"></ion-icon></button></ion-col>
+      <ion-col>{{item.name}}</ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+</ion-content>

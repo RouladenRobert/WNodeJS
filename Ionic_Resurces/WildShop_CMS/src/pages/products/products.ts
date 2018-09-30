@@ -5,6 +5,7 @@ import {RequestsProvider} from '../../providers/requests/requests';
 import {ProductEditorPage} from '../product-editor/product-editor';
 import {LoginPage} from '../login/login';
 import {HomePage} from '../home/home';
+import {ProductPoolPage} from '../product-pool/product-pool';
 
 /**
  * Generated class for the ProductsPage page.
@@ -48,8 +49,7 @@ export class ProductsPage {
 
   private deleteProduct(ind){
     this.reqProv.deleteProduct(this.session, this.productList[ind].pid).subscribe(res => {
-      var item = this.productList[ind];
-      this.productList = this.productList.filter(i => i !== item);
+      this.productList = this.productList.splice(ind, 1);
       console.log(this.productList);
     }, err => {
       if(err.status === 401){
@@ -82,6 +82,10 @@ export class ProductsPage {
       });
     }
 
+  }
+
+  private goToProductPool(){
+    this.navCtrl.push(ProductPoolPage, {session : this.session});
   }
 
 }

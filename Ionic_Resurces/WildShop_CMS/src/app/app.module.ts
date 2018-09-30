@@ -22,6 +22,7 @@ import { RequestsProvider } from '../providers/requests/requests';
 import {Constants} from '../Constants/constants';
 import { FunctionPoolProvider } from '../providers/function-pool/function-pool';
 import {AdminsPage} from '../pages/admins/admins';
+import {ProductPoolPage} from '../pages/product-pool/product-pool';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import {AdminsPage} from '../pages/admins/admins';
     PreOrderDetailPage,
     LogoutPage,
     AdminsPage,
-    ProductEditorPage
+    ProductEditorPage,
+    ProductPoolPage
   ],
   imports: [
     BrowserModule,
@@ -58,7 +60,8 @@ import {AdminsPage} from '../pages/admins/admins';
     PreOrderDetailPage,
     LogoutPage,
     AdminsPage,
-    ProductEditorPage
+    ProductEditorPage,
+    ProductPoolPage
   ],
   providers: [
     StatusBar,
