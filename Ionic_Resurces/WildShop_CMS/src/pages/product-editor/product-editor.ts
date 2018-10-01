@@ -5,6 +5,7 @@ import {ProductsPage} from '../products/products';
 import {AlertController} from 'ionic-angular';
 import {LoginPage} from '../login/login';
 import {HomePage} from '../home/home';
+import {Product} from '../../interfaces/interfaces';
 
 /**
  * Generated class for the ProductEditorPage page.
@@ -31,21 +32,28 @@ export class ProductEditorPage {
   private bNewItem = true;
   private enabled = true;
   private pid;
+  private wrongInputAlert = this.alertCtl.create({title : 'Bestand und Gewicht kann nur Ganzzahlwerte annehmen.',
+                                  buttons : [{text : 'OK', handler : function(e){
+                                    return true;
+                                  }}]});
   private sessionAlert = this.alertCtl.create({title : 'Session abgelaufen, bitte neu einloggen.',
                                   buttons : [{text : 'OK', handler : function(e){
                                     this.navCtrl.push(LoginPage);
                                   }}]});
-  private prodAlert = this.alertCtl.create({title : 'Offenbar ist das Produkt bereits vorhanden. Soll es aktiviert werden?',
+
+  private alertBoxObject = {title : 'Offenbar ist das Produkt bereits vorhanden. Soll es aktiviert werden?',
                                   buttons : [{text : 'Ja', handler : function(e){
-                                    console.log(pid);
-                                    let session = navParams.get('session');
-                                    reqProv.pushToProducts(session, pid).subscribe(res => {
-                                      navCtrl.push(HomePage);
+                                    //set the scope of the product-editor-page
+                                    const scope = this.handler.scope;
+                                    console.log(scope.item);
+                                    scope.reqProv.pushToProducts(scope.session, scope.pid, scope.item).subscribe(res => {
                                       return;
                                     }, err => {
                                       console.log(err);
                                     });
-                                  }}]});
+                                  }},
+                                {text : 'Nein', handler : function(e){ return true;}}]};
+  private prodAlert = this.alertCtl.create(this.alertBoxObject);
 
   ionViewDidLoad() {
     if(this.navParams.get('item') !== null && this.navParams.get('item') !== undefined){
@@ -62,10 +70,16 @@ export class ProductEditorPage {
   }
 
   private sendProduct(){
+    if(!(this.isInt(this.item.amount) && this.isInt(this.item.weight))){
+      this.wrongInputAlert.present();
+      return;
+    }
+
     if(this.bNewItem){
-      console.log("Add");
       this.reqProv.addProduct(this.session, this.item).subscribe(res => {
         if(res){
+          //set the scope in the handler-function. Neccessary becuse the handler must access this.reqProv
+          this.prodAlert.data.buttons[0].handler.scope = this;
           this.pid = res.pid;
           this.prodAlert.present();
         }
@@ -75,7 +89,6 @@ export class ProductEditorPage {
             //create alert and go to login on confirm
             this.sessionAlert.present();
         }
-        console.log(err);
       });
     }
     else {
@@ -86,7 +99,6 @@ export class ProductEditorPage {
           //create alert...
           this.sessionAlert.present();
         }
-        console.log(err);
       });
     }
   }
@@ -97,4 +109,11 @@ export class ProductEditorPage {
     }
   }
 
+  private isInt(n){
+    return Number(n) === n && n % 1 === 0;
+  }
+
+  private isFloat(n){
+    return Number(n) === n && n % 1 !== 0;
+  }
 }

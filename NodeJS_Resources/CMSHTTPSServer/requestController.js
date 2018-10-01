@@ -485,7 +485,6 @@ module.exports = {
     }
 
     db.ProductPool.findOne({where : {name : req.body.product.name}}).then(p => {
-      console.log(p);
       if(p){
         res.status(202);
         res.send({pid : p.dataValues.pid});
@@ -616,34 +615,77 @@ module.exports = {
 
   pushToProducts : function(req, res){
     var pid = req.body.pid;
+    var prodObj = req.body.prodObj;
 
-    db.ProductPool.findOne({where : {pid : pid}}).then(pp => {
-      if(pp === null){
-        res.status(404);
-        res.end();
-        //logger.log()
+    if(!prodObj && !pid){
+      res.status(500);
+      res.end();
+      //logger.log();
+      return;
+    }
+
+    if(prodObj){
+      if(!prodObj.pic){
+        prodObj.pic = '../';
       }
-      db.Product.create({pid : prodID, name : pp.dataValues.name, description : pp.dataValues.description, amaount : pp.dataValues.amount, price : pp.dataValues.price,
-                              weight : pp.dataValues.weight, preOrderable : pp.dataValues.preOrderable, pic : pp.dataValues.pic, createdAt : pp.dataValues.createdAt,
-                              updatedAt : new Date()}).then(prod => {
-                                db.ProductPool.destroy({where : {pid : pid}}).then(destroyed => {
+      db.ProductPool.findOne({where : {name : prodObj.name}}).then(pp => {
+        db.Product.create({pid : pp.dataValues.pid, name : prodObj.name, description : prodObj.desc, amount : prodObj.amount, price : prodObj.price,
+                                weight : prodObj.weight, preOrderable : prodObj.preOrderable, pic : prodObj.pic, createdAt : new Date(),
+                                updatedAt : new Date()}).then(prod => {
+                                  db.ProductPool.destroy({where : {pid : pp.dataValues.pid}}).then(destroyed => {
+                                    res.status(200);
+                                    res.end();
+                                  }).catch(err => {
+                                    console.log(err);
+                                    res.status(500);
+                                    res.end();
+                                  });
                                   res.status(200);
                                   res.end();
                                 }).catch(err => {
+                                  console.log(err);
+                                  res.status(500);
+                                  res.end();
+                                });
+      }).catch(err => {
+        console.log(err);
+        res.status(500);
+        res.end();
+      });
+
+    }
+    else{
+      db.ProductPool.findOne({where : {pid : pid}}).then(pp => {
+        if(pp === null){
+          res.status(404);
+          res.end();
+          //logger.log()
+        }
+        db.Product.create({pid : pid, name : pp.dataValues.name, description : pp.dataValues.description, amount : pp.dataValues.amount, price : pp.dataValues.price,
+                                weight : pp.dataValues.weight, preOrderable : pp.dataValues.preOrderable, pic : pp.dataValues.pic, createdAt : pp.dataValues.createdAt,
+                                updatedAt : new Date()}).then(prod => {
+                                  db.ProductPool.destroy({where : {pid : pid}}).then(destroyed => {
+                                    res.status(200);
+                                    res.end();
+                                  }).catch(err => {
+                                    //console.log(err);
+                                    res.status(500);
+                                    res.end();
+                                    //logger.log()
+                                  });
+                                }).catch(err => {
+                                  //console.log(err);
                                   res.status(500);
                                   res.end();
                                   //logger.log()
-                                });
-                              }).catch(err => {
-                                res.status(500),
-                                res.end();
-                                //logger.log()
-                              })
-    }).catch(err => {
-      res.status(500);
-      res.end();
-      //logger.log()
-    });
+                                })
+      }).catch(err => {
+        console.log(err);
+        res.status(500);
+        res.end();
+        //logger.log()
+      });
+    }
   },
 
   pushToProductPool : function(req, res){

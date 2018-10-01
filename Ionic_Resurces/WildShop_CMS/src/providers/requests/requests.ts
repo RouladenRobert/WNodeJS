@@ -74,8 +74,8 @@ export class RequestsProvider {
     return this.http.post(this.consts.url+"preOrderList", {session : session});
   }
 
-  public pushToProducts(session : Session, pid : number){
-    return this.http.post(this.consts.url+"pushProd", {session : session, pid : pid});
+  public pushToProducts(session : Session, pid : number, prod : Product){
+    return this.http.post(this.consts.url+"pushProd", {session : session, pid : pid, prodObj? : prod});
   }
 
   public pushToProductPool(session : Session, pid : number){

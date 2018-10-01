@@ -24,8 +24,8 @@ export class ProductPoolPage {
   }
 
   private session = this.navParams.get('session');
-  private products = [];
-  private pool = [];
+  private products;
+  private pool;
 
   private loadData(){
     this.reqProv.getProducts(this.session).subscribe(prods => {
@@ -42,7 +42,7 @@ export class ProductPoolPage {
 
   private pushToProducts(ind){
     var item = this.pool[ind];
-    this.reqProv.pushToProductPool(this.session, item.pid).subscribe(res => {
+    this.reqProv.pushToProductPool(this.session, item.pid, null).subscribe(res => {
       return;
     }, err => {
       console.log(err);
@@ -54,7 +54,7 @@ export class ProductPoolPage {
 
   private pushToProductPool(ind){
     var item = this.products[ind];
-    this.reqProv.pushToProducts(this.session, item.pid).subscribe(res => {
+    this.reqProv.pushToProducts(this.session, item.pid, null).subscribe(res => {
       return;
     }, err => {
       console.log(err);
