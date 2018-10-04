@@ -44,9 +44,9 @@ export class LoginPage {
         alert.present();
         return;
       }
-      console.log(error);
+
         let alert = this.alertCtl.create({
-          title : error.error.msg,
+          title : 'Sorry, wir sind momentan leider offline :(',
           buttons : ['OK']
         });
         alert.present();

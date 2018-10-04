@@ -656,10 +656,12 @@ module.exports = {
     }
     else{
       db.ProductPool.findOne({where : {pid : pid}}).then(pp => {
+        console.log(pp);
         if(pp === null){
           res.status(404);
           res.end();
           //logger.log()
+          return;
         }
         db.Product.create({pid : pid, name : pp.dataValues.name, description : pp.dataValues.description, amount : pp.dataValues.amount, price : pp.dataValues.price,
                                 weight : pp.dataValues.weight, preOrderable : pp.dataValues.preOrderable, pic : pp.dataValues.pic, createdAt : pp.dataValues.createdAt,
@@ -698,23 +700,26 @@ module.exports = {
         //logger.log();
       }
 
-      db.ProductPool.create({pid : prodID, name : prod.dataValues.name, description : prod.dataValues.description, amaount : prod.dataValues.amount, price : prod.dataValues.price,
+      db.ProductPool.create({pid : pid, name : prod.dataValues.name, description : prod.dataValues.description, amount : prod.dataValues.amount, price : prod.dataValues.price,
                               weight : prod.dataValues.weight, preOrderable : prod.dataValues.preOrderable, pic : prod.dataValues.pic, createdAt : prod.dataValues.createdAt,
                               updatedAt : new Date()}).then(pp => {
                                 db.Product.destroy({where : {pid : pid}}).then(destroyed => {
                                   res.status(200);
                                   res.end();
                                 }).catch(err => {
+                                  console.log(err);
                                   res.status(500);
                                   res.end();
                                   //logger.log();
                                 });
                               }).catch(err => {
+                                console.log(err);
                                 res.status(500);
                                 res.end();
                                 //logger.log();
                               });
     }).catch(err => {
+      console.log(err);
       res.status(500);
       res.end();
       //logger.log()
