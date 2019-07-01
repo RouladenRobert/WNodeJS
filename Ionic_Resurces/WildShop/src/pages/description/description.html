@@ -8,6 +8,7 @@
 
   <ion-navbar>
     <ion-title>Description</ion-title>
+    <button ion-button block>Logout</button>
   </ion-navbar>
 
 </ion-header>
@@ -20,7 +21,7 @@
       <button ion-button block small_button id="buy" (click)="goToOrder()">Jetzt kaufen</button>
       <img src="assets/imgs/hirsch.jpg"/>
       <div class="card-title" *ngIf="currProd">{{currProd.name}}</div>
-      <div class="card-subtitle" *ngIf="currProd">{{currProd.price}}</div>
+      <div class="card-subtitle" *ngIf="currProd">{{currProd.price + "€"}}</div>
     </ion-col>
   </ion-row>
 </ion-card>

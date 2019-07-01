@@ -9,12 +9,11 @@ const Orders = seq.define('Orders', {
     unique : true,
     primaryKey : true
   },
-  orderDate : {
-    type : Sequelize.DATE,
-    allowNull : null
-  },
   delivery_time : {
     type : Sequelize.DATE
+  },
+  comment : {
+    type : Sequelize.STRING
   }
 });
 

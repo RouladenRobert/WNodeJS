@@ -17,6 +17,8 @@ import { RequestProvider } from '../providers/request/request';
 import { DescriptionPage } from '../pages/description/description';
 import { OrderPage } from '../pages/order/order';
 import {Constants} from '../constants/constants';
+import { ConfirmationPage } from '../pages/confirmation/confirmation';
+import { LogoutPage } from '../pages/logout/logout';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import {Constants} from '../constants/constants';
     LoginPage,
     RegisterPage,
     DescriptionPage,
-    OrderPage
+    OrderPage,
+    ConfirmationPage,
+    LogoutPage
   ],
   imports: [
     BrowserModule,
@@ -45,7 +49,9 @@ import {Constants} from '../constants/constants';
     LoginPage,
     RegisterPage,
     DescriptionPage,
-    OrderPage
+    OrderPage,
+    ConfirmationPage,
+    LogoutPage
   ],
   providers: [
     StatusBar,

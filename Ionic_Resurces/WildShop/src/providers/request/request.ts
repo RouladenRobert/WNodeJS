@@ -22,16 +22,21 @@ export class RequestProvider {
 
   //execute https-request to fetch all products
   //returns an array of Product-objects
-  public getProducts() : Observable<Array<Product>>{
-    return this.http.get<Array<Product>>(this.consts.url+"shop");
+  public getProducts(session: Session) : Observable<Array<Product>>{
+  console.log('requesting with ');
+  console.log(session);
+    return this.http.post<Array<Product>>(this.consts.url+"shop", {session : session});
   }
 
   // execute https-request to fetch the product Description
   // prID: product ID
   // return: Porduct-Object
-  public getDescription(prID: number) : Observable<Product>{
+  public getDescription(prID: number, session: Session) : Observable<Product>{
+  console.log('get desc with');
+  console.log(session);
     return this.http.post<Product>(this.consts.url+"product", {
-      prodID : prID
+      prodID : prID,
+      session : session
     });
   }
 
@@ -44,4 +49,31 @@ export class RequestProvider {
     });
   }
 
+  //execute https-request for login
+  //email: String {Email-address from login-form/login.ts}
+  //pass: String {Password from login-form/login.ts}
+  //no return
+  public login(email: string, pass: string){
+    return this.http.post(this.consts.url + "login", {
+      email: email,
+      pass: pass
+    });
+  }
+
+  public register(user: any){
+    return this.http.post(this.consts.url + "register", {
+      user: user
+    });
+  }
+
+  public sendOrder(session : Session){
+    return this.http.post(this.consts.url + "order", {
+      proudcts : session.productArr,
+      session : session
+    });
+  }
+
+  public logout(session : Session){
+    return this.http.post(this.consts.url+"logout", {session : session});
+  }
 }

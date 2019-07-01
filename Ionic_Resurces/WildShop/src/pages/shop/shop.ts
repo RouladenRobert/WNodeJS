@@ -3,8 +3,11 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Product } from '../../interfaces/interfaces';
+import { Session } from '../../interfaces/interfaces';
 import {RequestProvider} from '../../providers/request/request';
-import {DescriptionPage} from '../description/description'
+import {DescriptionPage} from '../description/description';
+import {ConfirmationPage} from '../confirmation/confirmation';
+import {AlertController} from 'ionic-angular';
 
 /**
  * Generated class for the ShopPage page.
@@ -21,9 +24,9 @@ import {DescriptionPage} from '../description/description'
 export class ShopPage {
 
   private productList: Array<Product>;
-  constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient, private reqProv: RequestProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient, private reqProv: RequestProvider, private alertCtl : AlertController) {
   }
-
+  private session = this.navParams.get('session');
   ionViewDidLoad() {
     console.log('ionViewDidLoad ShopPage');
     this.getProducts();
@@ -34,17 +37,28 @@ export class ShopPage {
     //https.request(..);
     //productList.add(reqResult);
     //show the list (do it in the HTML-file)
-    this.reqProv.getProducts().subscribe((data: Array<Product>) => {
+    console.log("Shop");
+    console.log(this.session.sessionID);
+    this.reqProv.getProducts(this.session).subscribe((data: Array<Product>) => {
     this.productList = data;
-    console.log(this.productList);
   }, error =>{
-    console.log(error);
+    let alert = this.alertCtl.create({
+      title : "Something went wrong while loading the offers. Please try it again.",
+      buttons : ['OK']
+    });
+    alert.present();
   });
   }
 
   //executed if item is clicked
   //pushes to DescriptionPage and has the productID as an argument
   private goToDescription(product: Product){
-      this.navCtrl.push(DescriptionPage, {prID: product.pid});
+      this.navCtrl.push(DescriptionPage, {prID: product.pid, session : this.session});
     }
+
+  // executed if 'Bestellen' is pressed
+  // pushes ConfirmationPage
+  private goToConfirmation(){
+      this.navCtrl.push(ConfirmationPage, {session : this.session})
+  }
 }

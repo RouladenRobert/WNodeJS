@@ -3,7 +3,9 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { HomePage }from '../home/home';
 import { RegisterPage } from '../register/register';
 import {User} from '../../interfaces/interfaces';
+import {Session} from '../../interfaces/interfaces';
 import {RequestProvider} from '../../providers/request/request';
+import {AlertController} from 'ionic-angular';
 
 /**
  * Generated class for the LoginPage page.
@@ -18,9 +20,9 @@ import {RequestProvider} from '../../providers/request/request';
   templateUrl: 'login.html',
 })
 export class LoginPage {
-  private username : string;
-  private password : string;
-  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv: RequestProvider) {
+  private email : string = "";
+  private password : string = "";
+  constructor(public navCtrl: NavController, public navParams: NavParams, private reqProv: RequestProvider, private alertCtl : AlertController) {
   }
 
   ionViewDidLoad() {
@@ -28,18 +30,41 @@ export class LoginPage {
   }
 
   private login(){
-    console.log(this.username);
-    if((this.username == null || this.username == '')||(this.password ==  null || this.password == '')){
-      alert("Bitte Daten eingeben!");
-      return;
-    }
-    //request senden und Ergebnis prüfen, bei Erfolgsmeldung weiterleiten auf HomePage
-    //this.reqProv.sendUserData(userObj).subscribe(...);
-    this.navCtrl.push(HomePage);
+    console.log(this.email);
+    this.reqProv.login(this.email, this.password).subscribe((session : Session) =>{
+      console.log('Login');
+        this.navCtrl.push(HomePage, {session : session});
+    }, error => {
+      if(error.error.ErrorCode != 1){
+        let alert = this.alertCtl.create({
+          title : 'Sorry, out of service! Try it again later!',
+          buttons : ['OK']
+        });
+        alert.present();
+      }
+      else{
+          if(error.error.ErrorCode == 1){
+            let alert = this.alertCtl.create({
+              title : 'Falsche Eingabedaten!',
+              buttons : ['OK']
+            });
+            alert.present();
+          }
+        }
+    });
+
   }
 
   private register(){
     this.navCtrl.push(RegisterPage);
+  }
+
+  private hideButton(){
+    if (this.email == "" || this.password == ""){
+      (<HTMLInputElement> document.getElementById("loginButton")).disabled = true;
+    }else{
+      (<HTMLInputElement> document.getElementById("loginButton")).disabled = false;
+    }
   }
 
 }

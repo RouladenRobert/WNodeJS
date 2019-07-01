@@ -18,7 +18,10 @@ const privateKey = fs.readFileSync(path.join(__dirname, 'privateKey.pem'), 'utf8
 app.use(cors());
 app.use(bodyParser());
 
-app.route('/*').all(authorize);
+app.route('/shop').all(authorize);
+app.route('/product').all(authorize);
+app.route('/order').all(authorize);
+app.route('/logout').all(authorize);
 router(app);
 
 /*app.get('/', (req, res) => {
@@ -38,10 +41,12 @@ setInterval(session.cleanSessions, sessionConsts.SESSION_TIMEOUT_CHECK_INTERVALL
 console.log("[SESSION] Timer active");
 
 function authorize(req, res, next){
-  var sessionID = req.body.session || req.query.session;
-  req.session = {};
-  req.session.sessionId = sessionID;
-
+  console.log(req.body);
+  var sessionID = req.body.session.sessionID || req.query.session;
+  req.session = req.body.session;
+  req.session.sessionID = sessionID;
+  console.log(req.body);
+  console.log("[SESSION] SessionID: "+sessionID);
   if(sessionID){
     const sessionData = session.getSession(sessionID);
     if(!sessionData || !sessionData.userID){
@@ -58,7 +63,7 @@ function authorize(req, res, next){
   }
 
   function responseUnauthorized(req, res){
-    session.invalidate(req.session.sessionId);
+    session.invalidateSession(req.session.sessionId);
     res.status(401);
     res.send("Unauthorized!");
   }

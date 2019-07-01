@@ -1,7 +1,7 @@
 Sequelize = require("sequelize");
 const seq = require("./dbconnection.js");
 
-const PreOrder = seq.define('PreOrder', {
+const PreOrder = seq.define('PreOrders', {
   poid : {
     type : Sequelize.INTEGER,
     allowNull : false,
@@ -9,9 +9,8 @@ const PreOrder = seq.define('PreOrder', {
     autoIncrement : true,
     unique : true
   },
-  preorderDate : {
-    type : Sequelize.DATE,
-    allowNull : false
+  comment : {
+    type : Sequelize.STRING
   }
 });
 

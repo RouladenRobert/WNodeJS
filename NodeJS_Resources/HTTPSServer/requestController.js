@@ -1,6 +1,11 @@
 const db = require("../Database/database.js");
 const sessionHandler = require("./sessionHandler.js");
-const crypto = require('crypto');
+const bcrypt = require("bcrypt");
+const session = require("./sessionHandler.js");
+const orderController = require("./orderController.js");
+const preOrderController = require("./preOrderController.js");
+const mc = require("./mailController.js");
+const salt = 10;
 
 module.exports = {
 
@@ -40,43 +45,75 @@ module.exports = {
 
     // insert new order to the order-table
     addOrder : function(req, res){
-      var orderInfo = req.body.order;
-
-      //update amount in product-table
-      //insert new entry into order_product
-      var date = new Date();
-      db.Orders.create({orderDate : new Date(), delivery_time : date.setDate(date.getDate() + 1), createdAt : new Date(), updatedAt : new Date(), UserUid : orderInfo.userID}).then(order => {
-        db.OrderProduct.create({amount : orderInfo.amount, comment : orderInfo.comment, createdAt : new Date(), updatedAt : new Date(),
-                                }).then(order_product => {
-
-          })
-      });
-    },
-
-    login : function(req, res){
-      var userInfo = req.body.user;
-      var passwordHash = '';
-      var session = {};
+      var productArr = req.session.productArr;
+      console.log(productArr);
 
       /*
-      * DB-request. Fetches uid, createdAt (as salt for sha256)= and password-hash
+      * check for every entry in productArr if it could be inserted into the order-table, the preorder-table or if it has to be divieded into two objects and
+      * has to be inserted into both tables
       */
-      db.User.findOne({attributes: ['createdAt', 'pword', 'uid'], where : {email : userInfo.email}}).then(result => {
-            passwordHash = crypto.createHmac('sha256', result.);
-            if(result.pword === passwordHash){
-                session =  sessionHandler.generateSession(result.uid);
-                res.status(200);
+      for(let prod of productArr){
+        db.Product.findOne({attributes : ['amount'], where : {pid : prod.pid}}).then(product => {
+            var currAmount = product.dataValues.amount;
+            prod.currAmount = currAmount;
+
+            console.log("[THEN]");
+
+            // all in preoder?
+            if(currAmount === 0){
+              preOrderController.insertPreOrder(req, res, prod);
             }
-            else{
-              res.status(401);
+            // all in order?
+            else if(currAmount >= prod.amount){
+              orderController.insertOrder(req, res, prod);
             }
-            res.send(session);
-            res.end();
-            return session;
+            // divide product
+            else if(currAmount !== 0 && currAmount < prod.amount){
+              tempOrderObj = prod;
+              tempOrderObj.amount = currAmount;
+              tempPreOrderObj = prod;
+              tempPreOrderObj.amount = prod.amount - currAmount;
+
+              orderController.insertOrder(req, res, tempOrderObj);
+              preOrderController.insertPreOrder(req, res, tempPreOrderObj);
+            }
+
+        }).catch(err =>{
+          console.log("[PRODUCT] Failed to get amount");
+          console.log(err);
+          res.status(500);
+          res.end();
+        });
+      }
+      console.log("[AFTER FOR]");
+      mc.sendMail(req.session.userId, productArr.length);
+
+    },
+
+
+    login : function(req, res){
+      var mail = req.body.email;
+      var pass = req.body.pass
+      /*
+      * DB-request. Fetches uid, createdAt (as salt for sha256)= and password-hash
+      * Hashen funktioniert nicht
+      */
+      db.User.findOne({attributes: ['createdAt', 'pword', 'uid'], where : {email : mail}}).then( result => {
+        //console.log(result);
+        if(bcrypt.compareSync(pass, result.dataValues.pword)){
+            console.log("[LOGIN] Authorized");
+            var session = sessionHandler.generateSessionObject(result.dataValues.uid);
+            res.status(200);
+          }else{
+            res.status(401);
+          }
+        res.send(session);
+        res.end();
       }).catch(err =>{
         res.status(500);
         console.log("[LOGIN] Error in Login");
-        res.send(err);
+        var errorObj = {HTTPCode : 500, ErrorCode : 1, msg : "Wrong Login data"};
+        res.send(errorObj);
         res.end();
       });
 
@@ -85,25 +122,37 @@ module.exports = {
     register : function(req, res){
       var userInfo = req.body.user;
       var timestamp = new Date();
-      var passwordHash = crypto.createHmac('sha256', userInfo.password);
-      var session = {};
+      bcrypt.hash(userInfo.pass, salt).then(function(hash){
+        console.log(userInfo, timestamp, hash);
+        /*
+        * INSERT new user into user-table
+        *sessionhandler muss auskommentiert werden, wenn die Funktion funktioniert
+        */
+        db.User.create({sname : userInfo.surname, name : userInfo.name, email: userInfo.email, pword : hash,
+                        timestamp : timestamp, createdAt : timestamp, updatedAt : timestamp
+                        }).then(result => {
+                    //session = sessionHandler.generateSessionObject(result.dataValues.uid);
+                    res.status(200);
+                    res.send(session);
+                    res.end();
+            }).catch(err => {
+              res.status(500);
+              console.log("[REGISTER] Error in register");
+              console.log(err);
+              res.send(err);
+              res.end();
+            });
+      });
 
-      /*
-      * INSERT new user into user-table
-      */
-      db.User.create({sname : userInfo.sname, name : userInfo.name, userInfo.email, pword : passwordHash,
-                      timestamp : timestamp, createdAt : timestamp, updatedAt : timestamp
-                      }).then(result => {
-                  session = sessionHandler.generateSession(result.uid);
-                  res.status(200);
-                  res.send(session);
-                  res.end();
-          }).catch(err => {
-            res.status(500);
-            console.log("[REGISTER] Error in register");
-            res.send(err);
-            res.end();
-          });
+
+    },
+
+    logout : function(req, res){
+      session.invalidateSession(req.body.session.sessionID);
+
+      res.status(200)
+      res.send("logged out");
+      res.end();
     }
 
 }
