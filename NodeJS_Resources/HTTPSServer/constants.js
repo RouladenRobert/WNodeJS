@@ -13,8 +13,8 @@ module.exports = {
   MAIL_TRANSPORT : {
     service : 'gmail',
     auth : {
-      user : 'jonas.seng1@gmail.com',
-      pass : '&H?tW0_p2Ndq'
+      user : '',
+      pass : ''
     }
   },
   MAIL_ADDR : 'jonas.seng1@gmail.com',
