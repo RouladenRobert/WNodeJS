@@ -10,34 +10,38 @@ const AdminUser = require('./adminUsers.js');
 const FinishedOrders = require('./finishedOrders.js');
 const FinishedOrderProducts = require('./finishedOrderProducts');
 const ProductPool = require('./product_pool.js');
+const KindOfProcessing = require('./kind_of_processing.js');
 //const ShoppingCartProduct = require("./shopping_car_product.js");
 
 
 /*
-  1:1 ORDER and USER
+  1:n ORDER and USER
 */
 Order.belongsTo(User);
 
 /*
-  1:1 PREORDERS and USERS
+  1:n PREORDERS and USERS
 */
 PreOrder.belongsTo(User);
 
 /*
-  n:m ORDERS and PRODUCTS
+  n:m:k ORDERS and PRODUCTS and KIND_OF_PROCESSING
 */
 Order.belongsToMany(Product, {through : OrderProduct});
+OrderProduct.belongsTo(KindOfProcessing);
 
 /*
-  n:m PREORDERS and PRODUCTS
+  n:m:k PREORDERS and PRODUCTS and KIND_OF_PROCESSING
 */
 PreOrder.belongsToMany(Product, {through : PreorderProduct});
+PreorderProduct.belongsTo(KindOfProcessing);
 
 /*
   1:n USERS and SHOPPINGCARTS
 */
 ShoppingCart.belongsTo(User);
 ShoppingCart.belongsTo(Product);
+ShoppingCart.belongsTo(KindOfProcessing);
 
 
 /*
@@ -45,6 +49,7 @@ ShoppingCart.belongsTo(Product);
 */
 FinishedOrders.belongsTo(User);
 FinishedOrders.belongsToMany(Product, {through : FinishedOrderProducts});
+FinishedOrderProducts.belongsTo(KindOfProcessing);
 
 // init db:
 function init(){
@@ -76,6 +81,7 @@ function softInit(){
 function execInit(initObj){
   User.sync(initObj).then(() =>{
     Product.sync(initObj).then(() =>{
+      KindOfProcessing.sync(initObj).then(() => {
       Order.sync(initObj).then(() =>{
         PreOrder.sync(initObj).then(() =>{
           OrderProduct.sync(initObj).then(() => {
@@ -97,6 +103,7 @@ function execInit(initObj){
       });
     });
   });
+});
 }
 
 module.exports = {
@@ -112,5 +119,6 @@ module.exports = {
   AdminUser : AdminUser,
   FinishedOrders : FinishedOrders,
   FinishedOrderProducts :  FinishedOrderProducts,
-  ProductPool : ProductPool
+  ProductPool : ProductPool,
+  KindOfProcessing : KindOfProcessing
 }

@@ -13,21 +13,7 @@ const Products = seq.define('Products', {
     type : Sequelize.STRING,
     allowNull : false
   },
-  description : Sequelize.STRING,
-  amount : {
-    type : Sequelize.INTEGER,
-    allowNull : false
-  },
-  price : {
-    type : Sequelize.FLOAT,
-    allowNull : false
-  },
-  weight : Sequelize.INTEGER,
-  preOrderable: Sequelize.ENUM('true', 'false'),
-  pic : {
-    type : Sequelize.STRING,
-    allowNull : false
-  }
+  description : Sequelize.STRING
 });
 
 module.exports = Products;
