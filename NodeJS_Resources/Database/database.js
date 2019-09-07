@@ -11,6 +11,7 @@ const FinishedOrders = require('./finishedOrders.js');
 const FinishedOrderProducts = require('./finishedOrderProducts');
 const ProductPool = require('./product_pool.js');
 const KindOfProcessing = require('./kind_of_processing.js');
+const Offer = require('./offer.js');
 //const ShoppingCartProduct = require("./shopping_car_product.js");
 
 
@@ -25,31 +26,36 @@ Order.belongsTo(User);
 PreOrder.belongsTo(User);
 
 /*
-  n:m:k ORDERS and PRODUCTS and KIND_OF_PROCESSING
+  n:m PRODUCT and KIND_OF_PROCESSING
 */
-Order.belongsToMany(Product, {through : OrderProduct});
-OrderProduct.belongsTo(KindOfProcessing);
+Product.belongsToMany(KindOfProcessing, {through : Offer, foreignKey : 'OfferProdcutPid'});
+KindOfProcessing.belongsToMany(Product, {through : Offer, foreignKey : 'KindOfProcessingVid'});
+Order.belongsToMany(Product, {through : Offer, foreignKey : 'OrderOid'});
+Order.belongsToMany(KindOfProcessing, {through : Offer, foreignKey : 'OrderOid'});
 
 /*
-  n:m:k PREORDERS and PRODUCTS and KIND_OF_PROCESSING
+  n:m ORDERS and PRODUCTS and KIND_OF_PROCESSING
 */
-PreOrder.belongsToMany(Product, {through : PreorderProduct});
-PreorderProduct.belongsTo(KindOfProcessing);
+Order.belongsToMany(Offer, {through : OrderProduct});
+OrderProduct.belongsTo(KindOfProcessing, {foreignKey : 'KindOfProcessingVid'});
+
+/*
+  n:m PREORDERS and PRODUCTS and KIND_OF_PROCESSING
+*/
+PreOrder.belongsToMany(Offer, {through : PreorderProduct});
 
 /*
   1:n USERS and SHOPPINGCARTS
 */
 ShoppingCart.belongsTo(User);
-ShoppingCart.belongsTo(Product);
-ShoppingCart.belongsTo(KindOfProcessing);
+ShoppingCart.belongsTo(Offer);
 
 
 /*
   n:m FINISHED ORDERS and PRODUCTS
 */
 FinishedOrders.belongsTo(User);
-FinishedOrders.belongsToMany(Product, {through : FinishedOrderProducts});
-FinishedOrderProducts.belongsTo(KindOfProcessing);
+FinishedOrders.belongsToMany(Offer, {through : FinishedOrderProducts});
 
 // init db:
 function init(){
@@ -82,16 +88,18 @@ function execInit(initObj){
   User.sync(initObj).then(() =>{
     Product.sync(initObj).then(() =>{
       KindOfProcessing.sync(initObj).then(() => {
-      Order.sync(initObj).then(() =>{
-        PreOrder.sync(initObj).then(() =>{
-          OrderProduct.sync(initObj).then(() => {
-            PreorderProduct.sync(initObj).then(() => {
-              ShoppingCart.sync(initObj).then(() => {
-                AdminUser.sync(initObj).then(() => {
-                  FinishedOrders.sync(initObj).then(() => {
-                    FinishedOrderProducts.sync(initObj).then(() => {
-                      ProductPool.sync(initObj).then(() => {
-                          return true;
+        Offer.sync(initObj).then(() =>{
+          Order.sync(initObj).then(() =>{
+            PreOrder.sync(initObj).then(() =>{
+              OrderProduct.sync(initObj).then(() => {
+                PreorderProduct.sync(initObj).then(() => {
+                  ShoppingCart.sync(initObj).then(() => {
+                    AdminUser.sync(initObj).then(() => {
+                      FinishedOrders.sync(initObj).then(() => {
+                        FinishedOrderProducts.sync(initObj).then(() => {
+                          ProductPool.sync(initObj).then(() => {
+                            return true;
+                        });
                       });
                     });
                   });
@@ -120,5 +128,6 @@ module.exports = {
   FinishedOrders : FinishedOrders,
   FinishedOrderProducts :  FinishedOrderProducts,
   ProductPool : ProductPool,
-  KindOfProcessing : KindOfProcessing
+  KindOfProcessing : KindOfProcessing,
+  Offer : Offer
 }

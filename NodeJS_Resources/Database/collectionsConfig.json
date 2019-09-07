@@ -1,0 +1,143 @@
+{
+    "User" : {
+      "validator" : {
+        "$jsonSchema" : {
+          "bsonType" : "object",
+          "required" : ["id", "fname", "sname", "email", "pword"],
+          "properties" : {
+            "id" : {
+              "bsonType" : "int"
+            },
+            "fname" : {
+              "bsonType" : "string"
+            },
+            "sname" : {
+              "bsonType" : "string"
+            },
+            "email" : {
+              "bsonType" : "string"
+            },
+            "pword" : {
+              "bsonType" : "string"
+            }
+          }
+        }
+      }
+    },
+
+    "ShoppingCart" : {
+      "validator" : {
+        "$jsonSchema" : {
+          "bsonType" : "object",
+          "required" : ["id", "uid", "products"],
+          "properties" : {
+            "id" : {
+              "bsonType" : "int"
+            },
+            "uid" : {
+              "bsonType" : "int"
+            },
+            "products" : {
+              "bsonType" : "array"
+          }
+        }
+      }
+    }
+  },
+
+  "Products" : {
+    "validator" : {
+      "$jsonSchema" : {
+        "bsonType" : "object",
+        "required" : ["id", "name", "price", "weight", "avaiable_amount", "fanimal", "fkind"],
+        "properties" : {
+          "id" : {
+            "bsonType" : "int"
+          },
+          "name" : {
+            "bsonType" : "string"
+          },
+          "price" : {
+            "bsonType" : "decimal"
+          },
+          "weight" : {
+            "bsonType" : "decimal"
+          },
+          "avaiable_amount" : {
+            "bsonType" : "int"
+          },
+          "fanimal" : {
+            "bsonType" : "int"
+          },
+          "fkind" : {
+            "bsonType" : "int"
+          }
+        }
+      }
+    }
+  },
+
+  "Kinds" : {
+    "validator" : {
+      "$jsonSchema" : {
+        "bsonType" : "object",
+        "required" : ["id", "name", "description"],
+        "properties" : {
+          "id" : {
+            "bsonType" : "int"
+          },
+          "name" : {
+            "bsonType" : "string"
+          },
+          "description" : {
+            "bsonType" : "string"
+          }
+        }
+      }
+    }
+  },
+
+  "Animals" : {
+    "validator" : {
+      "$jsonSchema" : {
+        "bsonType" : "object",
+        "required" : ["id", "name"],
+        "properties" : {
+          "id" : {
+            "bsonType" : "int"
+          },
+          "name" : {
+            "bsonType" : "string"
+          }
+        }
+      }
+    }
+  },
+
+  "Orders" : {
+    "validator" : {
+      "$jsonSchema" : {
+        "bsonType" : "object",
+        "required" : ["id", "uid", "products[]", "date", "preorder"],
+        "properties" : {
+          "id" : {
+            "bsonType" : "int"
+          },
+          "uid" : {
+            "bsonType" : "int"
+          },
+          "products" : {
+            "bsonType" : "array"
+          },
+          "date" : {
+            "bsonType" : "date"
+          },
+          "preorder" : {
+            "bsonType" : "bool"
+        }
+      }
+    }
+  }
+}
+
+}
