@@ -1,5 +1,6 @@
 const fs = require('fs');
 const db = require("../Database/database.js");
+const dbClient = require("../Database/mongodb.js");
 const sessionHandler = require("./sessionHandler.js");
 const constants = require('./constants.js');
 const bcrypt = require("bcrypt");
@@ -37,6 +38,24 @@ module.exports = {
       });
     },
 
+    /*
+    * MONGO VERSION OF showProducts
+    * sned all products found to dbClient
+    */
+
+    showProducts : function(req, res){
+      dbo.find({}).toArray((err, result) => {
+        if(err){
+          var msg = constants.LOGGER_GET_PROD_ERR+" Error while getting products";
+          logger.log(msg);
+          res.send({error : "products could not be loaded"});
+          res.end();
+        }
+        res.send(result);
+        res.end();
+      });
+    },
+
     // send information for one specific product
     showDescription : function(req, res){
       var prID = req.body.prodID;
@@ -53,6 +72,16 @@ module.exports = {
         console.log("[DESCRIPTION] Error in Description "+err);
       });
     },
+
+    /*
+    * MONGO VERSION OF showDescription
+    * send info for specific product
+    */
+    showDescription : function(req, res){
+      var prID = req.body.prodID;
+
+      dbo.
+    }
 
     // insert new order to the order-table
     addOrder : function(req, res){
