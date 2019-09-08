@@ -1,6 +1,6 @@
 const fs = require('fs');
 const db = require("../Database/database.js");
-const dbClient = require("../Database/mongodb.js");
+const con = require('../Database/connector.js');
 const sessionHandler = require("./sessionHandler.js");
 const constants = require('./constants.js');
 const bcrypt = require("bcrypt");
@@ -14,6 +14,7 @@ const loggerModule = require('../Logger/logger.js');
 const salt = 10;
 
 const logger = new loggerModule.Logger(constants.LOGFILE_PATH);
+const connector = new con.Connector();
 
 module.exports = {
 
@@ -24,7 +25,8 @@ module.exports = {
 
     /*
       *send all products found to client.
-    */
+      *replaced by the MONGO VERSION
+
     showProducts : function(req, res){
       db.Product.findAll({attributes : ["pid", "name", "price", "weight", "amount", "pic"]}).then(result =>{
         res.send(result);
@@ -38,13 +40,15 @@ module.exports = {
       });
     },
 
+    */
+
     /*
     * MONGO VERSION OF showProducts
     * sned all products found to dbClient
     */
 
     showProducts : function(req, res){
-      dbo.find({}).toArray((err, result) => {
+      connector.getProductCollection().find({}).toArray((err, result) => {
         if(err){
           var msg = constants.LOGGER_GET_PROD_ERR+" Error while getting products";
           logger.log(msg);
@@ -57,6 +61,8 @@ module.exports = {
     },
 
     // send information for one specific product
+    /*
+    *replaced by the MONGO VERSION
     showDescription : function(req, res){
       var prID = req.body.prodID;
 
@@ -72,6 +78,7 @@ module.exports = {
         console.log("[DESCRIPTION] Error in Description "+err);
       });
     },
+    */
 
     /*
     * MONGO VERSION OF showDescription
@@ -80,18 +87,29 @@ module.exports = {
     showDescription : function(req, res){
       var prID = req.body.prodID;
 
-      dbo.
-    }
+      connector.getProductCollection().findOne({PID : prID}, (err, result) => {
+        if(err){
+          var msg = constants.LOGGER_DESCR_ERR+" Error while requesting the description";
+          logger.log(msg);
+          res.send({error : err});
+          res.end();
+        }
+
+        res.send(result);
+        res.end();
+      });
+    },
 
     // insert new order to the order-table
+    /*
     addOrder : function(req, res){
       var productArr = req.session.productArr;
       var errorMsg = "";
 
-      /*
+
        * find user that sended the order-request. If the user is has confirmed the registration -> do nothing and continue.
        * If the user hasn't confirmed the mail -> open alert and do not allow the order
-      */
+
       db.User.findOne({attributes : ['authorized'], where : {uid : req.session.userId}}).then(async function(user) {
         if(user.dataValues.authorized === false){
           var msg = constants.LOGGER_ORDER_SUCC + " Operation denied, user "+req.session.userId+ " not activated";
@@ -101,10 +119,10 @@ module.exports = {
           return;
         }
         else if(user.dataValues.authorized === true){
-          /*
+
           * check for every entry in productArr if it could be inserted into the order-table, the preorder-table or if it has to be divieded into two objects and
           * has to be inserted into both tables
-          */
+
           var price = 0;
 
           var orderID = crypto.randomBytes(orderConsts.ORDER_ID_LENGTH).toString('base64');
@@ -158,6 +176,37 @@ module.exports = {
         res.status(500);
         console.log("[ORDER] Failed to check if user is authenticated.");
         console.log(err);
+      });
+
+    }, */
+
+    addOrder : function(req, res){
+      var productArr = req.session.productArr;
+      var userID = req.session.userId;
+      var msg;
+
+      connector.getUserCollection().findOne({ID : userID}, (err, result) => {
+        if(err){
+          msg = constants.LOGGER_ORDER_ERR +" Failed to look up the user-rights";
+          logger.log(msg);
+          res.status(500);
+        }
+        if(result.authorized === true){
+          var orderID = '#'+crypto.randomBytes(orderConsts.ORDER_ID_LENGTH).toString('base64');
+          var date = new Date();
+          var orderDocument = {ID : orderID, UID : userID, order : productArr, date : date};
+
+          try{
+            orderController.insertOrder(connector, orderDocument);
+            res.status(200);
+            res.end();
+          }
+          catch(err){
+            msg = constants.LOGGER_ORDER_ERR + " Failed to insert order";
+            logger.log(msg);
+            res.status(500);
+          }
+        }
       });
 
     },
