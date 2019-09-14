@@ -15,6 +15,7 @@ const salt = 10;
 
 const logger = new loggerModule.Logger(constants.LOGFILE_PATH);
 const connector = new con.Connector();
+const orderCont = new orderController.OrderController(connector);
 
 module.exports = {
 
@@ -197,7 +198,7 @@ module.exports = {
           var orderDocument = {ID : orderID, UID : userID, order : productArr, date : date};
 
           try{
-            orderController.insertOrder(connector, orderDocument);
+            orderCont.insertOrder(connector, orderDocument);
             res.status(200);
             res.end();
           }
@@ -211,14 +212,14 @@ module.exports = {
 
     },
 
-
+/*
     login : function(req, res){
       var mail = req.body.email;
       var pass = req.body.pass;
-      /*
+
       * DB-request. Fetches uid, createdAt (as salt for sha256)= and password-hash
       * Hashen funktioniert nicht
-      */
+
       db.User.findOne({attributes: ['createdAt', 'pword', 'uid'], where : {email : mail}}).then( async function(result){
         if(result === null){
           res.status(401);
@@ -285,7 +286,48 @@ module.exports = {
 
       msg = constants.LOGGER_LOGIN_TRY + " IP "+req.connection.remoteAddress+" tries to login.";
       logger.log(msg);
-    },
+    }, */
+
+   /*
+   * MONGO VERSION OF login
+   * login a given user and send a session-object
+   */
+
+   login : function(req, res){
+     const mail = req.body.email;
+     const pass = req.body.pass;
+     var msg = "";
+
+     connector.getUserCollection().findOne({'email' : mail}).then(doc => {
+       if(!doc){
+         res.status(200);
+         res.end({msg : 'no such user or wrong password'});
+       }
+       else {
+         if(bcrypt.compareSync(pass, doc.password)){
+           sc = orderCont.findShoppingCart(doc.uid);
+           var prodIDs = [];
+           for(s of sc){prodIDs.push(s.pid);}
+           try{
+               var products = orderCont.findProducts(sc.prodIDs);
+               var session = sessionHandler.generateSessionObject(doc.uid);
+               session.productArr = products;
+               res.status(200);
+               res.send(session);
+            }
+          catch(err){
+            msg = constants.LOGGER_LOGIN_ERR + " Error while logging in user";
+            logger.log(msg);
+            res.status(500);
+            res.end();
+          }
+         }
+       }
+     });
+
+     msg = constants.LOGGER_LOGIN_TRY + " IP "+req.connection.remoteAddress+" tries to login.";
+     logger.log(msg);
+   },
 
     register : function(req, res){
       var userInfo = req.body.user;
