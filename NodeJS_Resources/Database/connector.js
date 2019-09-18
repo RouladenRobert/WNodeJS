@@ -3,7 +3,7 @@ var mongo = require('./mongodb.js');
 class Connector {
 
   constructor() {
-    this.mongoClient = mongo.connect();
+    this.mongoClient = new mongo.Connector().connect();
   }
 
   getClient() {

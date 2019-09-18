@@ -1,38 +1,39 @@
 const mongoClient = require('mongodb').MongoClient;
 const config = require("./collectionsConfig.json"); //load config-file, being paresd to an object automatically
+const connectionConfig = config.connection;
+const dbConfig = config.config;
 
-const url = 'mongodb://localhost:27017';
-var database;
+class Connector{
 
-
-async function connect(){
-  //connect to database
-  function setDatabase(db){
-    database = db;
+  constructor(){
+    this.database = null;
+    this.client = null;
   }
 
-  var db = await mongoClient.connect(url,{ useNewUrlParser: true });
-  var client = db.db('WildShop');
-  return client;
-}
+  async connect(){
+    this.database = await mongoClient.connect(connectionConfig.url,{ useNewUrlParser: true });
+    this.client = await this.database.db(connectionConfig.collection);
+    return this.client;
+  }
 
-function createDatabase(){
-  connect();
-  database.dropDatabase(function(err, res){
-    createCollections();
-  });
-}
+  async createDatabase(){
+    await this.connect();
+    await this.client.dropDatabase();
+    this.createCollections();
+  }
 
-function createCollections(){
-  connect();
-  for(let col in config){
-    database.createCollection(col, config[col], function(err, res){
-      if(err){
-        console.log(err);
-      }
-    });
+  createCollections(){
+    console.log("Creating collections...");
+    for(let col in dbConfig){
+      this.client.createCollection(col, dbConfig[col], function(err, res){
+        if(err){
+          console.log(err);
+        }
+        console.log("Collection created successfully!");
+      });
+    }
+    return;
   }
 }
 
-module.exports = {connect : connect,
-                  createDatabase : createDatabase};
+module.exports = {Connector : Connector};
